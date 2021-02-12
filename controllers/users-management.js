@@ -8,7 +8,7 @@ exports.getUsersListView = async (req, res) => {
     let users = [];
 
     try {
-        users = await Patient.findAll({ where: {SpecialistId: req.session.userId } });
+        users = await Patient.findAll({ where: {SpecialistId: req.session.userId, CentreId: req.session.centreId }, order: [["disabled", "ASC"]] });
     } catch (error) {
         console.log(error);
     }
@@ -82,4 +82,90 @@ exports.addUser = async (req, res) => {
     if(user == null) {return res.sendStatus(400); }
 
     return res.sendStatus(200);
+}
+
+exports.disableUser = async (req, res) => {
+    let user = null;
+    let disabled = false;
+
+    // Retrieving the given user from the database
+    try {
+        user = await Patient.findOne({where: { id: req.body.userId, CentreId: req.session.centreId }});
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+    if(user == null) { return res.sendStatus(400); }
+
+    // Set the user as disabled or enabled
+    try {
+        if(user.disabled) {
+            user.disabled = false;
+        } else {
+            user.disabled = true;
+            disabled = true;
+        }
+
+        await user.save();
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+    return res.status(200).send({disabled: disabled});
+}
+
+exports.getEditUserPage = async (req, res) => {
+    let user = null;
+
+    // Retrieving the given user from the database
+    try {
+        user = await Patient.findOne({where: { id: req.params.userId, CentreId: req.session.centreId }});
+    } catch (error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    res.render("administrative/edit-user", {
+        title: "Edit User's Details",
+        isAdmin: req.session.isAdmin,
+        isSpecialist: req.session.isSpecialist,
+        userName: req.session.name,
+        userSurname: req.session.surname,
+        titleToDisplay: "Edit User's Details",
+        user: user
+    });
+}
+
+exports.editUserDetails = async (req, res) => {
+    let user = null;
+
+    // Retrieving the given user from the database
+    try {
+        user = await Patient.findOne({where: { id: req.body.uId, CentreId: req.session.centreId }});
+    } catch (error) {
+        console.log(error);
+        return res.redirect("/dashboard/specialist/users/list");
+    }
+
+    // Checking if the fields were not left empty or filled with space characters only
+    if(((req.body.userName).replace(/ /g, '') == "") || ((req.body.userName).replace(/ /g, '') == "") || ((req.body.userName).replace(/ /g, '') == "") || ((req.body.userName).replace(/ /g, '') == "")) {
+        return res.redirect(`/dashboard/specialist/users/edit/${user.id}`);
+    }
+
+    // Updating user's details
+    try {
+        user.name = req.body.userName;
+        user.surname = req.body.userSurname;
+        user.email = req.body.userEmail;
+        user.telephone = req.body.userPhone;
+        await user.save();
+    } catch (error) {
+        console.log(error);
+        return res.redirect(`/dashboard/specialist/users/edit/${user.id}`);
+    }
+
+    // Redirect to the Users List
+    return res.redirect("/dashboard/specialist/users/list");
 }

@@ -33,6 +33,7 @@ exports.specialistLogIn = async (req, res, next) => {
         if(passwordsMatching) {
             // Step 3 - Session
             req.session.userId = retrievedUser.id; 
+            req.session.centreId = retrievedUser.CentreId;
             req.session.name = retrievedUser.name;
             req.session.surname = retrievedUser.surname;
             req.session.email = retrievedUser.email;

@@ -268,14 +268,76 @@ th, tbody {
     border-radius: 10px;
     display: block;
     cursor: pointer;
+    border: none;
+    outline: inherit;
+}
+
+.btnGradBlueSm {
+    background-image: linear-gradient(90deg,#75c5f6 0,#2a426c 51%, #87c3ff);
+    padding: 5px 8px 5px 8px;
+    font-size: 0.8rem;
+    text-align: center;
+    text-transform: uppercase;
+    transition: .5s;
+    background-size: 200% auto;
+    color: #fff !important;
+    box-shadow: 0 0 4px #eee;
+    border-radius: 10px;
+    display: block;
+    cursor: pointer;
+    border: none;
+    outline: inherit;
+    min-width: 4rem;
+}
+
+.btnGradDark {
+    background-image: linear-gradient(90deg,#082d44 0,#3b5685 51%, #051d35);
+    padding: 10px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: .5s;
+    background-size: 200% auto;
+    color: #fff !important;
+    box-shadow: 0 0 4px #eee;
+    border-radius: 10px;
+    display: block;
+    cursor: pointer;
+    border: none;
+    outline: inherit;
+}
+
+.btnGradDarkSm {
+    background-image: linear-gradient(90deg,#082d44 0,#3b5685 51%, #051d35);
+    padding: 5px 8px 5px 8px;
+    font-size: 0.8rem;
+    text-align: center;
+    text-transform: uppercase;
+    transition: .5s;
+    background-size: 200% auto;
+    color: #fff !important;
+    box-shadow: 0 0 4px #eee;
+    border-radius: 10px;
+    display: block;
+    cursor: pointer;
+    border: none;
+    outline: inherit;
+    min-width: 4rem;
+}
+
+.margin-auto {
+    margin: auto;
 }
 
 .btnTransparent {
     background: transparent !important;
 }
 
-.btnGradBlue:hover {
+.btnGradBlue:hover, .btnGradBlueSm:hover, .btnGradDarkSm:hover {
     background-position: 100%;
+}
+
+.disabledTr {
+    background-color:#686a6a; 
 }
 
 /* Main Page */
@@ -531,6 +593,16 @@ th, tbody {
 }
 
 /* Dashboard */
+
+.white-bg-btn {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 10px;
+    background-color: #fff;
+    margin-top: 1rem;
+    cursor: pointer;
+    text-align: center;
+    color:#2a5e85;
+}
 
 .dash-line {
     padding: 1rem 3rem 1rem 3rem;

@@ -12,4 +12,13 @@ router.get("/users/add", users.getAddUserView);
 // POST - add new user
 router.post("/users/create", users.addUser);
 
+// PATCH - disable or enable user
+router.patch("/users/disable", users.disableUser);
+
+// GET - edit user page
+router.get("/users/edit/:userId", users.getEditUserPage);
+
+// PUT - update user's details
+router.post("/users/update", users.editUserDetails);
+
 module.exports = router;
