@@ -1,0 +1,79 @@
+<%- include("../elements/header.ejs") %>
+
+</head>
+
+<body>
+    <%- include("../elements/sidebar-specialist.ejs") %>
+
+    <%- include("../elements/topbar-internal.ejs") %>
+<div class="main-body">
+    <div class="users-page-cont">
+        <div class="title-wrapper">
+            <div class="title-with-border">
+                <div>Manage Assigned Users</div>
+                <div class="title-line"></div>
+            </div>
+        </div>
+
+        <div class="choice-tab">
+            <div class="choice-tab-1">
+                <a class="linkNoStyle btnNotClicked" href="/dashboard/specialist/users/list">Users List</a>
+            </div>
+            <div class="choice-tab-2">
+                <a class="linkNoStyle btnClicked" href="/dashboard/specialist/users/add">Add User</a>
+            </div>
+        </div>
+
+        <div class="add-user-wrapper">
+            <div class="add-user-container container-shadow">
+                <form>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label for="userName">Name:</label>
+                            <input type="text" class="form-control" id="userName" name="userName" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label for="userSurname">Surname:</label>
+                            <input type="text" class="form-control" id="userSurname" name="userSurname" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="userEmail">Email Address:</label>
+                            <input type="email" class="form-control" id="userEmail" name="userEmail" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="userPhone">Phone number:</label>
+                            <input type="number" class="form-control" id="userPhone" name="userPhone" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="userPassword">Password:</label>
+                            <input type="password" class="form-control" id="userPassword" name="userPassword" required>
+                        </div>
+                        <div class="col">
+                            <label for="userPasswordRepeat">Repeat Password:</label>
+                            <input type="password" class="form-control" id="userPasswordRepeat" name="userPasswordRepeat" required>
+                        </div>
+                    </div>
+                    <div class="row alignnextbtn">
+                        <button class="btnNoStyle btnGradBlue" id="submitBtn">Add User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#users-element").addClass("active-sidebar-element");
+</script>
+<script type="text/javascript" src="/scripts/administrative/add-user.js"></script>
+</body>
+
+</html>

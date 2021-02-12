@@ -1,0 +1,64 @@
+<%- include("../elements/header.ejs") %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+</head>
+
+<body>
+    <%- include("../elements/sidebar-specialist.ejs") %>
+
+    <%- include("../elements/topbar-internal.ejs") %>
+<div class="main-body">
+    <div class="users-page-cont">
+        <div class="title-wrapper">
+            <div class="title-with-border">
+                <div>Manage Assigned Users</div>
+                <div class="title-line"></div>
+            </div>
+        </div>
+
+        <div class="choice-tab">
+            <div class="choice-tab-1">
+                <a class="linkNoStyle btnClicked" href="/dashboard/specialist/users/list">Users List</a>
+            </div>
+            <div class="choice-tab-2">
+                <a class="linkNoStyle btnNotClicked" href="/dashboard/specialist/users/add">Add User</a>
+            </div>
+        </div>
+
+        <div class="browsing-tab">
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                  <tr>
+                    <th scope="col"><strong>#</strong></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Surname</th>
+                    <th scope="col">E-Mail</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i < users.length; i++) { %>
+                        <tr>
+                            <td><%= eval(i+1) %></td>
+                            <td><%= users[i].name %></td>
+                            <td><%= users[i].surname %></td>
+                            <td><%= users[i].email %></td>
+                            <td><a class="clickable" data-toggle="popover" data-content="<%= users[i].telephone %>">Read »</a></td>
+                            <td>Btn Here </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+              </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $("#users-element").addClass("active-sidebar-element");
+</script>
+<script type="text/javascript" src="/scripts/administrative/add-user.js"></script>
+</body>
+
+</html>

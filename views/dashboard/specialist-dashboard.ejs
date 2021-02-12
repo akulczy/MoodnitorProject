@@ -1,0 +1,56 @@
+<%- include("../elements/header.ejs") %>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <%- include("../elements/sidebar-specialist.ejs") %>
+
+    <%- include("../elements/topbar-internal.ejs") %>
+
+    <div class="main-body">
+        <div class="dash-line dash-line-1">
+            <div class="cont-h cont-welcome cont-hover">
+                <div class="cont-welcome-txt">
+                    <div>Welcome, <%= userName %> <%= userSurname %></div>
+                </div>
+                <div class="cont-welcome-img"><img src="/files/comp-dash.svg" alt="img" /></div>
+            </div>
+            <div class="cont-h cont-date cont-shadow cont-hover">
+                <div class="cont-date-title"><img src="/files/calendar-icon.png" alt="calendar" /></div>
+                <div class="cont-date-date"><%= dateToday %></div>
+            </div>
+        </div>
+
+        <div class="dash-line dash-line-2">
+            <div class="cont-h cont-2 cont-shadow cont-first">
+                <div class="cont-no">5</div>
+                <div class="min-cont-desc">desc</div>
+            </div>
+            <div class="cont-h cont-2 cont-shadow cont-middle">
+                <div class="cont-no">56</div>
+                <div class="min-cont-desc">desc</div>
+            </div>
+            <div class="cont-h cont-2 cont-shadow cont-last">
+                <div class="cont-no">12</div>
+                <div class="min-cont-desc">desc</div>
+            </div>
+        </div>
+
+        <div class="dash-line dash-line-3">
+            <div class="main-graph-cont cont-shadow">
+                <div id="graph-title">Statistics:</div>
+                <canvas id="usage-graph"></canvas>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        $("#dash-element").addClass("active-sidebar-element");
+    </script>
+    <script type="text/javascript" src="\scripts\dashboard-script.js"></script>
+</body>
+
+</html>

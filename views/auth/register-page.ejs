@@ -1,0 +1,46 @@
+<%- include("../elements/header.ejs") %>
+</head>
+
+<body> 
+    <%- include("../elements/topbar-external.ejs") %>
+
+    <div class="cl-reg-cont-bd">
+        <div class="cl-reg-cont-cont">
+            <div class="def-title">
+                <div class="txt-def-title" id="maintext">Please enter your clinic's details</div>
+                <div class="blue-border-long-dark"></div>
+            </div>
+            <div id="registrationFormPlaceholder">
+                <form>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label for="clinicName">Name of the clinic:</label>
+                            <input type="text" class="form-control" id="clinicName" name="clinicName"" placeholder="e.g. Clairmont">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="clinicEmail">Email Address:</label>
+                            <input type="email" class="form-control" id="clinicEmail" name="clinicEmail" placeholder="e.g. clairmont@mail.com">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="clinicPhone">Phone number:</label>
+                            <input type="number" class="form-control" id="clinicPhone" name="clinicPhone" placeholder="e.g. 07555123123">
+                        </div>
+                    </div>
+                    <div class="row alignnextbtn">
+                        <a class="linkNoStyle btnGradBlue" id="nextRegistrationStepBtn">Next</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+ <%- include("../elements/footer.ejs") %>
+
+<script type="text/javascript" src="\scripts\registration-script.js"></script>
+</body>
+
+</html>

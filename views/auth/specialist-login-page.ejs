@@ -1,0 +1,38 @@
+<%- include("../elements/header.ejs") %>
+</head>
+
+<body>
+    <%- include("../elements/topbar-external.ejs") %>
+
+    <div class="cl-reg-cont-bd" style="height: 90vh;">
+        <div class="cl-reg-cont-cont" style="margin-top:-7rem;">
+            <div class="def-title">
+                <div class="txt-def-title" id="maintext">Please enter your details</div>
+                <div class="blue-border-long-dark"></div>
+            </div>
+            <div id="registrationFormPlaceholder">
+                <form method="POST" action="/specialist/login">
+                    <div class="row">
+                        <div class="col">
+                            <input type="email" class="form-control" id="sMail" name="sMail" placeholder="E-Mail">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="password" class="form-control" id="sPass" name="sPass" placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="row alignLoginBtn">
+                        <button type="submit" class="btnNoStyle btnGradBlue">Log In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+ <%- include("../elements/footer.ejs") %>
+
+<script type="text/javascript" src="\scripts\registration-script.js"></script>
+</body>
+
+</html>
