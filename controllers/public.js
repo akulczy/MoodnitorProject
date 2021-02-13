@@ -26,6 +26,13 @@ exports.getSpecialistLoginPage = (req, res) => {
     });
 };
 
+// Function used to render the Login Page
+exports.getIndUserLoginPage = (req, res) => {
+    res.render("auth/induser-login-page", {
+        title: "Login"
+    });
+};
+
 // Function used to render the organisation's registration page 
 exports.getClinicRegistrationPage = (req, res) => {
     res.render("auth/register-page", {
@@ -44,6 +51,13 @@ exports.getInividualUserRegistrationPage = (req, res) => {
 exports.getChooseRegistrationPage = (req, res) => {
     res.render("auth/choose-registration", {
         title: "Choose Registration Way"
+    });
+};
+
+// Function used to render the page where the user can choose how to login
+exports.getChooseLoginPage = (req, res) => {
+    res.render("auth/choose-login", {
+        title: "Choose Login Way"
     });
 };
 

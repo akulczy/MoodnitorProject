@@ -389,6 +389,11 @@ th, tbody {
 }
 
 #choose-registration-main {
+    height: 112vh;
+    background-image: linear-gradient(to bottom, rgba(197, 202, 222, 0) 5%, rgba(126, 175, 219, 0.5));
+}
+
+#choose-login-main {
     height: 100vh;
     background-image: linear-gradient(to bottom, rgba(197, 202, 222, 0) 5%, rgba(126, 175, 219, 0.5));
 }
@@ -423,10 +428,24 @@ th, tbody {
     flex-direction: column;
     transition: ease-in-out 0.4s;
     background-color: rgba(254, 254, 255, 0.5);
+    min-height: 33rem;
 }
 
 .main-page-container:hover, .reg-page-container:hover {
     transform: scale(1.04);
+}
+
+.login-page-container {
+    padding: 2rem 5rem 3rem 5rem;
+    border-radius: 10px;
+    box-shadow: 20px 20px 30px 20px rgba(36,50,66,.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: ease-in-out 0.4s;
+    background-color: rgba(254, 254, 255, 0.5);
+    min-height: 25rem;
 }
 
 .cont-title {
@@ -602,6 +621,12 @@ th, tbody {
     cursor: pointer;
     text-align: center;
     color:#2a5e85;
+    transition: 0.4s ease-in-out;
+}
+
+.white-bg-btn:hover {
+    color: #fff;
+    background-color:#2a5e85;
 }
 
 .dash-line {
@@ -628,7 +653,9 @@ th, tbody {
 }
 
 .cont-welcome img {
-    max-width: 15rem;
+    width: 12rem;
+    padding: 0.5rem 0 0.5rem 0;
+    max-width: 12rem;
 }
 
 .cont-welcome-txt {
@@ -646,7 +673,7 @@ th, tbody {
 }
 
 .cont-h {
-    min-height: 10rem;
+    min-height: 13rem;
 }
 
 .cont-date {
@@ -739,6 +766,12 @@ th, tbody {
     color: #2a5e85;
     margin-bottom: 1rem;
     padding: 0.5rem 0 0rem 0.7rem;
+}
+
+.cont-summ {
+    padding: 1.5rem;
+    width: 100%;
+    border-radius: 15px;
 }
 
 /* Users List */

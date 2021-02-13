@@ -4,7 +4,7 @@
 </head>
 
 <body>
-    <%- include("../elements/sidebar-specialist.ejs") %>
+    <%- include("../elements/sidebar-user.ejs") %>
 
     <%- include("../elements/topbar-internal.ejs") %>
 
@@ -15,7 +15,7 @@
                     <div>Welcome, <%= userName %> <%= userSurname %></div>
                     <div><div class="white-bg-btn">Your Account</div></div>
                 </div>
-                <div class="cont-welcome-img"><img src="/files/il-1.svg" alt="img" /></div>
+                <div class="cont-welcome-img"><img src="/files/il-3.svg" alt="img" /></div>
             </div>
             <div class="cont-h cont-date cont-shadow cont-hover">
                 <div class="cont-date-title"><img src="/files/calendar-icon.png" alt="calendar" /></div>
@@ -23,12 +23,20 @@
             </div>
         </div>
 
-        <div class="dash-line dash-line-2">
+        <div class="dash-line dash-line-3">
+            <div class="cont-shadow cont-hover cont-summ">
+                
+            </div>
+        </div>
+
+        <div class="dash-line dash-line-2" style="padding-top: 0.1rem;">
             <div class="cont-h cont-2 cont-shadow cont-first">
+                <div class="min-cont-desc">You added...</div>
                 <div class="cont-no">5</div>
-                <div class="min-cont-desc">desc</div>
+                <div class="min-cont-desc">so far</div>
             </div>
             <div class="cont-h cont-2 cont-shadow cont-middle">
+                <div class="min-cont-desc">You added...</div>
                 <div class="cont-no">56</div>
                 <div class="min-cont-desc">desc</div>
             </div>
@@ -40,18 +48,16 @@
 
         <div class="dash-line dash-line-3">
             <div class="main-graph-cont cont-shadow">
-                <div id="graph-title">Statistics:</div>
+                <div id="graph-title">Your entries:</div>
                 <canvas id="usage-graph"></canvas>
             </div>
         </div>
-
-
     </div>
 
     <script>
         $("#dash-element").addClass("active-sidebar-element");
     </script>
-    <script type="text/javascript" src="\scripts\dashboard-script.js"></script>
+    <script type="text/javascript" src="\scripts\dashboard-user-script.js"></script>
 </body>
 
 </html>
