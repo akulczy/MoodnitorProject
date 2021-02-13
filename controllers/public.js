@@ -1,7 +1,7 @@
 const Centre = require("../models/centre");
 const Specialist = require("../models/specialist");
 const Patient = require("../models/patient");
-const SystemUser = require("../models/systemuser");
+const IndUser = require("../models/individualuser");
 
 // To encrypt the passwords
 const bcrypt = require("bcryptjs");
@@ -220,7 +220,7 @@ exports.registerIndividualUser = async (req, res) => {
 
     // Step 1
     try {
-        user = await SystemUser.findOne({where: {email: req.body.userEmail}});
+        user = await IndUser.findOne({where: {email: req.body.userEmail}});
     } catch (error) {
         console.log(error);
         return res.redirect("/register");
@@ -233,7 +233,7 @@ exports.registerIndividualUser = async (req, res) => {
 
     // Step 3
     try {
-        user = await SystemUser.create({
+        user = await IndUser.create({
             name: req.body.userName,
             surname: req.body.userSurname,
             email: req.body.userEmail,

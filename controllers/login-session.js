@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs");
 const Specialist = require("../models/specialist");
 const Patient = require("../models/patient");
-const IndUser = require("../models/systemuser");
+const IndUser = require("../models/individualuser");
 const Centre = require("../models/centre");
 
 exports.centreLogin = async (req, res,) => {

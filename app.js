@@ -27,7 +27,7 @@ const Centre = require("./models/centre");
 const Specialist = require("./models/specialist");
 const Patient = require("./models/patient");
 const VerificationString = require("./models/verification");
-const SystemUser = require("./models/systemuser");
+const IndividualUser = require("./models/individualuser");
 
 const app = express();
 app.set("view engine", "ejs");
