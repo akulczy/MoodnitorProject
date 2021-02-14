@@ -273,7 +273,25 @@ th, tbody {
 }
 
 .btnGradBlueSm {
-    background-image: linear-gradient(90deg,#75c5f6 0,#2a426c 51%, #87c3ff);
+    background-image: linear-gradient(90deg,#63bff8 0,#2a426c 51%, #87c3ff);
+    padding: 5px 8px 5px 8px;
+    font-size: 0.8rem;
+    text-align: center;
+    text-transform: uppercase;
+    transition: .5s;
+    background-size: 200% auto;
+    color: #fff !important;
+    box-shadow: 0 0 4px #eee;
+    border-radius: 10px;
+    display: block;
+    cursor: pointer;
+    border: none;
+    outline: inherit;
+    min-width: 4rem;
+}
+
+.btnGradPurpleSm {
+    background-image: linear-gradient(90deg,#7277e2 0,#3c3f78 51%, #7277e2);
     padding: 5px 8px 5px 8px;
     font-size: 0.8rem;
     text-align: center;
@@ -307,7 +325,7 @@ th, tbody {
 }
 
 .btnGradDarkSm {
-    background-image: linear-gradient(90deg,#082d44 0,#3b5685 51%, #051d35);
+    background-image: linear-gradient(90deg,#4c5155 0,#6d7789 51%, #4c5155);
     padding: 5px 8px 5px 8px;
     font-size: 0.8rem;
     text-align: center;
@@ -332,7 +350,7 @@ th, tbody {
     background: transparent !important;
 }
 
-.btnGradBlue:hover, .btnGradBlueSm:hover, .btnGradDarkSm:hover {
+.btnGradBlue:hover, .btnGradBlueSm:hover, .btnGradDarkSm:hover, .btnGradPurpleSm:hover {
     background-position: 100%;
 }
 
@@ -851,4 +869,59 @@ th, tbody {
 
 .browsing-tab {
     padding: 6rem 4rem 4rem 4rem;
+}
+
+.pdf-btn {
+    cursor: pointer;
+    transition: ease-in-out 0.3s;
+}
+
+.pdf-btn:hover {
+    transform: scale(1.16);
+}
+
+/* Browsing elements */
+
+.browse-cont {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+.browse-label {
+    margin-bottom: 0.3rem;
+}
+
+.date-range-align {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+#entry-date-from, #entry-date-to {
+    margin-right: 0.5rem;
+}
+
+.browse-reset {
+    display: flex;
+    align-self: flex-end;
+    margin-bottom: 0.1rem;
+}
+
+.browse-reset button img {
+    transition: all 0.5s ease-in-out;
+}
+
+.browse-reset button:hover img {
+    transform: rotate(360deg);
+}
+
+.browse-cont {
+    margin: 2.5rem 0 2rem 0;
+}
+
+.browse-cont button img {
+    width: 22px;
 }

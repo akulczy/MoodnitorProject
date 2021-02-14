@@ -28,6 +28,7 @@ const Specialist = require("./models/specialist");
 const Patient = require("./models/patient");
 const VerificationString = require("./models/verification");
 const IndividualUser = require("./models/individualuser");
+const IndividualEntry = require("./models/individualentry");
 
 const app = express();
 app.set("view engine", "ejs");
@@ -70,6 +71,7 @@ Specialist.belongsTo(Centre);
 Patient.belongsTo(Centre);
 Patient.belongsTo(Specialist);
 VerificationString.belongsTo(Centre);
+IndividualEntry.belongsTo(IndividualUser);
 
 process.on("uncaughtException", (error) => {
     console.log("UncaughtException:" + " " + error.message);
