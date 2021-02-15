@@ -21,11 +21,20 @@ router.get("/add", entries.getAddEntryPage);
 
 // POST - create new individual entry
 router.post("/add/ind", 
-                upload.fields([{ name: 'addfiles', maxCount: 5 }]), 
+                upload.fields([{ name: 'addfiles', maxCount: 3 }]), 
                 entries.addIndividualEntry
             );
 
 // GET - page where entries can be reviewed
 router.get("/review", entries.getReviewEntriesPage);
+
+// POST - browsing by title
+router.post("/browse/title", entries.browseByTitle);
+
+// POST - browsing by date
+router.post("/browse/date", entries.browseByDate);
+
+// POST - browsing by date range
+router.post("/browse/date/range", entries.browseByDateRange);
 
 module.exports = router;

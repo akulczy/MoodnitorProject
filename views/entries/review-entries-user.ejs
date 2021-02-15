@@ -18,30 +18,54 @@
         <div class="browse-cont">
             <div class="sub-browse">
                 <div class="browse-label">Title:</div>
-                <div><input type="text" class="form-control" name="entry-title" id="entry-title" placeholder="Entry title..." /></div>
+                <div class="sub-browse-align">
+                    <input type="text" class="form-control" name="entry-title" id="entry-title" placeholder="Entry title..." />
+                    <button type="button" class="btn btn-sm btn-secondary" id="browse-title">
+                        <img src="/files/magni-glass-icon.png" alt="search" />
+                    </button>
+                </div>
             </div>
             <div class="sub-browse">
                 <div class="browse-label">Date:</div>
-                <div><input type="date" class="form-control" name="entry-date" id="entry-date" /></div>
+                <div class="sub-browse-align">
+                    <input type="date" class="form-control" name="entry-date" id="entry-date" />
+                    <button type="button" class="btn btn-sm btn-secondary" id="browse-date">
+                        <img src="/files/magni-glass-icon.png" alt="search" />
+                    </button>
+                </div>
             </div>
             <div class="sub-browse date-range">
                 <div class="browse-label">Date range:</div>
                 <div class="date-range-align">
-                    <input type="date" class="form-control" name="entry-date" id="entry-date-from" />
-                    <input type="date" class="form-control" name="entry-date" id="entry-date-to" />
-                    <button type="button" class="btn btn-sm btn-secondary">
+                    <input type="date" class="form-control" name="entry-date-from" id="entry-date-from" />
+                    <input type="date" class="form-control" name="entry-date-to" id="entry-date-to" />
+                    <button type="button" class="btn btn-sm btn-secondary" id="browse-range">
                         <img src="/files/magni-glass-icon.png" alt="search" />
                     </button>
                 </div>
             </div>
             <div class="browse-reset">
-                <button type="button" class="btn btn-sm btn-dark">
+                <button type="button" class="btn btn-sm btn-dark" id="reset-btn">
                     <img src="/files/reset-icon.png" alt="search" />
                 </button>
             </div>
         </div>
 
         <div class="down-cont">
+            <div class="down-cont-spreadsheet">
+                <button type="button" class="btn btn-sm btn-light" id="spreadsheet-down">
+                    <img src="/files/spreadsheet-icon.png" alt="spreadsheet" />
+                    Download Spreadsheet
+                </button>
+            </div>
+            <div class="down-cont-disabled">
+                <a href="" class="linkNoStyle">
+                    <button type="button" class="btn btn-sm btn-light" id="disabled-entries">
+                        <img src="/files/disabled-icon.png" alt="spreadsheet" />
+                        Review disabled entries
+                    </button>
+                </a>
+            </div>
         </div>
 
         <div class="table-cont">
@@ -57,7 +81,7 @@
                     <th scope="col" style="width:10%">Download</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="entries-body">
                     <% for(let i=0; i < entries.length; i++) { %>
                         <tr>
                             <td class="e-no"><strong><%= eval(i+1) %></strong></td>
@@ -76,6 +100,7 @@
                             </td>
                             <td class="e-pdf">
                                 <div class="pdf-btn">
+                                    <input type="hidden" value="<%= entries[i].id %>" />
                                     <img src="/files/pdf-icon.png" alt="pdf" />
                                 </div>
                             </td>

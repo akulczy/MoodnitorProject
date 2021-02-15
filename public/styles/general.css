@@ -449,7 +449,7 @@ th, tbody {
     min-height: 33rem;
 }
 
-.main-page-container:hover, .reg-page-container:hover {
+.main-page-container:hover, .reg-page-container:hover, .login-page-container:hover {
     transform: scale(1.04);
 }
 
@@ -924,4 +924,28 @@ th, tbody {
 
 .browse-cont button img {
     width: 22px;
+}
+
+.sub-browse-align {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.sub-browse-align input {
+    margin-right: 0.5rem;
+}
+
+.down-cont img {
+    width: 24px;
+    margin-right: 0.3rem;
+}
+
+.down-cont {
+    margin: 2.5rem 0 1.5rem 0;
+    padding: 0 3rem 0 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
 }

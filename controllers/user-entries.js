@@ -5,6 +5,7 @@ const IndUser = require("../models/individualuser");
 const IndEntry = require("../models/individualentry");
 
 const moment = require("moment");
+const { Op } = require("sequelize"); 
 
 // Method to display the page where entry can be created
 exports.getAddEntryPage = (req, res) => {
@@ -63,6 +64,7 @@ exports.addIndividualEntry = async (req, res) => {
     return res.sendStatus(200);
 }
 
+// Method to render page where the entries can be reviewed by the user
 exports.getReviewEntriesPage = async (req, res) => {
     let entries = [];
 
@@ -89,4 +91,92 @@ exports.getReviewEntriesPage = async (req, res) => {
         titleToDisplay: "Review Entries",
         entries: entries
     });
+}
+
+// Method to browse entries by title
+exports.browseByTitle = async (req, res) => {
+    let entries = [];
+    let titleVal = req.body.title;
+
+    if(req.session.isIndUser) {
+        try {
+            entries = await IndEntry.findAll( 
+                { where: { 
+                    title: {[Op.like]: '%' + titleVal + '%'}, 
+                    disabled: false,
+                    IndividualUserId: req.session.userId 
+                }, 
+                order: [["createdAt", "DESC"]] 
+            });
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    } else {
+
+    }
+
+    return res.status(200).send({entries: entries});
+}
+
+// Method to browse entries by date 
+exports.browseByDate = async (req, res) => {
+    let entries = [];
+    let dateVal = req.body.date;
+
+    if(req.session.isIndUser) {
+        try {
+            entries = await IndEntry.findAll( 
+                { where: { 
+                    date: dateVal, 
+                    disabled: false,
+                    IndividualUserId: req.session.userId 
+                }, 
+                order: [["createdAt", "DESC"]] 
+            });
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    } else {
+
+    }
+
+    return res.status(200).send({entries: entries});
+}
+
+// Method to browse entries by date range
+exports.browseByDateRange = async (req, res) => {
+    let entries = [];
+    let dateFrom = req.body.dateFrom;
+    let dateTo = req.body.dateTo;
+    let query = "";
+
+    if(dateFrom != "" && dateTo != "") {
+        query = { [Op.gte]: dateFrom, [Op.lte]: dateTo };      
+    } else if (dateFrom == "" && dateTo != "") {
+        query = { [Op.lte]: dateTo };
+    } else if (dateFrom != "" && dateTo == "") {
+        query = { [Op.gte]: dateFrom };
+    }
+
+    if(req.session.isIndUser) {
+        try {
+            entries = await IndEntry.findAll( 
+                { where: { 
+                    date: query, 
+                    disabled: false,
+                    IndividualUserId: req.session.userId 
+                }, 
+                order: [["createdAt", "DESC"]] 
+            });
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    } else {
+
+    }
+
+    return res.status(200).send({entries: entries});
 }
