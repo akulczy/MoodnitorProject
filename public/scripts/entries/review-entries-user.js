@@ -33,6 +33,43 @@ const appendEntries = (entries) => {
     }
 }
 
+const disableEntry = (event) => {
+    // Retrieving id of the entry to be disabled from the button value
+    let id = null;
+    let pressedTr = $(event.target).closest("tr");
+
+    try {
+        id = parseInt($(event.target).val());
+    } catch(error) {
+        return alert("An error occurred when processing your request. Please try again.");
+    }
+
+    if(id === null) { return  alert("An error occurred when processing your request. Please try again."); }
+
+    $.ajax({
+        url: "/dashboard/user/entries/disable",
+        method: "PATCH",
+        data: {entryId: id},
+        // Actions depending on the status code in the response
+        statusCode: {
+            200: (data) => {
+                if(data.disabled) {
+                    alert("Entry disabled successfully. It will be moved into the Disabled Entries section.");
+                    pressedTr.addClass("disabledTr");
+                    $(event.target).text("Enable");
+                } else {
+                    alert("Entry enabled successfully.");
+                    pressedTr.removeClass("disabledTr");
+                    $(event.target).text("Disable");
+                }
+            },
+            400: () => {
+                alert("An error occurred while processing your request. Please try again.");
+            }
+        }
+    });
+}
+
 // Browsing by entry title
 $("#browse-title").click(() => {
 
@@ -170,6 +207,11 @@ $("#browse-range").click(() => {
             }
         }
     });
+});
+
+// Disabling or enabling entries on the button click
+$(".disableBtn").click((event) => {
+    disableEntry(event);
 });
 
 // Reseting browsing filters 

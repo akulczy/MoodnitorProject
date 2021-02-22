@@ -37,4 +37,7 @@ router.post("/browse/date", entries.browseByDate);
 // POST - browsing by date range
 router.post("/browse/date/range", entries.browseByDateRange);
 
+// PATCH - browsing by date range
+router.patch("/disable", entries.disableEntry);
+
 module.exports = router;

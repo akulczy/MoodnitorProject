@@ -52,7 +52,7 @@ const addEntry = () => {
         contentType: false,
         // Actions depending on the status code in the response
         statusCode: {
-            200: () => {
+            200: (data) => {
                 // Displaying information that the entry had been added successfully
                 $(".spinner-grow").remove();
                 $("#submitEntryBtn").removeClass(".activeBtn");
@@ -60,7 +60,7 @@ const addEntry = () => {
 
                 $.get("/templates/entries/entry-box-success.ejs", template => {
                     let boxTemplate = $(template);
-
+                    boxTemplate.find("#detected-emotion-class").text(data.emotion); 
                     $(".main-body").append(boxTemplate);
                 });
 

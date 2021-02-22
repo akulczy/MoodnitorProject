@@ -6,6 +6,7 @@ const IndEntry = require("../models/individualentry");
 
 const moment = require("moment");
 const { Op } = require("sequelize"); 
+const axios = require("axios");
 
 // Method to display the page where entry can be created
 exports.getAddEntryPage = (req, res) => {
@@ -58,10 +59,23 @@ exports.addIndividualEntry = async (req, res) => {
     // Sending status 400 in case the entry had not been created successfully
     if(entry == null) { return res.sendStatus(400); }
 
+    let emotion_prediction = "";
+
+    // Connecting to the Python API
+    await axios.post('http://localhost:5000/predict', {
+        emotion: entryContent
+        })
+        .then((response) => {
+        emotion_prediction = emotion.pred;
+        console.log(response);
+        }, (error) => {
+        console.log(error);
+        });
+
     // TODO - File Handling
 
     // Entry created successfully - status 200
-    return res.sendStatus(200);
+    return res.status(200).send({emotion: emotion_prediction});
 }
 
 // Method to render page where the entries can be reviewed by the user
@@ -179,4 +193,38 @@ exports.browseByDateRange = async (req, res) => {
     }
 
     return res.status(200).send({entries: entries});
+}
+
+exports.disableEntry = async (req, res) => {
+    let entry = null;
+    let disabled = false;
+
+    if(req.session.isIndUser) {
+        // Retrieving the given entry from the database
+        try {
+            entry = await IndEntry.findOne({where: { id: req.body.entryId, IndividualUserId: req.session.userId }});
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    }
+
+    if(entry == null) { return res.sendStatus(400); }
+
+    // Set the entry as disabled or enabled
+    try {
+        if(entry.disabled) {
+            entry.disabled = false;
+        } else {
+            entry.disabled = true;
+            disabled = true;
+        }
+
+        await entry.save();
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+    return res.status(200).send({disabled: disabled});
 }
