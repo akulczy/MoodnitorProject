@@ -189,7 +189,25 @@ exports.getReviewEntriesPage = async (req, res) => {
             return res.redirect("/dashboard");
         }
     } else if (req.session.isSystemUser) {
-
+        try {
+            entries = await UserEntry.findAll( {
+                where: {
+                    SystemUserId: req.session.userId, 
+                    disabled: false 
+                }, 
+                order: [
+                    ["createdAt", "DESC"]
+                ] ,                
+                include: [{ 
+                    model: SystemUser, 
+                    where: { id: req.session.userId, CentreId: req.session.centreId },
+                    attributes: ["id", "CentreId"] 
+                }]
+            });
+        } catch(error) {
+            console.log(error);
+            return res.redirect("/dashboard");
+        }
     }
 
     return res.render("entries/review-entries-user", {
@@ -224,8 +242,22 @@ exports.browseByTitle = async (req, res) => {
             console.log(error);
             return res.sendStatus(400);
         }
-    } else {
-
+    } else if (req.session.isSystemUser) {
+        entries = await UserEntry.findAll( {
+            where: {
+                SystemUserId: req.session.userId, 
+                disabled: false,
+                title: {[Op.like]: '%' + titleVal + '%'} 
+            }, 
+            order: [
+                ["createdAt", "DESC"]
+            ] ,                
+            include: [{ 
+                model: SystemUser, 
+                where: { id: req.session.userId, CentreId: req.session.centreId },
+                attributes: ["id", "CentreId"] 
+            }]
+        });
     }
 
     return res.status(200).send({entries: entries});
@@ -250,8 +282,22 @@ exports.browseByDate = async (req, res) => {
             console.log(error);
             return res.sendStatus(400);
         }
-    } else {
-
+    } else if (req.session.isSystemUser) {
+        entries = await UserEntry.findAll( {
+            where: {
+                SystemUserId: req.session.userId, 
+                disabled: false,
+                date: dateVal
+            }, 
+            order: [
+                ["createdAt", "DESC"]
+            ] ,                
+            include: [{ 
+                model: SystemUser, 
+                where: { id: req.session.userId, CentreId: req.session.centreId },
+                attributes: ["id", "CentreId"] 
+            }]
+        });
     }
 
     return res.status(200).send({entries: entries});
@@ -286,8 +332,22 @@ exports.browseByDateRange = async (req, res) => {
             console.log(error);
             return res.sendStatus(400);
         }
-    } else {
-
+    } else if (req.session.isSystemUser) {
+        entries = await UserEntry.findAll( {
+            where: {
+                SystemUserId: req.session.userId, 
+                disabled: false,
+                date: query
+            }, 
+            order: [
+                ["createdAt", "DESC"]
+            ],                
+            include: [{ 
+                model: SystemUser, 
+                where: { id: req.session.userId, CentreId: req.session.centreId },
+                attributes: ["id", "CentreId"] 
+            }]
+        });
     }
 
     return res.status(200).send({entries: entries});
@@ -298,14 +358,26 @@ exports.disableEntry = async (req, res) => {
     let entry = null;
     let disabled = false;
 
+    // Retrieving the given entry from the database
     if(req.session.isIndUser) {
-        // Retrieving the given entry from the database
         try {
             entry = await IndEntry.findOne({where: { id: req.body.entryId, IndividualUserId: req.session.userId }});
         } catch (error) {
             console.log(error);
             return res.sendStatus(400);
         }
+    } else if (req.session.isSystemUser) {
+        entry = await UserEntry.findOne({
+            where: { 
+                id: req.body.entryId, 
+                SystemUserId: req.session.userId 
+            },
+            include: [{ 
+                model: SystemUser, 
+                where: { id: req.session.userId, CentreId: req.session.centreId },
+                attributes: ["id", "CentreId"] 
+            }]
+        });
     }
 
     if(entry == null) { return res.sendStatus(400); }
@@ -346,7 +418,17 @@ exports.getDisabledEntriesPage = async (req, res) => {
             return res.sendStatus(400);
         }
     } else if (req.session.isSystemUser) {
-
+        entries = await UserEntry.findAll({
+            where: { 
+                disabled: true, 
+                SystemUserId: req.session.userId 
+            },
+            include: [{ 
+                model: SystemUser, 
+                where: { id: req.session.userId, CentreId: req.session.centreId },
+                attributes: ["id", "CentreId"] 
+            }]
+        });
     }
 
     // Render the page
@@ -383,7 +465,18 @@ exports.browseDisabledByDate = async (req, res) => {
             return res.sendStatus(400);
         }
     } else {
-
+        entries = await UserEntry.findAll({
+            where: { 
+                date: dateVal, 
+                disabled: true, 
+                SystemUserId: req.session.userId 
+            },
+            include: [{ 
+                model: SystemUser, 
+                where: { id: req.session.userId, CentreId: req.session.centreId },
+                attributes: ["id", "CentreId"] 
+            }]
+        });
     }
 
     return res.status(200).send({entries: entries});
@@ -396,7 +489,17 @@ exports.addUserNotes = async (req, res) => {
     if(req.session.isIndUser) {
         entry = await IndEntry.findOne({where: {id: req.body.entryId, IndividualUserId: req.session.userId}});
     } else if(req.session.isSystemUser) {
-
+        entry = await UserEntry.findOne({
+            where: { 
+                id: req.body.entryId, 
+                SystemUserId: req.session.userId 
+            },
+            include: [{ 
+                model: SystemUser, 
+                where: { id: req.session.userId, CentreId: req.session.centreId },
+                attributes: ["id", "CentreId"] 
+            }]
+        });
     }
 
     if(entry == null) { return res.sendStatus(400); }

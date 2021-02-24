@@ -4,7 +4,7 @@ const router = express.Router();
 const dashboard = require("../controllers/dashboard-functions");
 const users = require("../controllers/users-management");
 
-const specialistRoutes = require("./users-management-routes.js");
+const specialistRoutes = require("./specialist-routes.js");
 const userRoutes = require("./user-routes");
 
 // USE - specialist paths
