@@ -1,6 +1,6 @@
 const Centre = require("../models/centre");
 const Specialist = require("../models/specialist");
-const Patient = require("../models/patient");
+const Patient = require("../models/systemuser");
 const IndUser = require("../models/individualuser");
 
 // To encrypt the passwords

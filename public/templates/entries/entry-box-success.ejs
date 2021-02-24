@@ -2,7 +2,7 @@
     <div class="success-cont">
         <div class="success-sub">
             <div class="success-lg">Success!</div>
-            <div class="success-min">You entry has been successfully added to the system.<br>You can review summary of the output, as well as add additional notes or feedback below.</div>
+            <div class="success-min">You entry has been successfully added to the system.<br>You can review summary of the output, as well as add additional notes below.</div>
         </div>
         <div class="success-space"></div>
         <div class="success-sub">
@@ -18,11 +18,32 @@
         </div>
 
         <div class="detected-emotion">
-            <div>The main detected emotion is...</div>
+            <div>The main emotion detected in your entry is...</div>
             <div id="detected-emotion-class"></div>
             <div id="detected-emotion-desc">
-                The main emotion class detected in your entry is <span id="emotion-inline"></span>.
+                <span class="first-sentence">The main emotion class detected in your entry is <span id="emotion-inline"></span>.</span><br>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
             </div>
+        </div>
+
+        <div class="add-notes">
+            <div class="add-notes-subtitle">Additional notes</div>
+            <div class="add-notes-desc">If you wish to add some additional notes or feedback regarding the summary of your entry, please enter them below and press the <i>Save</i> button.</div>
+            <div class="add-note-cont">
+                <div class="note-area">
+                    <textarea class="form-control" id="note-content" rows="6" style="resize:none;"></textarea>
+                </div>
+                
+                <div class="note-btn-align">
+                    <button class="btnGradPurpleSm margin-auto" id="save-notes-btn">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="review-entries">
+            <a class="linkNoStyle" href="/dashboard/user/entries/review">
+                <button class="btnGradBlue margin-auto">Review Your Entries</button>
+            </a>
         </div>
 
     </div>

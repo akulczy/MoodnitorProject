@@ -12,9 +12,59 @@ let options = {
     readOnly: false,
     theme: 'snow',
     placeholder: 'Type in your entry here...'
-  };
+};
+
 let container = document.getElementById("entry-field");
 let editor = new Quill(container, options);
+
+const addNotesToEntry = (entryId) => {
+    let notesContent = $("#note-content").val();
+
+    // Displaying spinner element once the submit button is clicked
+    if(!($("#save-notes-btn").hasClass(".activeBtn"))) {
+        $("#save-notes-btn").append('<span class="spinner-grow text-light spinner-grow-sm" role="status" aria-hidden="true"></span><span class="sr-only">Loading...</span>');
+        $("#save-notes-btn").addClass(".activeBtn");        
+
+        $.ajax({
+            url: "/dashboard/user/entries/add/notes",
+            method: "PATCH",
+            data: {notes: notesContent, entryId: entryId},
+            // Actions depending on the status code in the response
+            statusCode: {
+                200: () => {
+                    // Displaying information that the entry had been added successfully
+                    $(".spinner-grow").remove();
+                    $("#submitEntryBtn").removeClass(".activeBtn");
+                    $(".note-area").empty();
+                    $(".note-btn-align").empty();
+                    $(".note-area").append('<div class="notetxt">' + notesContent + '</div>');
+                    $(".note-btn-align").append('<button class="btnGradPurpleSm margin-auto" id="edit-notes-btn">Edit</button>');
+
+                    $("#edit-notes-btn").click(() => {
+                        $(".note-area").empty();
+                        $(".note-btn-align").empty();
+                        $(".note-area").append('<textarea class="form-control" id="note-content" rows="6" style="resize:none;">' + notesContent + '</textarea>');
+                        $(".note-btn-align").append('<button class="btnGradPurpleSm margin-auto" id="save-notes-btn">Save</button>');
+
+                        $("#save-notes-btn").click(() => {
+                            if($("#note-content").val() != "") {
+                                addNotesToEntry(entryId);
+                            } else {
+                                alert ("Please fill in the text field.");
+                            }
+                        });
+                    });    
+                },
+                400: () => {
+                    // Displaying an error message
+                    $(".spinner-grow").remove();
+                    $("#save-notes-btn").removeClass(".activeBtn");
+                    alert("An error occurred while processing your request. Please try again.");
+                }
+            }
+        });
+    }
+}
 
 const addEntry = () => {
     let entryContent = editor.getText();
@@ -45,7 +95,7 @@ const addEntry = () => {
     }
 
     $.ajax({
-        url: "/dashboard/user/entries/add/ind",
+        url: "/dashboard/user/entries/add",
         method: "POST",
         data: entryData,
         processData: false,
@@ -57,13 +107,21 @@ const addEntry = () => {
                 $(".spinner-grow").remove();
                 $("#submitEntryBtn").removeClass(".activeBtn");
                 $(".main-body").empty();
-
+                let entryId = data.id;
                 $.get("/templates/entries/entry-box-success.ejs", template => {
                     let boxTemplate = $(template);
                     boxTemplate.find("#detected-emotion-class").text(data.emotion); 
+                    boxTemplate.find("#emotion-inline").text(data.emotion); 
                     $(".main-body").append(boxTemplate);
-                });
 
+                    $("#save-notes-btn").click(() => {
+                        if($("#note-content").val() != "") {
+                            addNotesToEntry(entryId);
+                        } else {
+                            alert ("Please fill in the text field.");
+                        }
+                    });
+                });
             },
             400: () => {
                 // Displaying an error message
@@ -91,3 +149,4 @@ const addEntry = () => {
 $("#submitEntryBtn").click(() => {
     addEntry();
 });
+

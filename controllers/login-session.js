@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const Specialist = require("../models/specialist");
-const Patient = require("../models/patient");
+const Patient = require("../models/systemuser");
 const IndUser = require("../models/individualuser");
 const Centre = require("../models/centre");
 

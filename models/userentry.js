@@ -1,38 +1,42 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../conn/db");
 
-const Patient = sequelize.define("Patient", {
+const UserEntry = sequelize.define("UserEntry", {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
     },
-    email: {
+    title: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    password: {
-        type: Sequelize.STRING,
+    content: {
+        type: Sequelize.TEXT,
         allowNull: false
     },
-    name: {
-        type: Sequelize.STRING,
+    contentHtml: {
+        type: Sequelize.TEXT,
         allowNull: false
     },
-    surname: {
-        type: Sequelize.STRING,
+    date: {
+        type: Sequelize.DATE,
         allowNull: false
     },
-    telephone: {
-        type: Sequelize.STRING,
+    time: {
+        type: Sequelize.TIME,
         allowNull: false
     },
     disabled: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: 0
+    },
+    usernotes: {
+        type: Sequelize.TEXT,
+        allowNull: true
     }
 });
 
-module.exports = Patient;
+module.exports = UserEntry;

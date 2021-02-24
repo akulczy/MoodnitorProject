@@ -1,42 +1,38 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../conn/db");
 
-const IndividualEntry = sequelize.define("IndividualEntry", {
+const SystemUser = sequelize.define("SystemUser", {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
     },
-    title: {
+    email: {
         type: Sequelize.STRING,
         allowNull: false
     },
-    content: {
-        type: Sequelize.TEXT,
+    password: {
+        type: Sequelize.STRING,
         allowNull: false
     },
-    contentHtml: {
-        type: Sequelize.TEXT,
+    name: {
+        type: Sequelize.STRING,
         allowNull: false
     },
-    date: {
-        type: Sequelize.DATE,
+    surname: {
+        type: Sequelize.STRING,
         allowNull: false
     },
-    time: {
-        type: Sequelize.TIME,
+    telephone: {
+        type: Sequelize.STRING,
         allowNull: false
     },
     disabled: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: 0
-    },
-    usernotes: {
-        type: Sequelize.TEXT,
-        allowNull: true
     }
 });
 
-module.exports = IndividualEntry;
+module.exports = SystemUser;

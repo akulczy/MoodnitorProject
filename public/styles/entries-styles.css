@@ -18,6 +18,7 @@
     margin: 0 auto;
     width: 70rem;
     margin-bottom: 4rem;
+    padding-bottom: 4rem;
 }
 
 .entry-cont-top {
@@ -156,6 +157,95 @@
     color: #4a50c0;
 }
 
+.results-cont {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.detected-emotion {
+    margin-top: 2rem;
+    font-size: 1.06rem;
+    text-align: center;
+}
+
+#detected-emotion-class {
+    font-size: 2rem;
+    color: #3c4198;
+    padding: 1rem 0 2rem 0;
+}
+
+#detected-emotion-desc {
+    width: 50rem;
+    color: #565aab;
+    text-align: justify;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px -10px rgb(0 0 0 / 9%);
+    padding: 1.5rem;
+    background-image: linear-gradient(to bottom, rgba(197, 202, 222, 0) 35%, rgba(150, 198, 234, 0.3));
+}
+
+#emotion-inline {
+    font-weight: bold;
+}
+
+.first-sentence {
+    text-align: justify;
+}
+
+.success-sub img {
+    width: 6rem;
+}
+
+.add-notes {
+    width: 50rem;
+    padding: 3.5rem 0 2rem 0;
+}
+
+.add-notes-subtitle {
+    color: #565aab;
+    font-size: 1.3rem;
+}
+
+.add-notes-desc {
+    color: #565aab;
+    font-size: 1rem;
+    padding-bottom: 2rem;
+}
+
+.add-note-cont {
+    padding: 2rem 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    width: 50rem;
+    color: #565aab;
+    text-align: justify;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px -10px rgb(0 0 0 / 9%);
+    background-image: linear-gradient(to bottom, rgba(197, 202, 222, 0) 35%, rgba(150, 157, 234, 0.3));
+}
+
+.note-btn-align {
+    padding-top: 2rem;
+}
+
+.note-area {
+    max-width: 35rem;
+    margin: 0 auto;
+}
+
+#note-content {
+    width: 35rem;
+}
+
+.review-entries {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0 2rem 0;
+}
+
 /* Reviewing entries */
 
 .table-cont {
@@ -165,4 +255,18 @@
 .browse-cont button {
     display: flex;
     flex-direction: row;
+}
+
+.disabled-cont {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.disabled-cont .sub-browse {
+    margin-right: 1.5rem;
+}
+
+.disabled-cont .browse-reset {
+    margin-bottom: 0.2rem;
 }

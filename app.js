@@ -6,6 +6,7 @@ const fs = require("fs");
 const bodyparser = require("body-parser");
 const path = require("path");
 const cookieparser = require("cookie-parser");
+global.__basedir = __dirname;
 
 // Database connection, using Sequelize ORM
 const sequelizedb = require("./conn/db");
@@ -25,10 +26,15 @@ const loggedInRoutes = require("./routes/private");
 // Models (Model View Controller Design Pattern used)
 const Centre = require("./models/centre");
 const Specialist = require("./models/specialist");
-const Patient = require("./models/patient");
+const SystemUser = require("./models/systemuser");
 const VerificationString = require("./models/verification");
+
+const UserEntry = require("./models/userentry");
+const UserEntryFile = require("./models/userentryfile");
+
 const IndividualUser = require("./models/individualuser");
 const IndividualEntry = require("./models/individualentry");
+const IndividualEntryFile = require("./models/individualentryfile");
 
 const app = express();
 app.set("view engine", "ejs");
@@ -68,10 +74,15 @@ app.use("/", loggedIn, loggedOutRoutes);
 
 // Associations
 Specialist.belongsTo(Centre);
-Patient.belongsTo(Centre);
-Patient.belongsTo(Specialist);
+SystemUser.belongsTo(Centre);
+SystemUser.belongsTo(Specialist);
 VerificationString.belongsTo(Centre);
+
 IndividualEntry.belongsTo(IndividualUser);
+IndividualEntryFile.belongsTo(IndividualEntry);
+
+UserEntry.belongsTo(SystemUser);
+UserEntryFile.belongsTo(UserEntry);
 
 process.on("uncaughtException", (error) => {
     console.log("UncaughtException:" + " " + error.message);

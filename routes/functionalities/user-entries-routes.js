@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const path = require("path");
 
 const entries = require("../../controllers/user-entries");
 
@@ -20,9 +21,9 @@ let upload = multer({ storage: storage });
 router.get("/add", entries.getAddEntryPage);
 
 // POST - create new individual entry
-router.post("/add/ind", 
+router.post("/add", 
                 upload.fields([{ name: 'addfiles', maxCount: 3 }]), 
-                entries.addIndividualEntry
+                entries.addEntry
             );
 
 // GET - page where entries can be reviewed
@@ -39,5 +40,14 @@ router.post("/browse/date/range", entries.browseByDateRange);
 
 // PATCH - browsing by date range
 router.patch("/disable", entries.disableEntry);
+
+// GET - review archived entries page
+router.get("/archive", entries.getDisabledEntriesPage);
+
+// POST - browse disabled entries by date
+router.post("/archive/browse", entries.browseDisabledByDate);
+
+// PATCH - add aditional notes to an existing entry
+router.patch("/add/notes", entries.addUserNotes);
 
 module.exports = router;

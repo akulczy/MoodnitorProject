@@ -18,7 +18,42 @@ const appendEntries = (entries) => {
                 `<td class="e-notes"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradPurpleSm margin-auto">Notes</button></a></td>` +
                 '<td class="e-disable">' +
                     `<button class="btnGradDarkSm margin-auto disableBtn" value="${entry.id}">` +
-                        'Disable' +
+                        'Archive' +
+                    '</button>' +
+                '</td>' +
+                '<td class="e-pdf">' +
+                    '<div class="pdf-btn">' +
+                        `<input type="hidden" value="${entry.id}" />` +
+                        '<img src="/files/pdf-icon.png" alt="pdf" />' +
+                    '</div>' +
+                '</td>' +
+            '</tr>'                        
+        );
+        i++;
+    }
+}
+
+const appendDisabledEntries = (entries) => {
+    let i = 1;
+    // Apending results to the table
+    for(let entry of entries) {
+        let entryTitle = "";
+        if((entry.title).length > 18) {
+            entryTitle = (entry.title).slice(0, 17) + "...";
+        } else {
+            entryTitle = entry.title;
+        }
+
+        $("#entries-body").append(
+            '<tr class="disabledTr">' +
+                '<td class="e-no"><strong>' + eval(i) + '</strong></td>' +
+                '<td class="e-date">' + entry.date + '</td>' +
+                '<td class="e-title">' + entryTitle + '</td>' +
+                `<td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>` +
+                `<td class="e-notes"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradPurpleSm margin-auto">Notes</button></a></td>` +
+                '<td class="e-disable">' +
+                    `<button class="btnGradDarkSm margin-auto disableBtn" value="${entry.id}">` +
+                        'Unarchive' +
                     '</button>' +
                 '</td>' +
                 '<td class="e-pdf">' +
@@ -54,13 +89,13 @@ const disableEntry = (event) => {
         statusCode: {
             200: (data) => {
                 if(data.disabled) {
-                    alert("Entry disabled successfully. It will be moved into the Disabled Entries section.");
+                    alert("Entry archived successfully. It will be moved into the Archived Entries section.");
                     pressedTr.addClass("disabledTr");
-                    $(event.target).text("Enable");
+                    $(event.target).text("Unarchive");
                 } else {
-                    alert("Entry enabled successfully.");
+                    alert("Entry unarchived successfully.");
                     pressedTr.removeClass("disabledTr");
-                    $(event.target).text("Disable");
+                    $(event.target).text("Archive");
                 }
             },
             400: () => {
@@ -104,6 +139,11 @@ $("#browse-title").click(() => {
 
                 $(".spinner-grow").remove();
                 $("#browse-title").removeClass(".activeBtn");
+
+                // Disabling or enabling entries on the button click
+                $(".disableBtn").click((event) => {
+                    disableEntry(event);
+                });
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -148,6 +188,11 @@ $("#browse-date").click(() => {
 
                 $(".spinner-grow").remove();
                 $("#browse-date").removeClass(".activeBtn");
+
+                // Disabling or enabling entries on the button click
+                $(".disableBtn").click((event) => {
+                    disableEntry(event);
+                });
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -199,6 +244,11 @@ $("#browse-range").click(() => {
 
                 $(".spinner-grow").remove();
                 $("#browse-range").removeClass(".activeBtn");
+
+                // Disabling or enabling entries on the button click
+                $(".disableBtn").click((event) => {
+                    disableEntry(event);
+                });
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -212,6 +262,51 @@ $("#browse-range").click(() => {
 // Disabling or enabling entries on the button click
 $(".disableBtn").click((event) => {
     disableEntry(event);
+});
+
+// Browsing disabled entries by date
+$("#browse-disabled-date").click(() => {
+
+    // Current value of the input field
+    let dateValue = $("#entry-date").val();
+
+    // The field cannot be left empty
+    if(dateValue == "") {
+        return alert("Please choose the date.");
+    }
+
+    // Displaying spinner element once the submit button is clicked
+    if(!($("#browse-disabled-date").hasClass(".activeBtn"))) {
+        $("#browse-disabled-date").append('<span class="spinner-grow text-light spinner-grow-sm" role="status" aria-hidden="true"></span><span class="sr-only">Loading...</span>');
+        $("#browse-disabled-date").addClass(".activeBtn");
+    }
+
+    $.ajax({
+        url: "/dashboard/user/entries/archive/browse",
+        method: "POST",
+        data: {date: dateValue},
+        // Actions depending on the status code in the response
+        statusCode: {
+            200: (data) => {
+                $("#entries-body").empty();
+                let entries = data.entries;
+                appendDisabledEntries(entries);
+
+                $(".spinner-grow").remove();
+                $("#browse-disabled-date").removeClass(".activeBtn");
+
+                // Disabling or enabling entries on the button click
+                $(".disableBtn").click((event) => {
+                    disableEntry(event);
+                });
+            },
+            400: () => {
+                $(".spinner-grow").remove();
+                $("#browse-disabled-date").removeClass(".activeBtn");
+                return alert("An error occurred while processing your request. Please try again.");
+            }
+        }
+    });
 });
 
 // Reseting browsing filters 
