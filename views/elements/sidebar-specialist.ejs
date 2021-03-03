@@ -15,13 +15,26 @@
             </div>
         </a>
 
-        <a href="/dashboard/specialist/users/list" class="linkNoStyle"> 
-            <div class="sidebar-link-element" id="users-element">
+        <% if (isAdmin) { %>
+            <a href="/dashboard/specialist/users/list" class="linkNoStyle"> 
+                <div class="sidebar-link-element" id="users-element">
+                    <div class="sidebar-link-element-icon">
+                        <img src="/files/userslist.png" alt="Users List" />
+                    </div>
+                    <div class="sidebar-link-element-txt">
+                        Manage Users
+                    </div>
+                </div>            
+            </a>
+        <% } %>
+
+        <a href="/dashboard/specialist/assigned/users" class="linkNoStyle"> 
+            <div class="sidebar-link-element" id="assigned-users-element">
                 <div class="sidebar-link-element-icon">
-                    <img src="/files/userslist.png" alt="Users List" />
+                    <img src="/files/user-icon.png" alt="Assigned Users" />
                 </div>
                 <div class="sidebar-link-element-txt">
-                    Manage Users
+                    Your Users
                 </div>
             </div>            
         </a>

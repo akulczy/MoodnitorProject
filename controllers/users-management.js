@@ -8,12 +8,25 @@ exports.getUsersListView = async (req, res) => {
     let users = [];
 
     try {
-        users = await Patient.findAll({ where: {SpecialistId: req.session.userId, CentreId: req.session.centreId }, order: [["disabled", "ASC"]] });
+        users = await Patient.findAll({ 
+            where: {
+                CentreId: req.session.centreId 
+            }, 
+            order: [
+                ["disabled", "ASC"]
+            ],
+            include: {
+                model: Centre,
+                order: [
+                    ["name", "ASC"]
+                ]
+            } 
+        });
     } catch (error) {
         console.log(error);
     }
 
-    res.render("specialist/users-list", {
+    res.render("administrative/users-list", {
         title: "Users List",
         isAdmin: req.session.isAdmin,
         isSpecialist: req.session.isSpecialist,
@@ -174,4 +187,26 @@ exports.editUserDetails = async (req, res) => {
 
     // Redirect to the Users List
     return res.redirect("/dashboard/specialist/users/list");
+}
+
+exports.getAssignedUsersListView = async (req, res) => {
+    let users = [];
+
+    try {
+        users = await Patient.findAll({ where: {SpecialistId: req.session.userId, CentreId: req.session.centreId }, order: [["disabled", "ASC"]] });
+    } catch (error) {
+        console.log(error);
+    }
+
+    res.render("specialist/assigned-users", {
+        title: "Assigned Users List",
+        isAdmin: req.session.isAdmin,
+        isSpecialist: req.session.isSpecialist,
+        isSystemUser: req.session.isSystemUser,
+        isIndUser: req.session.isIndUser,
+        userName: req.session.name,
+        userSurname: req.session.surname,
+        titleToDisplay: "Assigned Users List",
+        users: users
+    });
 }

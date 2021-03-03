@@ -1,0 +1,42 @@
+<%- include("../elements/header.ejs") %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+</head>
+
+<body>
+    <%- include("../elements/sidebar-specialist.ejs") %>
+
+    <%- include("../elements/topbar-internal.ejs") %>
+<div class="main-body">
+    <div class="users-page-cont">
+        <div class="title-wrapper">
+            <div class="title-with-border">
+                <div>Manage Assigned Users</div>
+                <div class="title-line"></div>
+            </div>
+        </div>
+
+        <% for(let i = 0; i < users.length; i++) { %>
+            <% if(i%2==0) { %>
+                <div class="align-row">
+            <% } %>
+                    <div class="userContainer">
+                        <div><%- users[i].name %></div>
+                    </div>
+            <% if((i+1)%2==0 || i == ((users) - 1).length) { %>
+                </div>
+            <% } %>
+        <% } %>
+
+        
+
+    </div>
+</div>
+
+<script>
+    $("#assigned-users-element").addClass("active-sidebar-element");
+</script>
+<script type="text/javascript" src="/scripts/administrative/manage-users.js"></script>
+</body>
+
+</html>
