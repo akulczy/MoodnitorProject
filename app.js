@@ -28,6 +28,7 @@ const Centre = require("./models/centre");
 const Specialist = require("./models/specialist");
 const SystemUser = require("./models/systemuser");
 const VerificationString = require("./models/verification");
+const SpecialistComment = require("./models/specialistcomment");
 
 const UserEntry = require("./models/userentry");
 const UserEntryFile = require("./models/userentryfile");
@@ -77,6 +78,9 @@ Specialist.belongsTo(Centre);
 SystemUser.belongsTo(Centre);
 SystemUser.belongsTo(Specialist);
 VerificationString.belongsTo(Centre);
+SpecialistComment.belongsTo(Specialist);
+SpecialistComment.belongsTo(UserEntry);
+UserEntry.hasMany(SpecialistComment);
 
 IndividualEntry.belongsTo(IndividualUser);
 IndividualEntryFile.belongsTo(IndividualEntry);

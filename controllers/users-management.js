@@ -55,14 +55,24 @@ exports.getAddUserView = (req, res) => {
 exports.addUser = async (req, res) => {
     let user = null;
     let specialist = null;
+    let privilege = req.body.privileges;
 
     // Step 1 - Check if user with the given email address exists already
-    try {
-        user = await Patient.findOne({where: {email: req.body.email}});
-    } catch (error) {
-        console.log(error);
-        return res.sendStatus(400);
-    }
+    if(privilege == "Patient") {
+        try {
+            user = await Patient.findOne({where: {email: req.body.email}});
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    } else {
+        try {
+            user = await Specialist.findOne({where: {email: req.body.email}});
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    }    
 
     // If the user exists - return status code 403
     if(user != null) {return res.sendStatus(403)};
@@ -81,19 +91,36 @@ exports.addUser = async (req, res) => {
     let hashedPass = await bcrypt.hash(req.body.password, 14);
 
     // Step 4 - create user
-    try {
-        user = await Patient.create({
-            name: req.body.name,
-            surname: req.body.surname,
-            email: req.body.email,
-            password: hashedPass,
-            telephone: req.body.telephone,
-            SpecialistId: req.session.userId,
-            CentreId: specialist.CentreId
-        });
-    } catch (error) {
-        console.log(error);
-        return res.sendStatus(400);
+    if(privilege == "Patient") {
+        try {
+            user = await Patient.create({
+                name: req.body.name,
+                surname: req.body.surname,
+                email: req.body.email,
+                password: hashedPass,
+                telephone: req.body.telephone,
+                SpecialistId: req.session.userId,
+                CentreId: specialist.CentreId
+            });
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    } else {
+        try {
+            user = await Specialist.create({
+                name: req.body.name,
+                surname: req.body.surname,
+                email: req.body.email,
+                password: hashedPass,
+                telephone: req.body.telephone,
+                isAdmin: (privilege == "Administrator" ? true : false),
+                CentreId: specialist.CentreId
+            });
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
     }
 
     if(user == null) {return res.sendStatus(400); }

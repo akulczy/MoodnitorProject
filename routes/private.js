@@ -16,7 +16,16 @@ router.use("/user", userRoutes);
 // GET - logout
 router.get("/logout", dashboard.logoutUser);
 
+// GET - account page
+router.get("/account", dashboard.getAccountPage);
+
+// GET - update account page
+router.get("/account/update", dashboard.getUpdateAccountPage);
+
+// POST - update account
+router.post("/account/update", dashboard.updateUserDetails);
+
 // USE - dashboard
-router.use("/", dashboard.getSpecialistDashboard);
+router.use("/", dashboard.getDashboard);
 
 module.exports = router;

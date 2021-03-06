@@ -10,7 +10,8 @@
     <div>
         <div class="title-wrapper">
             <div class="title-with-border">
-                <div>Review Assigned Users' Entries</div>
+                <div>Entries of <%- user.name + " " + user.surname %></div>
+                <input type="hidden" value="<%- user.id %>" id="uid" />
                 <div class="title-line"></div>
             </div>
         </div>
@@ -63,25 +64,22 @@
         </div>
 
         <div class="table-cont">
-            <table class="table table-hover">
-                <thead class="thead-dark">
+            <table class="table table-hover" id="ind-entries-table">
+                <thead class="custom-thead">
                   <tr>
                     <th scope="col"><strong>#</strong></th>
-                    <th scope="col">User</th>
                     <th scope="col">Date</th>
                     <th scope="col">Title</th>
                     <th scope="col">Summary</th>
-                    <th scope="col">Notes</th>
-                    <th scope="col" style="width: 15%">Your Comments</th>
+                    <th scope="col">User's Notes</th>
+                    <th scope="col" style="width: 15%;">Your Comments</th>
                     <th scope="col" style="width:10%">Download</th>
                   </tr>
                 </thead>
                 <tbody id="entries-body">
                     <% for(let i=0; i < entries.length; i++) { %>
-                        <tr>
-                            <input type="hidden" class="uid" value="<%= entries[i].SystemUser.id %>" />
+                        <tr class="custom-row">
                             <td class="e-no"><strong><%= eval(i+1) %></strong></td>
-                            <td class="e-user"><%= entries[i].SystemUser.name %> <%= entries[i].SystemUser.surname %></td>
                             <td class="e-date"><%= entries[i].date %></td>
                             <% if(entries[i].title.length > 18) { %>
                                 <td class="e-title"><%= (entries[i].title).slice(0, 17) %>...</td>
@@ -89,7 +87,9 @@
                                 <td class="e-title"><%= entries[i].title %></td>
                             <% } %>
                             <td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/<%= entries[i].id %>"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>
-                            <td class="e-notes"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/<%= entries[i].id %>"><button class="btnGradPurpleSm margin-auto">Notes</button></a></td>
+                            <td class="e-notes">                                
+                                <button class="btnGradPurpleSm margin-auto notesBtn" value="<%= entries[i].id %>">Notes</button>
+                            </td>
                             <td class="e-comments">
                                 <% if(entries[i].SpecialistComments.length != 0) { %>
                                     <button class="btnGradGreenSm margin-auto commentsBtn" value="<%= entries[i].id %>">
@@ -116,6 +116,7 @@
         </div>
     </div>
 </div>
+<div id="popup-background"></div>
 
 <script>
     $("#review-entry-element").addClass("active-sidebar-element");
@@ -123,7 +124,7 @@
 <script type="text/javascript" src="/scripts/close-popup.js"></script>
 <script type="text/javascript" src="/scripts/specialist/add-comments.js"></script>
 <script type="text/javascript" src="/scripts/specialist/display-user-notes.js"></script>
-<script type="text/javascript" src="/scripts/specialist/review-entries-specialist.js"></script>
+<script type="text/javascript" src="/scripts/specialist/review-ind-user-entries.js"></script>
 </body>
 
 </html>

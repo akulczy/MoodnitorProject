@@ -11,7 +11,7 @@
     <div class="users-page-cont">
         <div class="title-wrapper">
             <div class="title-with-border">
-                <div>Manage Users</div>
+                <div>Manage Users of Your Centre</div>
                 <div class="title-line"></div>
             </div>
         </div>
@@ -30,7 +30,6 @@
                 <thead class="thead-dark">
                   <tr>
                     <th scope="col"><strong>#</strong></th>
-                    <th scope="col">Centre</th>
                     <th scope="col">Name</th>
                     <th scope="col">Surname</th>
                     <th scope="col">E-Mail</th>
@@ -47,7 +46,6 @@
                             <tr>
                         <% } %>
                             <td><strong><%= eval(i+1) %></strong></td>
-                            <td><%= users[i].Centre.name %></td>
                             <td><%= users[i].name %></td>
                             <td><%= users[i].surname %></td>
                             <td><%= users[i].email %></td>

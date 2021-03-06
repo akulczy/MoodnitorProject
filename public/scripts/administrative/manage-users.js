@@ -21,6 +21,7 @@ const addUser = () => {
         statusCode: {
             200: () => {
                 $("input").val("");
+                $("#inlineRadio1").prop("checked", true);
                 alert("User added successfully.");
             },
             400: () => {

@@ -1,0 +1,108 @@
+<%- include("../elements/header.ejs") %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+</head>
+
+<body>
+    <% if(isAdmin || isSpecialist) { %>
+        <%- include("../elements/sidebar-specialist.ejs") %>
+    <% } else { %>
+        <%- include("../elements/sidebar-user.ejs") %>
+    <% } %>
+
+    <%- include("../elements/topbar-internal.ejs") %>
+    <div class="main-body">
+        <div class="title-wrapper">
+            <div class="title-with-border">
+                <div>Update Your Account</div>
+                <div class="title-line"></div>
+            </div>
+        </div>
+
+        <form method="POST" action="/dashboard/account/update">
+            <div class="profile-container-align">
+                <div class="profile-container">
+
+                    <% if(isAdmin || isIndUser) { %>
+                        <div class="profile-container-user-part profile-container-part">
+                            <div class="user-icon profile-container-icon">
+                                <img alt="user" src="/files/user-icon-big.png" />
+                            </div>
+
+                            <div class="profile-container-column profile-container-title">
+                                Your Details
+                            </div>
+            
+                            <div class="profile-container-column">
+                                <label for="userName">Name:</label>
+                                <input type="text" class="form-control" id="userName" name="userName" value="<%- user.name %>" required>
+                            </div>
+            
+                            <div class="profile-container-column">
+                                <label for="userSurname">Surname:</label>
+                                <input type="text" class="form-control" id="userSurname" name="userSurname" value="<%- user.surname %>" required>
+                            </div>
+            
+                            <div class="profile-container-column">
+                                <label for="userEmail">Email:</label>
+                                <input type="email" class="form-control" id="userEmail" name="userEmail" value="<%- user.email %>" required>
+                            </div>
+
+                            <div class="profile-container-column">
+                                <label for="userPhone">Phone Number:</label>
+                                <input type="text" class="form-control" id="userPhone" name="userPhone" value="<%- user.telephone %>" required>
+                            </div>
+
+                            <div class="profile-container-column">
+                                <label for="userPassword">Password:</label>
+                                <input type="password" class="form-control" id="userPassword" name="userPassword">
+                                <small>Leave this field blank if you do not wish to change your password.</small>
+                            </div>
+                        </div>    
+                    <% } %>
+
+                    <% if(isSystemUser || (isSpecialist && !isAdmin)) { %>
+                        <div class="profile-container-user-part profile-container-part">
+                            <div class="user-icon profile-container-icon">
+                                <img alt="user" src="/files/user-icon-big.png" />
+                            </div>
+
+                            <div class="profile-container-column profile-container-title">
+                                Your Details
+                            </div>
+            
+                            <div class="profile-container-column">
+                                <label for="userEmail">Email:</label>
+                                <input type="email" class="form-control" id="userEmail" name="userEmail" value="<%- user.email %>" required>
+                            </div>
+
+                            <div class="profile-container-column">
+                                <label for="userPhone">Phone Number:</label>
+                                <input type="text" class="form-control" id="userPhone" name="userPhone" value="<%- user.telephone %>" required>
+                            </div>
+
+                            <div class="profile-container-column">
+                                <label for="userPassword">Password:</label>
+                                <input type="password" class="form-control" id="userPassword" name="userPassword">
+                                <small>Leave this field blank if you do not wish to change your password.</small>
+                            </div>
+                        </div>    
+                    <% } %>                         
+
+                    <div class="profile-container-button">
+                        <a href="/dashboard/account/update" class="linkNoStyle">
+                            <button type="submit" class="btnGradBlue">Update</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+<script>
+    $(".page-topbar-user").addClass("topbar-active-element");
+</script>
+<script type="text/javascript" src="/scripts/specialist/assigned-users.js"></script>
+</body>
+
+</html>

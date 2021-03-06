@@ -1,0 +1,110 @@
+<%- include("../elements/header.ejs") %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+</head>
+
+<body>
+    <% if(isAdmin || isSpecialist) { %>
+        <%- include("../elements/sidebar-specialist.ejs") %>
+    <% } else { %>
+        <%- include("../elements/sidebar-user.ejs") %>
+    <% } %>
+
+    <%- include("../elements/topbar-internal.ejs") %>
+    <div class="main-body">
+        <div class="title-wrapper">
+            <div class="title-with-border">
+                <div>Your Account</div>
+                <div class="title-line"></div>
+            </div>
+        </div>
+
+        <div class="profile-container-align">
+            <div class="profile-container">
+                <div class="profile-container-user-part profile-container-part">
+                    <div class="user-icon profile-container-icon">
+                        <img alt="user" src="/files/user-icon-big.png" />
+                    </div>
+
+                    <div class="profile-container-column profile-container-title">
+                        Your Details
+                    </div>
+    
+                    <div class="profile-container-column">
+                        Name: <span class="user-txt"><%- user.name %></span>
+                    </div>
+    
+                    <div class="profile-container-column">
+                        Surname: <span class="user-txt"><%- user.surname %></span>
+                    </div>
+    
+                    <div class="profile-container-column">
+                        Email: <span class="user-txt"><%- user.email %></span>
+                    </div>
+
+                    <div class="profile-container-column">
+                        Telephone: <span class="user-txt"><%- user.telephone %></span>
+                    </div>
+                </div>    
+                
+                <% if(isSpecialist || isAdmin || isSystemUser) { %>
+                    <div class="profile-container-centre-part profile-container-part">
+
+                        <div class="profile-container-column profile-container-title title-alignment">
+                            Your Centre
+                        </div>
+        
+                        <div class="profile-container-column">
+                            Name: <span class="user-txt"><%- user.Centre.name %></span>
+                        </div>
+        
+                        <div class="profile-container-column">
+                            Contact: <span class="user-txt"><%- user.Centre.email %></span>
+                        </div>
+
+                    </div> 
+                <% } %>   
+
+                <% if(isSystemUser) { %>
+                    <div class="profile-container-centre-part profile-container-part">
+
+                        <div class="profile-container-column profile-container-title title-alignment">
+                            Assigned Specialist
+                        </div>
+        
+                        <div class="profile-container-column">
+                            Name: <span class="user-txt"><%- user.Specialist.name %></span>
+                        </div>
+
+                        <div class="profile-container-column">
+                            Surname: <span class="user-txt"><%- user.Specialist.surname %></span>
+                        </div>
+        
+                        <div class="profile-container-column">
+                            Email: <span class="user-txt"><%- user.Specialist.email %></span>
+                        </div>
+
+                        <div class="profile-container-column">
+                            Telephone: <span class="user-txt"><%- user.Specialist.telephone %></span>
+                        </div>
+
+                    </div> 
+                <% } %> 
+
+                <div class="profile-container-button">
+                    <a href="/dashboard/account/update" class="linkNoStyle">
+                        <button class="btnGradPurpleSm">Update Your Details</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    $(".page-topbar-user").addClass("topbar-active-element");
+</script>
+<script type="text/javascript" src="/scripts/specialist/assigned-users.js"></script>
+</body>
+
+</html>

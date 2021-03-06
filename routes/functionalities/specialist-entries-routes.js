@@ -20,4 +20,37 @@ let upload = multer({ storage: storage });
 // GET - page where entries can be reviewed
 router.get("/review", entries.getReviewEntriesPageSpecialist);
 
+// GET - page where individual users entries can be reviewed
+router.get("/review/:userId", entries.getReviewEntriesOfIndUserPage);
+
+// GET - get notes of an entry
+router.get("/ind/notes", entries.fetchNotesOfSystemUserEntry);
+
+// POST - add new specialist comment to an entry
+router.post("/comments/add", entries.addNewComment);
+
+// GET - get comments regarding an entry
+router.get("/comments", entries.getComments);
+
+// PUT - update comment
+router.put("/comments/update", entries.updateComment);
+
+// POST - browse entries of an individual user by date
+router.post("/ind/browse/date", entries.browseIndByDate);
+
+// POST - browse entries of an individual user by date range
+router.post("/ind/browse/date/range", entries.browseIndByDateRange);
+
+// POST - browse entries of an individual user by title
+router.post("/ind/browse/title", entries.browseIndByTitle);
+
+// POST - browse entries of an individual user by date
+router.post("/browse/date", entries.browseByDate);
+
+// POST - browse entries of an individual user by date range
+router.post("/browse/date/range", entries.browseByDateRange);
+
+// POST - browse entries of an individual user by title
+router.post("/browse/title", entries.browseByTitle);
+
 module.exports = router;

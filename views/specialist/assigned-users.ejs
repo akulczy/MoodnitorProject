@@ -8,7 +8,7 @@
 
     <%- include("../elements/topbar-internal.ejs") %>
 <div class="main-body">
-    <div class="users-page-cont">
+    <div class="users-page-cont assigned-users">
         <div class="title-wrapper">
             <div class="title-with-border">
                 <div>Manage Assigned Users</div>
@@ -16,27 +16,69 @@
             </div>
         </div>
 
+        <div class="browsing-cont">
+            <div class="sub-browse">
+                <div class="browse-label">User Name:</div>
+                <div class="sub-browse-align">
+                    <input type="text" class="form-control" name="name-search" id="name-search" placeholder="User name or surname..." />
+                    <button type="button" class="btn btn-sm btn-secondary" id="name-search-btn">
+                        <img src="/files/magni-glass-icon.png" alt="search" />
+                    </button>
+                </div>
+            </div>
+
+            <div class="browse-reset">
+                <button type="button" class="btn btn-sm btn-dark" id="reset-btn">
+                    <img src="/files/reset-icon.png" alt="search" />
+                </button>
+            </div>
+        </div>
+
+        <div id="all-users">
         <% for(let i = 0; i < users.length; i++) { %>
             <% if(i%2==0) { %>
-                <div class="align-row">
+                <div class="grid-container">
             <% } %>
-                    <div class="userContainer">
-                        <div><%- users[i].name %></div>
+                    <div class="grid-item">
+                        <% if(users[i].disabled) { %>
+                            <div class="userContainer cont-disabled">
+                        <% } else { %>
+                            <div class="userContainer">
+                        <% } %>
+                            <div class="user-icon">
+                                <img alt="user" src="/files/user-icon-big.png" />
+                            </div>
+                            <div class="user-name"><%- users[i].name + " " + users[i].surname %></div>
+                            <div class="user-contact">
+                                <div>Email: <span class="user-txt"><%- users[i].email %></span></div>
+                                <div>Telephone: <span class="user-txt"><a class="clickable" data-toggle="popover" data-content="<%- users[i].telephone %>">Read »</a></span></div>
+                            </div>
+                            <div class="user-disabled">
+                                Active: <span class="user-txt"><%- users[i].disabled ? "&#10539;" : "&#10003;" %></span>
+                            </div>
+                            <div class="user-activeness">
+                                <div>Account created: <span class="user-txt"><%- (users[i].createdAt.toISOString()).slice(0, 10) %></span></div>
+                                <div>Last active: <span class="user-txt">...</span></div>
+                            </div>
+                            <div class="user-entries-btn">
+                                <a href="/dashboard/specialist/entries/review/<%- users[i].id %>" class="linkNoStyle">
+                                    <button class="btnGradPurpleSm margin-auto">Review Entries</button>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-            <% if((i+1)%2==0 || i == ((users) - 1).length) { %>
+            <% if((i+1)%2==0 || i == ((users.length) - 1)) { %>
                 </div>
             <% } %>
         <% } %>
-
-        
-
+        </div>     
     </div>
 </div>
 
 <script>
     $("#assigned-users-element").addClass("active-sidebar-element");
 </script>
-<script type="text/javascript" src="/scripts/administrative/manage-users.js"></script>
+<script type="text/javascript" src="/scripts/specialist/assigned-users.js"></script>
 </body>
 
 </html>

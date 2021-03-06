@@ -28,6 +28,10 @@ const Specialist = sequelize.define("Specialist", {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         default: 0
+    },
+    telephone: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 });
 
