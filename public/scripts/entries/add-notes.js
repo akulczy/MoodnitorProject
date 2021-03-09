@@ -1,4 +1,4 @@
-const addNewCommentsToEntrySpecialist = (event, userId) => {
+const addNewNotesToEntry = (event) => {
     let id = null;
     try {
         id = parseInt($(event.target).siblings(".eid").val());
@@ -8,10 +8,10 @@ const addNewCommentsToEntrySpecialist = (event, userId) => {
 
     if(id === null) { return alert("An error occurred when processing your request. Please try again."); }
 
-    $.get( "/templates/entries/comments-box.ejs", commentswindow => {
-        let cwin = $(commentswindow);
+    $.get( "/templates/entries/add-notes-box.ejs", noteswindow => {
+        let nwin = $(noteswindow);
 
-        $("body").append(cwin);
+        $("body").append(nwin);
         $("#popup-background").css("display", "unset");   
         
         $("#popup-background").click((event) => {
@@ -22,59 +22,59 @@ const addNewCommentsToEntrySpecialist = (event, userId) => {
             closePopUpOnButtonClick();
         });
 
-        $("#save-comment-button").click(() => {
-            if(!($("#save-comment-button").hasClass("activeBtn"))){
-                $("#save-comment-button").append('<div class="spinner-border spinner-border-sm btn-spinner" role="status"><span class="sr-only">Loading...</span></div>');
-                $("#save-comment-button").addClass("activeBtn");
+        $("#save-notes-button").click(() => {
+            if(!($("#save-notes-button").hasClass("activeBtn"))){
+                $("#save-notes-button").append('<div class="spinner-border spinner-border-sm btn-spinner" role="status"><span class="sr-only">Loading...</span></div>');
+                $("#save-notes-button").addClass("activeBtn");
             }
 
-            let commentVal = $("#comment-content").val();
+            let notesVal = $("#notes-content").val();
 
-            if(commentVal.replace(/\s+/g, "") != "") {
+            if(notesVal.replace(/\s+/g, "") != "") {
                 $.ajax({
-                    url: "/dashboard/specialist/entries/comments/add",
-                    method: "POST",
-                    data: {id: id, userId: userId, comment: commentVal},
+                    url: "/dashboard/user/entries/add/notes",
+                    method: "PATCH",
+                    data: {entryId: id, notes: notesVal},
                     statusCode: {
                         200: data => {
-                            let comment = data.comment;
-                            $("#comment-content").val(comment);
+                            let notes = data.notes;
+                            $("#notes-content").val(notes);
 
                             $(".btn-spinner").remove();
-                            $("#save-comment-button").removeClass("activeBtn"); 
+                            $("#save-notes-button").removeClass("activeBtn"); 
 
                             let closestTr = $(event.target).closest("tr");
-                            $(closestTr).find(".e-comments").empty();
-                            $(closestTr).find(".e-comments").append(`<button class="btnGradGreenSm margin-auto commentsBtn" value="${id}">Comments</button>`);
+                            $(closestTr).find(".e-notes").empty();
+                            $(closestTr).find(".e-notes").append(`<button class="btnGradPurpleSm margin-auto notesBtn" value="${id}">Notes</button>`);
 
-                            $(closestTr).find(".commentsBtn").click((event) => {
-                                updateCommentOfEntrySpecialist(event, userId);
+                            $(closestTr).find(".notesBtn").click((event) => {
+                                updateNotesOfEntry(event);
                             });
                             
-                            alert("Comment added successfully.");                      
+                            alert("Your notes have been added successfully.");                      
                         },
                         404: () => {
                             alert("Entry could not be retrieved. Please try again.");
                             $(".btn-spinner").remove();
-                            $("#save-comment-button").removeClass("activeBtn");
+                            $("#save-notes-button").removeClass("activeBtn");
                         },
                         400: () => {
                             alert("An error occurred while processing your request. Please try again.");
                             $(".btn-spinner").remove();
-                            $("#save-comment-button").removeClass("activeBtn");
+                            $("#save-notes-button").removeClass("activeBtn");
                         }
                     }
                 });
             } else {
-                alert("Please fill in the comments field before submitting.");
+                alert("Please fill in the notes field before submitting.");
                 $(".btn-spinner").remove();
-                $("#save-comment-button").removeClass("activeBtn"); 
+                $("#save-notes-button").removeClass("activeBtn"); 
             }            
         })
     });
 }
 
-const updateCommentOfEntrySpecialist = (event, userId) => {
+const updateNotesOfEntry = (event) => {
     let id = null;
     try {
         id = parseInt($(event.target).val());
@@ -90,31 +90,23 @@ const updateCommentOfEntrySpecialist = (event, userId) => {
     }
     
     $.ajax({
-        url: "/dashboard/specialist/entries/comments",
+        url: "/dashboard/user/entries/get/notes",
         method: "GET",
-        data: {id: id, userId: userId},
+        data: {entryId: id},
         statusCode: {
             200: data => {
-                let comment = data.comments;
-                let comId;
+                let notes = data.notes;
                 
-                if(comment.length > 0) {
-                    for(let com of comment) {
-                        comment = com.comment;
-                        comId = com.id;
-                    }
-                }
-
-                $.get( "/templates/entries/comments-box.ejs", commentswindow => {
-                    let cwin = $(commentswindow);
+                $.get( "/templates/entries/add-notes-box.ejs", noteswindow => {
+                    let nwin = $(noteswindow);
             
-                    $("body").append(cwin);
+                    $("body").append(nwin);
                     $(".btn-spinner").remove();
                     $(event.target).removeClass("activeBtn");
                     $("#popup-background").css("display", "unset");   
 
-                    $("#comment-content").val(comment);
-                    $("#popup-box-title").text("Update Your Comment");
+                    $("#notes-content").val(notes);
+                    $("#popup-box-title").text("Update Your Notes");
                     
                     $("#popup-background").click((event) => {
                         closePopUpOnBackgroundClick(event);
@@ -124,43 +116,43 @@ const updateCommentOfEntrySpecialist = (event, userId) => {
                         closePopUpOnButtonClick();
                     });
 
-                    $("#save-comment-button").click(() => {
-                        if(!($("#save-comment-button").hasClass("activeBtn"))){
-                            $("#save-comment-button").append('<div class="spinner-border spinner-border-sm btn-spinner" role="status"><span class="sr-only">Loading...</span></div>');
-                            $("#save-comment-button").addClass("activeBtn");
+                    $("#save-notes-button").click(() => {
+                        if(!($("#save-notes-button").hasClass("activeBtn"))){
+                            $("#save-notes-button").append('<div class="spinner-border spinner-border-sm btn-spinner" role="status"><span class="sr-only">Loading...</span></div>');
+                            $("#save-notes-button").addClass("activeBtn");
                         }
             
-                        let commentVal = $("#comment-content").val();
+                        let notesVal = $("#notes-content").val();
             
-                        if(commentVal.replace(/\s+/g, "") != "") {
+                        if(notesVal.replace(/\s+/g, "") != "") {
                             $.ajax({
-                                url: "/dashboard/specialist/entries/comments/update",
-                                method: "PUT",
-                                data: {EntryId: id, comment: commentVal, comId: comId},
+                                url: "/dashboard/user/entries/add/notes",
+                                method: "PATCH",
+                                data: {entryId: id, notes: notesVal},
                                 statusCode: {
                                     200: data => {
-                                        let comment = data.comment;
-                                        $("#comment-content").val(comment);
+                                        let notes = data.notes;
+                                        $("#notes-content").val(notes);
             
                                         $(".btn-spinner").remove();
-                                        $("#save-comment-button").removeClass("activeBtn"); 
+                                        $("#save-notes-button").removeClass("activeBtn"); 
             
-                                        alert("Comment updated successfully.");                      
+                                        alert("Your notes have been updated successfully.");                      
                                     },
                                     404: () => {
-                                        alert("Comment could not be updated. Please try again.");
+                                        alert("Your notes could not be updated. Please try again.");
                                         $(".btn-spinner").remove();
-                                        $("#save-comment-button").removeClass("activeBtn");
+                                        $(event.target).removeClass("activeBtn");
                                     },
                                     400: () => {
                                         alert("An error occurred while processing your request. Please try again.");
                                         $(".btn-spinner").remove();
-                                        $("#save-comment-button").removeClass("activeBtn");
+                                        $(event.target).removeClass("activeBtn");
                                     }
                                 }
                             });
                         } else {
-                            alert("Please fill in the comments field before submitting.");
+                            alert("Please fill in the notes field before submitting.");
                             $(".btn-spinner").remove();
                             $("#save-comment-button").removeClass("activeBtn"); 
                         }

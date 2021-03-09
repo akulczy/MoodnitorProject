@@ -502,7 +502,7 @@ exports.addUserNotes = async (req, res) => {
         });
     }
 
-    if(entry == null) { return res.sendStatus(400); }
+    if(entry == null) { return res.sendStatus(404); }
 
     try {
          entry.usernotes = req.body.notes;
@@ -512,5 +512,30 @@ exports.addUserNotes = async (req, res) => {
         res.sendStatus(400);
     }
 
-    return res.sendStatus(200);
+    return res.status(200).send({notes: entry.usernotes});
+}
+
+// Fetch user's notes assigned to a given entry
+exports.fetchUserNotes = async (req, res) => {
+    let entry = null;
+
+    if(req.session.isIndUser) {
+        entry = await IndEntry.findOne({where: {id: req.query.entryId, IndividualUserId: req.session.userId}});
+    } else if(req.session.isSystemUser) {
+        entry = await UserEntry.findOne({
+            where: { 
+                id: req.query.entryId, 
+                SystemUserId: req.session.userId 
+            },
+            include: [{ 
+                model: SystemUser, 
+                where: { id: req.session.userId, CentreId: req.session.centreId },
+                attributes: ["id", "CentreId"] 
+            }]
+        });
+    }
+
+    if(entry == null) { return res.sendStatus(404); }
+
+    return res.status(200).send({notes: entry.usernotes});
 }

@@ -5,12 +5,18 @@ const addUser = () => {
         return alert("Please fill in all the fields.");
     }
 
+    if(($("#inlineRadio1").prop("checked") == true) && ($("#select-specialist").val() == 0)) {
+        return alert("Please choose a Specialist to which the new user shall be assigned.");
+    }
+
     let userToAdd = {
         name: $("#userName").val(),
         surname: $("#userSurname").val(),
         email: $("#userEmail").val(),
         telephone: $("#userPhone").val(),
-        password: $("#userPassword").val()
+        password: $("#userPassword").val(),
+        privileges: $("input[name=privileges]:checked").val(),
+        SpecialistId: $("#select-specialist").val()
     };
 
     $.ajax({
@@ -102,5 +108,14 @@ const disableUser = (event) => {
 
 $(".disableBtn").click((event) => {
     disableUser(event);
+});
+
+// Displaying a drop down list depending on the radio button
+$(".form-check").change(() => {
+    if($("#inlineRadio1").prop("checked") == false) {
+        $("#dropDownRow").css("display", "none");
+    } else {
+        $("#dropDownRow").css("display", "unset");
+    }
 });
 

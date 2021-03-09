@@ -13,14 +13,18 @@ exports.getUsersListView = async (req, res) => {
                 CentreId: req.session.centreId 
             }, 
             order: [
-                ["disabled", "ASC"]
+                ["disabled", "ASC"], ["name", "DESC"]
             ],
-            include: {
-                model: Centre,
-                order: [
-                    ["name", "ASC"]
-                ]
-            } 
+            include: [
+                {
+                    model: Centre,
+                    where: {id: req.session.centreId}
+                },
+                {
+                    model: Specialist,
+                    attributes: ["id", "name", "surname"]
+                }
+            ] 
         });
     } catch (error) {
         console.log(error);
@@ -39,7 +43,52 @@ exports.getUsersListView = async (req, res) => {
     });
 }
 
-exports.getAddUserView = (req, res) => {
+exports.getSpecialistsListView = async (req, res) => {
+    let users = [];
+
+    try {
+        users = await Specialist.findAll({ 
+            where: {
+                CentreId: req.session.centreId 
+            }, 
+            order: [
+                ["disabled", "ASC"], ["isAdmin", "DESC"], ["name", "DESC"]
+            ],
+            include: [
+                {
+                    model: Centre,
+                    where: {id: req.session.centreId},
+                    required: true
+                }
+            ] 
+        });
+    } catch (error) {
+        console.log(error);
+    }
+
+    res.render("administrative/specialists-list", {
+        title: "Users List",
+        isAdmin: req.session.isAdmin,
+        isSpecialist: req.session.isSpecialist,
+        isSystemUser: req.session.isSystemUser,
+        isIndUser: req.session.isIndUser,
+        userName: req.session.name,
+        userSurname: req.session.surname,
+        titleToDisplay: "Users List",
+        users: users
+    });
+}
+
+exports.getAddUserView = async (req, res) => {
+    let specialists = [];
+
+    try {
+        specialists = await Specialist.findAll({where: {CentreId: req.session.centreId}});
+    } catch(error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
     res.render("administrative/add-user", {
         title: "Add New User",
         isAdmin: req.session.isAdmin,
@@ -48,7 +97,8 @@ exports.getAddUserView = (req, res) => {
         isIndUser: req.session.isIndUser,
         userName: req.session.name,
         userSurname: req.session.surname,
-        titleToDisplay: "Add New User"
+        titleToDisplay: "Add New User",
+        specialists: specialists
     });
 }
 
@@ -99,7 +149,7 @@ exports.addUser = async (req, res) => {
                 email: req.body.email,
                 password: hashedPass,
                 telephone: req.body.telephone,
-                SpecialistId: req.session.userId,
+                SpecialistId: req.body.SpecialistId,
                 CentreId: specialist.CentreId
             });
         } catch (error) {
@@ -162,11 +212,28 @@ exports.disableUser = async (req, res) => {
 
 exports.getEditUserPage = async (req, res) => {
     let user = null;
+    let specialists = [];
 
     // Retrieving the given user from the database
     try {
-        user = await Patient.findOne({where: { id: req.params.userId, CentreId: req.session.centreId }});
+        user = await Patient.findOne({
+            where: { 
+                id: req.params.userId, 
+                CentreId: req.session.centreId 
+            },
+            include: {
+                model: Specialist,
+                attributes: ["id", "CentreId", "name", "surname"]
+            }
+        });
     } catch (error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    try {
+        specialists = await Specialist.findAll({where: {CentreId: req.session.centreId}});
+    } catch(error) {
         console.log(error);
         return res.redirect("/dashboard");
     }
@@ -180,7 +247,8 @@ exports.getEditUserPage = async (req, res) => {
         userName: req.session.name,
         userSurname: req.session.surname,
         titleToDisplay: "Edit User's Details",
-        user: user
+        user: user,
+        specialists: specialists
     });
 }
 
@@ -206,6 +274,7 @@ exports.editUserDetails = async (req, res) => {
         user.surname = req.body.userSurname;
         user.email = req.body.userEmail;
         user.telephone = req.body.userPhone;
+        user.SpecialistId = req.body.assignSpecialist;
         await user.save();
     } catch (error) {
         console.log(error);
@@ -236,4 +305,93 @@ exports.getAssignedUsersListView = async (req, res) => {
         titleToDisplay: "Assigned Users List",
         users: users
     });
+}
+
+exports.disableSpecialist = async (req, res) => {
+    let user = null;
+    let disabled = false;
+
+    // Retrieving the given user from the database
+    try {
+        user = await Specialist.findOne({where: { id: req.body.userId, CentreId: req.session.centreId }});
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+    if(user == null) { return res.sendStatus(400); }
+
+    // Set the user as disabled or enabled
+    try {
+        if(user.disabled) {
+            user.disabled = false;
+        } else {
+            user.disabled = true;
+            disabled = true;
+        }
+
+        await user.save();
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+    return res.status(200).send({disabled: disabled});
+}
+
+exports.getEditSpecialistPage = async (req, res) => {
+    let user = null;
+
+    // Retrieving the given user from the database
+    try {
+        user = await Specialist.findOne({where: { id: req.params.userId, CentreId: req.session.centreId }});
+    } catch (error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    res.render("administrative/edit-specialist", {
+        title: "Edit User's Details",
+        isAdmin: req.session.isAdmin,
+        isSpecialist: req.session.isSpecialist,
+        isSystemUser: req.session.isSystemUser,
+        isIndUser: req.session.isIndUser,
+        userName: req.session.name,
+        userSurname: req.session.surname,
+        titleToDisplay: "Edit User's Details",
+        user: user
+    });
+}
+
+exports.editSpecialistDetails = async (req, res) => {
+    let user = null;
+
+    // Retrieving the given user from the database
+    try {
+        user = await Specialist.findOne({where: { id: req.body.uId, CentreId: req.session.centreId }});
+    } catch (error) {
+        console.log(error);
+        return res.redirect("/dashboard/specialist/users/list/specialists");
+    }
+
+    // Checking if the fields were not left empty or filled with space characters only
+    if(((req.body.userName).replace(/ /g, '') == "") || ((req.body.userName).replace(/ /g, '') == "") || ((req.body.userName).replace(/ /g, '') == "") || ((req.body.userName).replace(/ /g, '') == "")) {
+        return res.redirect(`/dashboard/specialist/users/edit/spec/${user.id}`);
+    }
+
+    // Updating user's details
+    try {
+        user.name = req.body.userName;
+        user.surname = req.body.userSurname;
+        user.email = req.body.userEmail;
+        user.telephone = req.body.userPhone;
+        user.isAdmin = (req.body.adminCheck == "1" ? true : false);
+        await user.save();
+    } catch (error) {
+        console.log(error);
+        return res.redirect(`/dashboard/specialist/users/edit/spec/${user.id}`);
+    }
+
+    // Redirect to the Users List
+    return res.redirect("/dashboard/specialist/users/list/specialists");
 }

@@ -17,7 +17,7 @@
 
         <div class="add-user-wrapper" style="margin-top: 2rem;">
             <div class="add-user-container edit-user-container container-shadow">
-                <form method="POST" action="/dashboard/specialist/users/update">
+                <form method="POST" action="/dashboard/specialist/users/spec/update">
                     <input type="hidden" name="uId" value="<%= user.id %>" />
                     <div class="row">
                         <div class="col-lg-12">
@@ -43,30 +43,14 @@
                             <input type="number" class="form-control" id="userPhone" name="userPhone" value="<%= user.telephone %>" required>
                         </div>
                     </div>
-                    <div class="row" >
-                        <div class="col-lg-6" id="dropDownRow">
-                            <label class="form-check-label" for="assign-specialist">Assigned to:</label>
-                            <select class="custom-select" name="assignSpecialist" id="assign-specialist">
-                                <% for(let specialist of specialists) { %>
-                                    <% if(specialist.id == user.Specialist.id) { %>
-                                        <option value="<%- specialist.id %>" selected><%- specialist.name + " " + specialist.surname %></option>
-                                    <% } else { %>
-                                        <option value="<%- specialist.id %>"><%- specialist.name + " " + specialist.surname %></option>
-                                    <% } %>
-                                <% } %>
-                            </select>
+                    <div class="row">
+                        <div class="col" style="margin-left: 1.5rem;">
+                            <input class="form-check-input" type="checkbox" value="1" id="adminCheck" name="adminCheck">
+                            <label class="form-check-label" for="adminCheck">
+                                Add Administrator's Privileges
+                            </label>
                         </div>
                     </div>
-                    <!-- <div class="row">
-                        <div class="col">
-                            <label for="userPassword">Password:</label>
-                            <input type="password" class="form-control" id="userPassword" name="userPassword" value="<%= user.name %>" required>
-                        </div>
-                        <div class="col">
-                            <label for="userPasswordRepeat">Repeat Password:</label>
-                            <input type="password" class="form-control" id="userPasswordRepeat" name="userPasswordRepeat" required>
-                        </div>
-                    </div> -->
                     <div class="row alignnextbtn">
                         <button type="submit" class="btnNoStyle btnGradBlue" id="editUserBtn">Update User</button>
                     </div>
@@ -79,7 +63,6 @@
 <script>
     $("#users-element").addClass("active-sidebar-element");
 </script>
-<script type="text/javascript" src="/scripts/administrative/manage-users.js"></script>
 </body>
 
 </html>

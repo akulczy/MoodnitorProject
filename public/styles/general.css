@@ -364,6 +364,11 @@ th, tbody {
     min-width: 4rem;
 }
 
+.btnGradDarkSmNotAllowed {
+    cursor: not-allowed !important;
+    background-image: linear-gradient(90deg,#aaacad 0,#b1b3b7 51%, #8c8c8c);
+}
+
 .margin-auto {
     margin: auto;
 }
@@ -826,12 +831,20 @@ th, tbody {
     align-items: center;
 }
 
+.choice-tab-list {
+    margin: 3rem 0 3rem 0;
+}
+
 .choice-tab-1 {
     margin-right: 0.75rem
 }
 
 .choice-tab-2 {
     margin-left: 0.75rem
+}
+
+.user-table-align {
+    padding: 0 3rem 0 3rem;
 }
 
 .btnNotClicked {
@@ -867,6 +880,37 @@ th, tbody {
     color: rgb(241, 241, 241) !important;
 }
 
+.btnNotClickedSm {
+    background-image: transparent;
+    padding: 3px 15px 3px 15px;
+    text-align: center;
+    transition: .5s;
+    background-size: 200% auto;
+    color: rgb(71, 72, 73) !important;
+    box-shadow: 0 0 4px rgb(97, 97, 97);
+    border-radius: 20px;
+    display: block;
+    cursor: pointer;
+}
+
+.btnClickedSm {
+    background:#2a5e85;
+    padding: 3px 15px 3px 15px;
+    text-align: center;
+    transition: .5s;
+    background-size: 200% auto;
+    color: rgb(241, 241, 241) !important;
+    box-shadow: 0 0 4px rgb(97, 97, 97);
+    border-radius: 20px;
+    display: block;
+    cursor: pointer;
+}
+
+.btnNotClickedSm:hover {
+    background:#2a5e85;
+    color: rgb(241, 241, 241) !important;
+}
+
 .add-user-wrapper {
     margin-top: 5rem;
     margin-bottom: 5rem;
@@ -879,6 +923,14 @@ th, tbody {
     padding: 1.5rem;
     width: 60rem;
     border-radius: 15px;
+}
+
+.edit-user-container .row {
+    margin-top: 1.5rem;
+}
+
+#select-specialist {
+    margin-top: 0.5rem;
 }
 
 .add-user-container .align-label {
@@ -1192,7 +1244,7 @@ th, tbody {
     transform: scale(1.1);
 }
 
-#comment-content {
+#comment-content, #notes-content {
     margin-bottom: 1.5rem;
 }
 

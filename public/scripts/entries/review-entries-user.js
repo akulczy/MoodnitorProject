@@ -9,13 +9,26 @@ const appendEntries = (entries) => {
             entryTitle = entry.title;
         }
 
+        let addNotesBtn = "";
+        if((entry.usernotes == "") || (entry.usernotes == null)) {
+            addNotesBtn = `<button class="addNotesBtn btnNoStyle">
+                <img src="/files/plus-icon-btn-2.png" alt="Button">
+                <input type="hidden" class="eid" value="${entry.id}" />
+            </button>
+            <input type="hidden" class="eid" value="${entry.id}" />`;
+        } else {
+            addNotesBtn = `<button class="btnGradPurpleSm margin-auto notesBtn" value="${entry.id}">Notes</button>`;
+        }
+
         $("#entries-body").append(
             '<tr>' +
                 '<td class="e-no"><strong>' + eval(i) + '</strong></td>' +
                 '<td class="e-date">' + entry.date + '</td>' +
                 '<td class="e-title">' + entryTitle + '</td>' +
                 `<td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>` +
-                `<td class="e-notes"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradPurpleSm margin-auto">Notes</button></a></td>` +
+                `<td>` +
+                addNotesBtn +
+                `</td>` +
                 '<td class="e-disable">' +
                     `<button class="btnGradDarkSm margin-auto disableBtn" value="${entry.id}">` +
                         'Archive' +
@@ -44,13 +57,26 @@ const appendDisabledEntries = (entries) => {
             entryTitle = entry.title;
         }
 
+        let addNotesBtn = "";
+        if((entry.usernotes == "") || (entry.usernotes == null)) {
+            addNotesBtn = `<button class="addNotesBtn btnNoStyle">
+                <img src="/files/plus-icon-btn-2.png" alt="Button">
+                <input type="hidden" class="eid" value="${entry.id}" />
+            </button>
+            <input type="hidden" class="eid" value="${entry.id}" />`;
+        } else {
+            addNotesBtn = `<button class="btnGradPurpleSm margin-auto notesBtn" value="${entry.id}">Notes</button>`;
+        }
+
         $("#entries-body").append(
             '<tr class="disabledTr">' +
                 '<td class="e-no"><strong>' + eval(i) + '</strong></td>' +
                 '<td class="e-date">' + entry.date + '</td>' +
                 '<td class="e-title">' + entryTitle + '</td>' +
                 `<td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>` +
-                `<td class="e-notes"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradPurpleSm margin-auto">Notes</button></a></td>` +
+                `<td>` +
+                addNotesBtn +
+                `</td>` +
                 '<td class="e-disable">' +
                     `<button class="btnGradDarkSm margin-auto disableBtn" value="${entry.id}">` +
                         'Unarchive' +
@@ -144,6 +170,14 @@ $("#browse-title").click(() => {
                 $(".disableBtn").click((event) => {
                     disableEntry(event);
                 });
+
+                $(".addNotesBtn").click((event) => {
+                    addNewNotesToEntry(event);
+                });
+                
+                $(".notesBtn").click((event) => {
+                    updateNotesOfEntry(event);
+                });                
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -193,6 +227,14 @@ $("#browse-date").click(() => {
                 $(".disableBtn").click((event) => {
                     disableEntry(event);
                 });
+
+                $(".addNotesBtn").click((event) => {
+                    addNewNotesToEntry(event);
+                });
+                
+                $(".notesBtn").click((event) => {
+                    updateNotesOfEntry(event);
+                });                
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -249,6 +291,14 @@ $("#browse-range").click(() => {
                 $(".disableBtn").click((event) => {
                     disableEntry(event);
                 });
+
+                $(".addNotesBtn").click((event) => {
+                    addNewNotesToEntry(event);
+                });
+                
+                $(".notesBtn").click((event) => {
+                    updateNotesOfEntry(event);
+                });                
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -299,6 +349,14 @@ $("#browse-disabled-date").click(() => {
                 $(".disableBtn").click((event) => {
                     disableEntry(event);
                 });
+
+                $(".addNotesBtn").click((event) => {
+                    addNewNotesToEntry(event);
+                });
+                
+                $(".notesBtn").click((event) => {
+                    updateNotesOfEntry(event);
+                });                
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -319,3 +377,13 @@ $("#reset-btn").click(() => {
 
     location.reload();
 });
+
+$(".addNotesBtn").click((event) => {
+    addNewNotesToEntry(event);
+});
+
+$(".notesBtn").click((event) => {
+    updateNotesOfEntry(event);
+});
+
+

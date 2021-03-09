@@ -242,12 +242,12 @@ exports.updateUserDetails = async (req, res) => {
     if(user == null) { return res.redirect("/dashboard"); }
 
     try {
-        if(req.body.userName != null) { user.name = req.body.userName; req.session.name = req.body.userName };
-        if(req.body.userSurname != null) { user.surname = req.body.userSurname; req.session.surname = req.body.userSurname };
-        if(req.body.userEmail != null) { user.email = req.body.userEmail; req.session.email = req.body.userEmail };
-        if(req.body.userPhone != null) { user.telephone = req.body.userPhone };
+        if(req.body.userName != null || req.body.userName != "") { user.name = req.body.userName; req.session.name = req.body.userName };
+        if(req.body.userSurname != null || req.body.userSurname != "") { user.surname = req.body.userSurname; req.session.surname = req.body.userSurname };
+        if(req.body.userEmail != null || req.body.userEmail != "") { user.email = req.body.userEmail; req.session.email = req.body.userEmail };
+        if(req.body.userPhone != null || req.body.userPhone != "") { user.telephone = req.body.userPhone };
 
-        if(req.body.userPassword != null) {
+        if(req.body.userPassword != null || req.body.userPassword != "") {
             let hashedPass = await bcrypt.hash(req.body.userPassword, 14);
             user.password = hashedPass;
         }

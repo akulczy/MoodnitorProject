@@ -89,6 +89,17 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row" >
+                        <div class="col-lg-6" id="dropDownRow">
+                            <label class="form-check-label align-label" for="select-specialist">Assign to:</label>
+                            <select class="custom-select" id="select-specialist">
+                                <option selected value="0">Choose</option>
+                                <% for(let specialist of specialists) { %>
+                                    <option value="<%- specialist.id %>"><%- specialist.name + " " + specialist.surname %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
                     <div class="row alignnextbtn">
                         <button class="btnNoStyle btnGradBlue" id="submitBtn">Add User</button>
                     </div>

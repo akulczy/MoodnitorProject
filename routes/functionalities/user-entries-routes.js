@@ -20,7 +20,7 @@ let upload = multer({ storage: storage });
 // GET - get a page where users can add their entries
 router.get("/add", entries.getAddEntryPage);
 
-// POST - create new individual entry
+// POST - create a new entry
 router.post("/add", 
                 upload.fields([{ name: 'addfiles', maxCount: 3 }]), 
                 entries.addEntry
@@ -49,5 +49,8 @@ router.post("/archive/browse", entries.browseDisabledByDate);
 
 // PATCH - add aditional notes to an existing entry
 router.patch("/add/notes", entries.addUserNotes);
+
+// GET - fetch user notes assigned to an entry
+router.get("/get/notes", entries.fetchUserNotes);
 
 module.exports = router;

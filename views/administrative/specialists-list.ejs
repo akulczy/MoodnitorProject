@@ -27,10 +27,10 @@
 
         <div class="choice-tab choice-tab-list">
             <div class="choice-tab-1">
-                <a class="linkNoStyle btnClickedSm" href="/dashboard/specialist/users/list/">Patients</a>
+                <a class="linkNoStyle btnNotClickedSm" href="/dashboard/specialist/users/list/">Patients</a>
             </div>
             <div class="choice-tab-2">
-                <a class="linkNoStyle btnNotClickedSm" href="/dashboard/specialist/users/list/specialists">Specialists & Administrators</a>
+                <a class="linkNoStyle btnClickedSm" href="/dashboard/specialist/users/list/specialists">Specialists & Administrators</a>
             </div>
         </div>
 
@@ -43,7 +43,7 @@
                     <th scope="col">Surname</th>
                     <th scope="col">E-Mail</th>
                     <th scope="col">Phone</th>
-                    <th scope="col">Assigned to</th>
+                    <th scope="col">Role</th>
                     <th scope="col">Edit</th>
                     <th scope="col">Disable</th>
                   </tr>
@@ -60,17 +60,37 @@
                             <td><%= users[i].surname %></td>
                             <td><%= users[i].email %></td>
                             <td><a class="clickable" data-toggle="popover" data-content="<%= users[i].telephone %>">Read »</a></td>
-                            <td><%= users[i].Specialist.name + " " + users[i].Specialist.surname %></td>
-                            <td><a class="linkNoStyle" href="/dashboard/specialist/users/edit/<%= users[i].id %>"><button class="btnGradBlueSm margin-auto">Edit</button></a></td>
-                            <td>
-                                <button class="btnGradDarkSm margin-auto disableBtn" value="<%= users[i].id %>">
-                                    <% if(users[i].disabled) { %>
-                                        Enable
-                                    <% } else { %>
-                                        Disable
-                                    <% } %>
-                                </button>
-                            </td>
+                            <% if (users[i].isAdmin) { %>
+                                <td>Administrator</td>
+                            <% } else { %>
+                                <td>Specialist</td>
+                            <% } %>
+
+                            <% if (users[i].isAdmin) { %>
+                                <td>
+                                    <button class="btnGradDarkSm btnGradDarkSmNotAllowed margin-auto" value="<%= users[i].id %>">Edit</button>
+                                </td>
+                            <% } else { %>
+                                <td>
+                                    <a class="linkNoStyle" href="/dashboard/specialist/users/edit/spec/<%= users[i].id %>"><button class="btnGradBlueSm margin-auto">Edit</button></a>
+                                </td>
+                            <% } %>
+                            
+                            <% if (users[i].isAdmin) { %>
+                                <td>
+                                    <button class="btnGradDarkSm btnGradDarkSmNotAllowed margin-auto" value="<%= users[i].id %>">Disable</button>
+                                </td>
+                            <% } else { %>
+                                <td>
+                                    <button class="btnGradDarkSm margin-auto disableBtn" value="<%= users[i].id %>">
+                                        <% if(users[i].disabled) { %>
+                                            Enable
+                                        <% } else { %>
+                                            Disable
+                                        <% } %>
+                                    </button>
+                                </td>
+                            <% } %>
                         </tr>
                     <% } %>
                 </tbody>
@@ -83,7 +103,7 @@
 <script>
     $("#users-element").addClass("active-sidebar-element");
 </script>
-<script type="text/javascript" src="/scripts/administrative/manage-users.js"></script>
+<script type="text/javascript" src="/scripts/administrative/manage-specialists.js"></script>
 </body>
 
 </html>

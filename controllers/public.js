@@ -156,7 +156,7 @@ exports.registerClinicAndAdmin = async (req, res) => {
         let msg = {
             to: "w1694656@my.westminster.ac.uk",
             from: "w1694656@my.westminster.ac.uk",
-            subject: "XYZ - New Registration Enquiry",
+            subject: "Moodnitor - New Registration Enquiry",
             html: message
         }
 
