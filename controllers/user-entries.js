@@ -6,7 +6,7 @@ const UserEntryFile = require("../models/userentryfile");
 
 const IndUser = require("../models/individualuser");
 const IndEntry = require("../models/individualentry");
-const IndEntryFile = require("../models/individualentryfile");
+const IndividualEntryFile = require("../models/individualentryfile");
 
 const moment = require("moment");
 const { Op } = require("sequelize"); 
@@ -14,7 +14,6 @@ const axios = require("axios");
 const fs = require("fs");
 
 const aws = require('aws-sdk');
-const IndividualEntryFile = require("../models/individualentryfile");
 const S3_BUCKET = process.env.S3_BUCKET_NAME;
 aws.config = {
     region: process.env.AWS_REGION,
@@ -104,7 +103,8 @@ exports.addEntry = async (req, res) => {
             emotion: entryContent
         })
         .then((response) => {
-            emotionPrediction = response.data.pred;
+            prediction = response.data.prediction;
+            emotionPrediction = response.data.predclass;
             emotionPredictionAdj = emotionPrediction.charAt(0).toUpperCase() + emotionPrediction.slice(1);
         }, 
         (error) => {
@@ -114,17 +114,17 @@ exports.addEntry = async (req, res) => {
     // File Handling
     if(entryFiles != null) {
         if(req.session.isIndUser) {
-            for(let image of entryFiles) {
-                const FileKeyName = "IndividualEntry/" + entry.id + "/" + image.filename;
-                const imgFileContent =  fs.readFileSync(image.path, null);
+            for(let entryfile of entryFiles) {
+                const FileKeyName = "IndividualEntry/" + entry.id + "/" + entryfile.filename;
+                const fileContent =  fs.readFileSync(entryfile.path, null);
     
-                const imgAWS = {
+                const fileAWS = {
                     Bucket: S3_BUCKET,
                     Key: FileKeyName,
-                    Body: imgFileContent
+                    Body: fileContent
                 };
     
-                s3.upload(imgAWS, async (error, data) => {
+                s3.upload(fileAWS, async (error, data) => {
                     if(error) { throw error; };
     
                     try {
@@ -135,24 +135,24 @@ exports.addEntry = async (req, res) => {
                     } catch (error) { console.log(error); }
     
                     try {
-                        fs.unlink(image.path, (error) => {
+                        fs.unlink(entryfile.path, (error) => {
                             if(error) { console.error(error); };
                         });
                     } catch(error) { console.log(error); } 
-                })
+                });
             }
         } else if (req.session.isSystemUser) {
-            for(let image of entryFiles) {
-                const FileKeyName = "UserEntry/" + entry.id + "/" + image.filename;
-                const imgFileContent =  fs.readFileSync(image.path, null);
+            for(let entryfile of entryFiles) {
+                const FileKeyName = "UserEntry/" + entry.id + "/" + entryfile.filename;
+                const fileContent =  fs.readFileSync(entryfile.path, null);
     
-                const imgAWS = {
+                const fileAWS = {
                     Bucket: S3_BUCKET,
                     Key: FileKeyName,
-                    Body: imgFileContent
+                    Body: fileContent
                 };
     
-                s3.upload(imgAWS, async (error, data) => {
+                s3.upload(fileAWS, async (error, data) => {
                     if(error) { throw error; };
     
                     try {
@@ -163,11 +163,11 @@ exports.addEntry = async (req, res) => {
                     } catch (error) { console.log(error); }
     
                     try {
-                        fs.unlink(image.path, (error) => {
+                        fs.unlink(entryfile.path, (error) => {
                             if(error) { console.error(error); };
                         });
                     } catch(error) { console.log(error); } 
-                })
+                });
             }
         }
     }
@@ -179,11 +179,26 @@ exports.addEntry = async (req, res) => {
 // Method to render page where the entries can be reviewed by the user
 exports.getReviewEntriesPage = async (req, res) => {
     let entries = [];
+    let today = moment().format("YYYY-MM-DD");
+    let monthBefore = moment().subtract(30, "days");
+    monthBefore = monthBefore.format("YYYY-MM-DD");
 
     // Retrieving all the users' entries to display them on the page
     if(req.session.isIndUser) {
         try {
-            entries = await IndEntry.findAll( {where: {IndividualUserId: req.session.userId, disabled: false }, order: [["createdAt", "DESC"]] } );
+            entries = await IndEntry.findAll( {
+                where: {
+                    IndividualUserId: req.session.userId, 
+                    disabled: false,
+                    date: {
+                        [Op.gte]: monthBefore,
+                        [Op.lte]: today
+                    } 
+                }, 
+                order: [
+                    ["createdAt", "DESC"]
+                ] 
+            });
         } catch(error) {
             console.log(error);
             return res.redirect("/dashboard");
@@ -193,7 +208,11 @@ exports.getReviewEntriesPage = async (req, res) => {
             entries = await UserEntry.findAll( {
                 where: {
                     SystemUserId: req.session.userId, 
-                    disabled: false 
+                    disabled: false,
+                    date: {
+                        [Op.gte]: monthBefore,
+                        [Op.lte]: today
+                    } 
                 }, 
                 order: [
                     ["createdAt", "DESC"]
