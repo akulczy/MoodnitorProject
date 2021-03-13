@@ -1,5 +1,4 @@
 let options = {
-    debug: 'info',
     modules: {
         toolbar: [
             [{ header: [] }],
@@ -66,6 +65,128 @@ const addNotesToEntry = (entryId) => {
     }
 }
 
+const chooseBackgroundColor = (data) => {
+    let color = "";
+    switch(data) {
+        case "joy":
+            color = "#ffcf66";
+            break;
+        case "fear":
+            color = "#363b3d";
+            break;
+        case "sadness":
+            color = "#9ce2e6";
+            break;
+        case "neutral":
+            color = "#bdbdbd";
+            break;
+        case "anger":
+            color = "#ba3d2b";
+            break;
+        default:
+            //        
+    }
+
+    return color;
+}
+
+const createPieChart = (data, box) => {
+    const ctx = $(box);
+    let emotions = [];
+    let percentages = [];
+    let colors = [];
+
+    for(let i=0; i<data.length; i++) {
+        let color;
+        emotions.push(data[i].emotion);
+        percentages.push(data[i].percentage);
+
+        color = chooseBackgroundColor(data[i].emotion);
+        colors.push(color);
+    }
+
+    const pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: emotions,
+            datasets: [{
+                label: "Emotions",
+                data: percentages,
+                backgroundColor: colors,
+                borderColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+
+const createBarChart = (data, container) => {
+    let chartLabels = [];
+    let barChartData = [];
+    for(let pr of data) {
+        chartLabels.push(pr.sentenceNo);       
+    }
+
+    let class_names = ['joy', 'fear', 'anger', 'sadness', 'neutral'];
+
+    for(let cl of class_names) {  
+        let percentages = [];          
+        for(let j = 0; j < data.length; j++) {
+            for(let k = 0; k < data[j].prediction.length; k++) {
+                if(cl == data[j].prediction[k].emotion) {
+                    percentages.push(data[j].prediction[k].percentage);
+                    bg = chooseBackgroundColor(data[j].prediction[k].emotion);
+                }
+            }
+        }
+
+        barChartData.push({
+            backgroundColor: bg,
+            data: percentages
+        });
+    }
+
+    const ctx = $(container);
+    const barChart  = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: chartLabels,
+            datasets: barChartData
+        },
+        options: {
+            title: {
+                display: true,
+                text: "Bar Chart - Sentences"
+            },
+            tooltips: {
+                mode: "index",
+                intersect: false
+            },
+            legend: {
+                display: false
+            },
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    stacked: true,
+                }],
+                yAxes: [{
+                    stacked: true
+                }]
+            }
+        }
+    });
+}
+
 const addEntry = () => {
     let entryContent = editor.getText();
     let entryHtmlContent = $(".ql-editor").first().html();
@@ -112,6 +233,10 @@ const addEntry = () => {
                     let boxTemplate = $(template);
                     boxTemplate.find("#detected-emotion-class").text(data.emotion); 
                     boxTemplate.find("#emotion-inline").text(data.emotion); 
+
+                    createPieChart(data.totalClasses, boxTemplate.find("#chart"));
+                    createBarChart(data.predictions, boxTemplate.find("#chart2"));
+
                     $(".main-body").append(boxTemplate);
 
                     $("#save-notes-btn").click(() => {

@@ -11,12 +11,15 @@
     color: #2a5e85;
 }
 
+.entry-pad {
+    padding: 0 3rem 0 19rem;
+}
+
 .entry-cont {
     background-color: #fff;
     box-shadow: 0 10px 40px -10px rgb(0 0 0 / 9%);
     border-radius: 15px;
     margin: 0 auto;
-    width: 70rem;
     margin-bottom: 4rem;
     padding-bottom: 4rem;
 }
@@ -124,7 +127,7 @@
     padding: 2rem 3rem 2rem 3rem;
     margin: 0 auto;
     margin-top: 4rem;
-    width: 60rem;
+    width: auto;
 }
 
 .success-space {
@@ -269,4 +272,8 @@
 
 .disabled-cont .browse-reset {
     margin-bottom: 0.2rem;
+}
+
+.align-chart {
+    margin: 1rem 0 1rem 0;
 }

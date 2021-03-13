@@ -434,12 +434,10 @@ th, tbody {
 }
 
 #choose-registration-main {
-    height: 112vh;
     background-image: linear-gradient(to bottom, rgba(197, 202, 222, 0) 5%, rgba(126, 175, 219, 0.5));
 }
 
 #choose-login-main {
-    height: 100vh;
     background-image: linear-gradient(to bottom, rgba(197, 202, 222, 0) 5%, rgba(126, 175, 219, 0.5));
 }
 
@@ -1180,8 +1178,8 @@ th, tbody {
 
 .popupbox-size1 {
     width: 60%;
-    height: 50%;
-    top: 25%;
+    height: 55%;
+    top: 20%;
     left: 20%;
 }
 

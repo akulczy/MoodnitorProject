@@ -41,6 +41,7 @@ exports.getAddEntryPage = (req, res) => {
 
 // Method to process and insert entry record of an individualuser
 exports.addEntry = async (req, res) => {
+    let class_names = ['joy', 'fear', 'anger', 'sadness', 'neutral'];
     let dateToday =  moment(new Date()).format("YYYY-MM-DD");
     let timeNow =  moment(new Date()).format("HH:mm:ss");
     let entryContent = req.body.entryContent;
@@ -95,21 +96,95 @@ exports.addEntry = async (req, res) => {
     // Sending status 400 in case the entry had not been created successfully
     if(entry == null) { return res.sendStatus(400); }
 
-    let emotionPrediction = "";
-    let emotionPredictionAdj = "";
+    let predictions = [];
 
     // Connecting to the Python API
     await axios.post('http://localhost:5000/predict', {
             emotion: entryContent
         })
         .then((response) => {
-            prediction = response.data.prediction;
-            emotionPrediction = response.data.predclass;
-            emotionPredictionAdj = emotionPrediction.charAt(0).toUpperCase() + emotionPrediction.slice(1);
+            predictions = response.data.predictions;
         }, 
         (error) => {
             console.log(error);
         });
+
+    let predictionData = [];
+
+    let j = 1;
+    let neutral = 0;
+    let joy = 0;
+    let sadness = 0;
+    let anger = 0;
+    let fear = 0;
+    for(let pred of predictions) {
+        let indprediction = [];
+        class_names.forEach(
+            (key, i) => indprediction.push(
+                {
+                    "emotion": class_names[i], 
+                    "percentage": parseFloat((pred.prediction[0][i]*100).toFixed(5))
+                }
+            )
+        );
+        predictionData.push(indprediction);
+        pred.prediction = indprediction;
+        pred.maxVal = parseFloat(pred.maxVal);
+        pred.sentenceNo = j;
+
+        for(let p of pred.prediction) {
+            switch(p.emotion) {
+                case "joy":
+                    joy += p.percentage;
+                    break;
+                case "fear":
+                    fear += p.percentage;
+                    break;
+                case "sadness":
+                    sadness += p.percentage;
+                    break;
+                case "neutral":
+                    neutral += p.percentage;
+                    break;
+                case "anger":
+                    anger += p.percentage;
+                    break;
+                default:
+                    //       
+            }
+        }
+       
+        j++;
+    }
+
+    console.log(joy + " " + sadness + " " + anger + " " + fear + " " + neutral)
+
+    let total = parseFloat((joy + sadness + anger + fear + neutral).toFixed(5));
+    let prJoy = parseFloat(((joy/total)*100).toFixed(5));
+    let prSadness = parseFloat(((sadness/total)*100).toFixed(5));
+    let prAnger = parseFloat(((anger/total)*100).toFixed(5));
+    let prFear = parseFloat(((fear/total)*100).toFixed(5));
+    let prNeutral = parseFloat(((neutral/total)*100).toFixed(5));
+
+    let totalClasses = [
+        {'emotion': 'joy', 'percentage': prJoy},
+        {'emotion': 'fear', 'percentage': prFear},
+        {'emotion': 'anger', 'percentage': prAnger},
+        {'emotion': 'sadness', 'percentage': prSadness},
+        {'emotion': 'neutral', 'percentage': prNeutral}
+    ];
+
+    let mainPredClass = "";
+    let tempMaxVal = 0;
+    for(let cl of totalClasses) {
+        // Main emotion detected in all sentences
+        if(cl.percentage > tempMaxVal) {
+            tempMaxVal = cl.percentage;
+            mainPredClass = cl.emotion;
+        }
+    }
+
+    mainPredClass = mainPredClass.charAt(0).toUpperCase() + mainPredClass.slice(1);
 
     // File Handling
     if(entryFiles != null) {
@@ -172,8 +247,18 @@ exports.addEntry = async (req, res) => {
         }
     }
 
+    console.log(predictions)
+
     // Entry created successfully - status 200
-    return res.status(200).json({emotion: emotionPredictionAdj, id: entry.id});
+    return res
+            .status(200)
+            .json({
+                    emotion: mainPredClass, 
+                    predictionData: predictionData,
+                    totalClasses: totalClasses,
+                    predictions: predictions,
+                    id: entry.id
+                });
 }
 
 // Method to render page where the entries can be reviewed by the user
