@@ -1,0 +1,136 @@
+<%- include("../elements/header.ejs") %>
+<link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
+<script>let mainpred = '<%- mainpredictions %>'; </script>
+<script>let sentencespred ='<%- sentencespredictions %>'; </script>
+<script>let files = '<%- files %>';</script>
+</head>
+
+<body class="entry-body">
+    <% if(isSystemUser || isIndUser) { %>
+        <%- include("../elements/sidebar-user.ejs") %>
+    <% } else { %>
+        <%- include("../elements/sidebar-specialist.ejs") %>
+    <% } %>
+
+    <%- include("../elements/topbar-internal.ejs") %>
+
+    <div class="main-body entry-pad">
+
+        <div class="title-wrapper">
+            <div class="title-with-border">
+                <div><%- entry.title %></div>
+                <div class="title-line"></div>
+            </div>
+        </div>
+
+        <div class="entry-cont summary-entry-cont">
+            <div class="entry-content">
+                <div class="summary-title">&#8226; Content of your entry:</div>
+                <div class="entry-content-txt">
+                    <%- entry.contentHtml %>
+                </div>
+            </div>
+
+            <div class="entry-main-emotion">
+                <div class="summary-title">&#8226; The main detected emotion is:</div>
+                <div class="entry-main-emotion-lbl" id="detected-emotion-class">
+                    <% if(isSystemUser) { %>
+                        <%- entry.UserEntryResult.emotion %>
+                    <% } else { %>
+                        <%- entry.IndividualEntryResult.emotion %>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="align-chart align-chart-sm">
+                <canvas id="piechart"></canvas>
+            </div>
+
+            <div>
+                <div class="summary-title">&#8226; Emotional variations in individual sentences:</div>
+            </div>
+
+            <div class="align-chart align-chart-sm">
+                <canvas id="sentenceschart"></canvas>
+            </div>
+
+            <% if(entry.usernotes != null && entry.usernotes != "") { %>
+                <div>
+                    <div class="summary-title">&#8226; Your notes:</div>
+                </div>
+
+                <div class="add-note-cont align-notes-cont">
+                    <%- entry.usernotes %>
+                </div>
+            <% } %>
+
+            <% if(filesLength > 0) { %>
+                <div>
+                    <div class="summary-title">&#8226; Attached files:</div>
+                </div>
+
+                <div class="frames-group">
+                    <% if(isSystemUser) { %>
+                        <% for(let i = 0; i < entry.UserEntryFiles.length; i++) { %>
+                            <iframe class="alignframe" id="file<%- i %>" src=""></iframe>
+                        <% } %>
+                    <% } else { %>
+                        <% for(let i = 0; i < entry.IndividualEntryFiles.length; i++) { %>
+                            <iframe class="alignframe" id="file<%- i %>" src=""></iframe>
+                        <% } %>
+                    <% } %>
+                </div>
+
+                <div class="files-download-container">
+                    <div class="summary-title">&#8226; Download files:</div>
+                </div>
+
+                <div class="buttons-group">
+                    <% if(isSystemUser) { %>
+                        <% for(let i = 0; i < entry.UserEntryFiles.length; i++) { %>
+                            <form method="POST" action="/dashboard/user/entries/sys/file">
+                                <button type="submit" class="btn btn-primary">
+                                    <img class="btnicon" src="/files/multimedia-download.png" alt="icon" />
+                                    File <%- (i+1) %>
+                                </button>
+                                <input type="hidden" value="<%- entry.UserEntryFiles[i].id %>" name="fileid" />
+                            </form>
+                        <% } %>
+                    <% } else { %>
+                        <% for(let i = 0; i < entry.IndividualEntryFiles.length; i++) { %>
+                            <form method="POST" action="/dashboard/user/entries/ind/file">
+                                <button type="submit" class="btn btn-primary">
+                                    <img class="btnicon" src="/files/multimedia-download.png" alt="icon" />
+                                    File <%- (i+1) %>
+                                </button>
+                                <input type="hidden" value="<%- entry.IndividualEntryFiles[i].id %>" name="fileid" />
+                            </form>
+                        <% } %>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <div class="review-entries">
+                <a class="linkNoStyle" href="/dashboard/user/entries/review">
+                    <button class="btnGradBlue margin-auto">Review Your Entries</button>
+                </a>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript" src="/scripts/entries/entry-summary.js"></script>
+<script>
+    $(document).ready(() => {
+        files = JSON.parse(files);
+        for(let i = 0; i < files.length; i++) {
+            try {
+                $(`#file${i}`).prop("src", "/temp/" + files[i]);                
+            } catch(error) {
+                console.log(error);
+            };
+        }
+    });
+</script>
+</body>
+
+</html>

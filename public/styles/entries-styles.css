@@ -277,3 +277,32 @@
 .align-chart {
     margin: 1rem 0 1rem 0;
 }
+
+.summary-entry-cont {
+    padding: 2rem;
+}
+
+.summary-title {
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+    font-size: 1.15rem;
+    color: #3053a0;
+}
+
+.entry-content-txt {
+    text-align: justify;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px -10px rgb(0 0 0 / 9%);
+    padding: 1.5rem;
+    margin: 0 1rem 4.5rem 0rem;
+    background-image: linear-gradient(to bottom, rgba(197, 202, 222, 0) 35%, rgba(150, 198, 234, 0.3));
+}
+
+.entry-main-emotion-lbl {
+    text-align: center;
+    padding-bottom: 0rem !important;
+}
+
+.align-chart-sm {
+    padding: 3.5rem;
+}

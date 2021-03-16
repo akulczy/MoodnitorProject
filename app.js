@@ -37,6 +37,11 @@ const IndividualUser = require("./models/individualuser");
 const IndividualEntry = require("./models/individualentry");
 const IndividualEntryFile = require("./models/individualentryfile");
 
+const IndEntryResult = require("./models/individualentryresult");
+const UserEntryResult = require("./models/userentryresult");
+const IndEntrySentence = require("./models/individualentrysentence");
+const UserEntrySentence = require("./models/userentrysentence");
+
 const app = express();
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -84,9 +89,26 @@ UserEntry.hasMany(SpecialistComment);
 
 IndividualEntry.belongsTo(IndividualUser);
 IndividualEntryFile.belongsTo(IndividualEntry);
+IndividualEntry.hasMany(IndividualEntryFile);
 
 UserEntry.belongsTo(SystemUser);
 UserEntryFile.belongsTo(UserEntry);
+UserEntry.hasMany(UserEntryFile);
+
+UserEntryResult.belongsTo(UserEntry);
+UserEntry.hasOne(UserEntryResult);
+IndEntryResult.belongsTo(IndividualEntry);
+IndividualEntry.hasOne(IndEntryResult);
+
+IndEntrySentence.belongsTo(IndividualEntry);
+IndividualEntry.hasMany(IndEntrySentence);
+IndEntrySentence.belongsTo(IndEntryResult);
+IndEntryResult.hasMany(IndEntrySentence);
+
+UserEntrySentence.belongsTo(UserEntry);
+UserEntry.hasMany(UserEntrySentence);
+UserEntrySentence.belongsTo(UserEntryResult);
+UserEntryResult.hasMany(UserEntrySentence);
 
 process.on("uncaughtException", (error) => {
     console.log("UncaughtException:" + " " + error.message);

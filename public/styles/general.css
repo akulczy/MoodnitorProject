@@ -1246,6 +1246,49 @@ th, tbody {
     margin-bottom: 1.5rem;
 }
 
+.custom-file-label {
+    overflow:hidden;
+}
+
+.align-notes-cont {
+    padding: 2rem !important;
+    margin-bottom: 2.5rem;
+}
+
+.files-download-container {
+    margin-top: 2rem;
+}
+
+.frames-group {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.alignframe {
+    width: 80%;
+    height: 40rem;
+    margin-bottom: 1.5rem;
+}
+
+.buttons-group {
+    margin-bottom: 2rem;
+}
+
+.btnicon {
+    height: 12px;
+    width: 12px;
+}
+
+.buttons-group {
+    display: flex;
+    flex-direction: row;
+}
+
+.buttons-group button {
+    margin-right: 0.5rem;
+}
+
 @keyframes popupon {
     from {
         transform: scale(0);

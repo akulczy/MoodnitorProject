@@ -91,7 +91,13 @@
                             <% } else { %>
                                 <td class="e-title"><%= entries[i].title %></td>
                             <% } %>
-                            <td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/<%= entries[i].id %>"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>
+
+                            <% if(isSystemUser) { %>
+                                <td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/sys/<%= entries[i].id %>"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>
+                            <% } else { %>
+                                <td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/ind/<%= entries[i].id %>"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>
+                            <% } %>
+
                             <td class="e-notes">
                                 <% if(entries[i].usernotes != "" && entries[i].usernotes != null) { %>
                                     <button class="btnGradPurpleSm margin-auto notesBtn" value="<%= entries[i].id %>">Notes</button>

@@ -3,15 +3,20 @@ const Specialist = require("../models/specialist");
 const SystemUser = require("../models/systemuser");
 const UserEntry = require("../models/userentry");
 const UserEntryFile = require("../models/userentryfile");
+const UserEntryResult = require("../models/userentryresult");
+const UserEntrySentence = require("../models/userentrysentence");
 
 const IndUser = require("../models/individualuser");
 const IndEntry = require("../models/individualentry");
 const IndividualEntryFile = require("../models/individualentryfile");
+const IndEntryResult = require("../models/individualentryresult");
+const IndEntrySentence = require("../models/individualentrysentence");
 
 const moment = require("moment");
 const { Op } = require("sequelize"); 
 const axios = require("axios");
 const fs = require("fs");
+const path = require("path");
 
 const aws = require('aws-sdk');
 const S3_BUCKET = process.env.S3_BUCKET_NAME;
@@ -186,6 +191,71 @@ exports.addEntry = async (req, res) => {
 
     mainPredClass = mainPredClass.charAt(0).toUpperCase() + mainPredClass.slice(1);
 
+    let entryresult = null;
+    // Save results into the database
+    if(req.session.isIndUser) {
+        try {
+            entryresult = await IndEntryResult.create({
+                predictions: totalClasses,
+                emotion: mainPredClass,
+                maxVal: tempMaxVal,
+                IndividualEntryId: entry.id
+            });
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+
+        if(entryresult == null) { return res.sendStatus(400); }
+
+        // Create a record for each sentence
+        for(let p of predictions) {
+            try {
+                await IndEntrySentence.create({
+                    sentenceNo: p.sentenceNo,
+                    sentence: p.sentence,
+                    predictions: p.prediction,
+                    emotion: p.predclass,
+                    IndividualEntryId: entry.id,
+                    IndividualEntryResultId: entryresult.id
+                });
+            } catch(error) {
+                console.log(error);
+            }           
+        }
+
+    } else {
+        try {
+            entryresult = await UserEntryResult.create({
+                predictions: totalClasses,
+                emotion: mainPredClass,
+                maxVal: tempMaxVal,
+                UserEntryId: entry.id
+            });
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+
+        if(entryresult == null) { return res.sendStatus(400); }
+
+        // Create a record for each sentence
+        for(let p of predictions) {
+            try {
+                await UserEntrySentence.create({
+                    sentenceNo: p.sentenceNo,
+                    sentence: p.sentence,
+                    predictions: p.prediction,
+                    emotion: p.predclass,
+                    UserEntryId: entry.id,
+                    UserEntryResultId: entryresult.id
+                });
+            } catch(error) {
+                console.log(error);
+            }           
+        }
+    }
+
     // File Handling
     if(entryFiles != null) {
         if(req.session.isIndUser) {
@@ -247,8 +317,6 @@ exports.addEntry = async (req, res) => {
         }
     }
 
-    console.log(predictions)
-
     // Entry created successfully - status 200
     return res
             .status(200)
@@ -259,6 +327,276 @@ exports.addEntry = async (req, res) => {
                     predictions: predictions,
                     id: entry.id
                 });
+}
+
+// Method to review summary of entry
+exports.getSystemUserEntrySummaryPage = async (req, res) => {
+    let entry = null;
+
+    try {
+        entry = await UserEntry.findOne({
+            where: {
+                id: req.params.entryId, 
+                SystemUserId: req.session.userId
+            },
+            include: [
+                {
+                    model: SystemUser,
+                    attributes: ["id", "name", "surname", "CentreId"],
+                    where: {
+                        CentreId: req.session.centreId
+                    }
+                },
+                {
+                    model: UserEntryResult,
+                    required: true,
+                    include: {
+                        model: UserEntrySentence,
+                        required: true
+                    }
+                },
+                {
+                    model: UserEntryFile
+                }
+            ]
+        });
+    } catch(error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    if(entry == null) { return res.redirect("/dashboard"); }
+
+    const renderView = (entryFiles) => {
+        res.render("entries/entry-summary", {
+            title: "Entry Summary",
+            isAdmin: req.session.isAdmin,
+            isSpecialist: req.session.isSpecialist,
+            isSystemUser: req.session.isSystemUser,
+            isIndUser: req.session.isIndUser,
+            userName: req.session.name,
+            userSurname: req.session.surname,
+            titleToDisplay: "Entry Summary",
+            entry: entry,
+            mainpredictions: JSON.stringify(entry.UserEntryResult.predictions),
+            sentencespredictions: JSON.stringify(entry.UserEntryResult.UserEntrySentences),
+            files: JSON.stringify(entryFiles)
+        });
+    }
+    if((entry.UserEntryFiles).length > 0) {
+        let files = [];
+        let promises = [];
+        for(let f of entry.UserEntryFiles) {
+            promises.push(new Promise((resolve, reject) => {
+                let fileName = f.fileId.replace(/\//g, '_');
+                let fileStream = fs.createWriteStream(path.join(__dirname, '..', 'public', 'temp', fileName));
+                let s3Stream = s3.getObject({Bucket: S3_BUCKET, Key: f.fileId}).createReadStream();
+
+                s3Stream.on('error', function(err) {
+                    console.error(err);
+                    return renderView("");
+                });
+                
+                s3Stream.pipe(fileStream).on('error', function(err) {
+                    console.error('File Stream:', err);
+                    return renderView("");
+                }).on('close',  () => {
+                
+                    files.push(fileName);
+                    resolve(true);
+                });
+            
+            }));
+        }
+
+        await Promise.all(promises)
+        .then("Finished.")
+        .catch(error => { console.log(error) })
+
+        return renderView(files);
+
+    } else {
+        return renderView("");
+    }
+}
+
+// Method to download files attached to an entry
+exports.downloadSystemUserEntryFile = async (req, res) => {
+    let fileId = req.body.fileid;
+    let file = null;
+
+    try {
+        file = await UserEntryFile.findOne({where: {id: fileId}});
+    } catch (error) {
+        console.log(error);
+        return res.redirect('back');
+    }
+
+    if(file == null) { return res.redirect('back'); }
+
+    let fileName = file.fileId.replace(/\//g, '_');
+    let timedFileName = fileName.slice(0, fileName.indexOf(".")) + `_${Date.now()}` + fileName.slice(fileName.indexOf("."));
+    let newPath = path.join(__basedir, "public", "temp", timedFileName);
+
+    let fileStream = fs.createWriteStream(newPath);
+    let s3Stream = s3.getObject({Bucket: S3_BUCKET, Key: file.fileId}).createReadStream();
+
+    s3Stream.on('error', function(error) {
+        console.error(error);
+        return res.redirect("back");
+    });
+    
+    s3Stream.pipe(fileStream).on('error', function(error) {
+        console.error('File Stream:', error);
+        return res.redirect("back");
+    }).on('close', function() {
+        return res.download(newPath, fileName, (error) => {
+            if(error) { console.log(error); }
+
+            try {
+                fs.unlink(newPath, (error) => {
+                    if(error) {
+                      console.error(error);
+                    };
+                });
+            } catch(error) {} 
+        });
+    });
+}
+
+// Method to review summary of entry
+exports.getIndividualUserEntrySummaryPage = async (req, res) => {
+    let entry = null;
+
+    try {
+        entry = await IndEntry.findOne({
+            where: {
+                id: req.params.entryId, 
+                IndividualUserId: req.session.userId
+            },
+            include: [
+                {
+                    model: IndUser,
+                    attributes: ["id", "name", "surname"]
+                },
+                {
+                    model: IndEntryResult,
+                    required: true,
+                    include: {
+                        model: IndEntrySentence,
+                        required: true
+                    }
+                },
+                {
+                    model: IndividualEntryFile
+                }
+            ]
+        });
+    } catch(error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    if(entry == null) { return res.redirect("/dashboard"); }
+
+    const renderView = (entryFiles) => {
+        res.render("entries/entry-summary", {
+            title: "Entry Summary",
+            isAdmin: req.session.isAdmin,
+            isSpecialist: req.session.isSpecialist,
+            isSystemUser: req.session.isSystemUser,
+            isIndUser: req.session.isIndUser,
+            userName: req.session.name,
+            userSurname: req.session.surname,
+            titleToDisplay: "Entry Summary",
+            entry: entry,
+            mainpredictions: JSON.stringify(entry.IndividualEntryResult.predictions),
+            sentencespredictions: JSON.stringify(entry.IndividualEntryResult.IndividualEntrySentences),
+            files: JSON.stringify(entryFiles),
+            filesLength: filesLength
+        });
+    }
+
+    let filesLength = 0;
+    if((entry.IndividualEntryFiles).length > 0) {
+        let files = [];
+        let promises = [];
+        for(let f of entry.IndividualEntryFiles) {
+            promises.push(new Promise((resolve, reject) => {
+                let fileName = f.fileId.replace(/\//g, '_');
+                let fileStream = fs.createWriteStream(path.join(__dirname, '..', 'public', 'temp', fileName));
+                let s3Stream = s3.getObject({Bucket: S3_BUCKET, Key: f.fileId}).createReadStream();
+
+                s3Stream.on('error', function(err) {
+                    console.error(err);
+                    return renderView("");
+                });
+                
+                s3Stream.pipe(fileStream).on('error', function(err) {
+                    console.error('File Stream:', err);
+                    return renderView("");
+                }).on('close',  () => {                
+                    files.push(fileName);
+                    resolve(true);
+                });
+            
+            }));
+        }
+
+        await Promise.all(promises)
+        .then("Finished.")
+        .catch(error => { console.log(error) })
+
+        filesLength = files.length;
+        return renderView(files);
+
+    } else {
+        return renderView("");
+    }
+}
+
+// Method to download files attached to an entry
+exports.downloadIndividualUserEntryFile = async (req, res) => {
+    let fileId = req.body.fileid;
+    let file = null;
+
+    try {
+        file = await IndividualEntryFile.findOne({where: {id: fileId}});
+    } catch (error) {
+        console.log(error);
+        return res.redirect('back');
+    }
+
+    if(file == null) { return res.redirect('back'); }
+
+    let fileName = file.fileId.replace(/\//g, '_');
+    let timedFileName = fileName.slice(0, fileName.indexOf(".")) + `_${Date.now()}` + fileName.slice(fileName.indexOf("."));
+    let newPath = path.join(__basedir, "public", "temp", timedFileName);
+
+    let fileStream = fs.createWriteStream(newPath);
+    let s3Stream = s3.getObject({Bucket: S3_BUCKET, Key: file.fileId}).createReadStream();
+
+    s3Stream.on('error', function(error) {
+        console.error(error);
+        return res.redirect("back");
+    });
+    
+    s3Stream.pipe(fileStream).on('error', function(error) {
+        console.error('File Stream:', error);
+        return res.redirect("back");
+    }).on('close', function() {
+        return res.download(newPath, fileName, (error) => {
+            if(error) { console.log(error); }
+
+            try {
+                fs.unlink(newPath, (error) => {
+                    if(error) {
+                      console.error(error);
+                    };
+                });
+            } catch(error) {} 
+        });
+    });
 }
 
 // Method to render page where the entries can be reviewed by the user

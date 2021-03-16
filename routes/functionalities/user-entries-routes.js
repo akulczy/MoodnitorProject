@@ -53,4 +53,16 @@ router.patch("/add/notes", entries.addUserNotes);
 // GET - fetch user notes assigned to an entry
 router.get("/get/notes", entries.fetchUserNotes);
 
+// GET - get page to review summary of an entry - system user
+router.get("/sys/:entryId", entries.getSystemUserEntrySummaryPage);
+
+// POST - download file - system user
+router.post("/sys/file", entries.downloadSystemUserEntryFile);
+
+// GET - get page to review summary of an entry - individual user
+router.get("/ind/:entryId", entries.getIndividualUserEntrySummaryPage);
+
+// POST - download file - individual user
+router.post("/ind/file", entries.downloadIndividualUserEntryFile);
+
 module.exports = router;
