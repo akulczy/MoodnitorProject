@@ -229,6 +229,18 @@
     background-image: linear-gradient(to bottom, rgba(197, 202, 222, 0) 35%, rgba(150, 157, 234, 0.3));
 }
 
+.comm-cont {
+    padding: 2rem 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    width: 50rem;
+    color: #204c5a;
+    text-align: justify;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px -10px rgb(0 0 0 / 9%);
+    background-image: linear-gradient(to bottom, rgba(197, 202, 222, 0) 35%, rgba(85, 175, 182, 0.3));
+}
+
 .note-btn-align {
     padding-top: 2rem;
 }

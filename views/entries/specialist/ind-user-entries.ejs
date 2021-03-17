@@ -1,5 +1,7 @@
 <%- include("../../elements/header.ejs") %>
 <link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.0/xlsx.full.min.js"></script>
 </head>
 
 <body class="entry-body">
@@ -54,7 +56,7 @@
 
         <div class="down-cont">
             <div class="down-cont-spreadsheet">
-                <button type="button" class="btn btn-sm btn-light" id="spreadsheet-down">
+                <button type="button" class="btn btn-sm btn-light" id="spreadsheet-down-ind">
                     <img src="/files/spreadsheet-icon.png" alt="spreadsheet" />
                     Download Spreadsheet
                 </button>
@@ -91,7 +93,7 @@
                                 <button class="btnGradPurpleSm margin-auto notesBtn" value="<%= entries[i].id %>">Notes</button>
                             </td>
                             <td class="e-comments">
-                                <% if(entries[i].SpecialistComments.length != 0) { %>
+                                <% if(entries[i].SpecialistComment != null) { %>
                                     <button class="btnGradGreenSm margin-auto commentsBtn" value="<%= entries[i].id %>">
                                         Comments
                                     </button>
@@ -125,6 +127,7 @@
 <script type="text/javascript" src="/scripts/specialist/add-comments.js"></script>
 <script type="text/javascript" src="/scripts/specialist/display-user-notes.js"></script>
 <script type="text/javascript" src="/scripts/specialist/review-ind-user-entries.js"></script>
+<script type="text/javascript" src="/scripts/specialist/download-spreadsheet-specialist.js"></script>
 </body>
 
 </html>

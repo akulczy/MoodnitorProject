@@ -36,7 +36,7 @@ const appendEntries = (entries) => {
         }
 
         let entryComment = "";
-        if((entry.SpecialistComments).length > 0) {
+        if(entry.SpecialistComment != null) {
             entryComment = `<button class="btnGradGreenSm margin-auto commentsBtn" value="${entry.id}">Comments</button>`;
         } else {
             entryComment = `<button class="addCommentsBtn btnNoStyle">

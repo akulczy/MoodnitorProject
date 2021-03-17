@@ -95,15 +95,8 @@ const updateCommentOfEntrySpecialist = (event, userId) => {
         data: {id: id, userId: userId},
         statusCode: {
             200: data => {
-                let comment = data.comments;
-                let comId;
-                
-                if(comment.length > 0) {
-                    for(let com of comment) {
-                        comment = com.comment;
-                        comId = com.id;
-                    }
-                }
+                let comment = data.comment.comment;
+                let comId = data.comment.id;
 
                 $.get( "/templates/entries/comments-box.ejs", commentswindow => {
                     let cwin = $(commentswindow);

@@ -85,7 +85,7 @@ SystemUser.belongsTo(Specialist);
 VerificationString.belongsTo(Centre);
 SpecialistComment.belongsTo(Specialist);
 SpecialistComment.belongsTo(UserEntry);
-UserEntry.hasMany(SpecialistComment);
+UserEntry.hasOne(SpecialistComment);
 
 IndividualEntry.belongsTo(IndividualUser);
 IndividualEntryFile.belongsTo(IndividualEntry);

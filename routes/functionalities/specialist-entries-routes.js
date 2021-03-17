@@ -53,4 +53,16 @@ router.post("/browse/date/range", entries.browseByDateRange);
 // POST - browse entries of an individual user by title
 router.post("/browse/title", entries.browseByTitle);
 
+// GET - review summary of an entry
+router.get("/summary/:entryId", entries.getEntrySummaryPage);
+
+// POST - download file of an entry
+router.post("/file", entries.downloadEntryFile);
+
+// GET - fetch entries according to parameters passed in the body
+router.get("/fetch", entries.fetchEntries);
+
+// GET - fetch entries of an individual user
+router.get("/fetch/ind", entries.fetchEntriesInd);
+
 module.exports = router;

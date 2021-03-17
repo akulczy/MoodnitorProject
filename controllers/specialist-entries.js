@@ -4,11 +4,14 @@ const SystemUser = require("../models/systemuser");
 const UserEntry = require("../models/userentry");
 const UserEntryFile = require("../models/userentryfile");
 const SpecialistComment = require("../models/specialistcomment");
+const UserEntryResult = require("../models/userentryresult");
+const UserEntrySentence = require("../models/userentrysentence");
 
 const moment = require("moment");
 const { Op } = require("sequelize"); 
 const axios = require("axios");
 const fs = require("fs");
+const path = require("path");
 
 const aws = require('aws-sdk');
 
@@ -127,6 +130,50 @@ exports.getReviewEntriesOfIndUserPage = async (req, res) => {
     });
 }
 
+// Method to download files attached to an entry
+exports.downloadEntryFile = async (req, res) => {
+    let fileId = req.body.fileid;
+    let file = null;
+
+    try {
+        file = await UserEntryFile.findOne({where: {id: fileId}});
+    } catch (error) {
+        console.log(error);
+        return res.redirect('back');
+    }
+
+    if(file == null) { return res.redirect('back'); }
+
+    let fileName = file.fileId.replace(/\//g, '_');
+    let timedFileName = fileName.slice(0, fileName.indexOf(".")) + `_${Date.now()}` + fileName.slice(fileName.indexOf("."));
+    let newPath = path.join(__basedir, "public", "temp", timedFileName);
+
+    let fileStream = fs.createWriteStream(newPath);
+    let s3Stream = s3.getObject({Bucket: S3_BUCKET, Key: file.fileId}).createReadStream();
+
+    s3Stream.on('error', function(error) {
+        console.error(error);
+        return res.redirect("back");
+    });
+    
+    s3Stream.pipe(fileStream).on('error', function(error) {
+        console.error('File Stream:', error);
+        return res.redirect("back");
+    }).on('close', function() {
+        return res.download(newPath, fileName, (error) => {
+            if(error) { console.log(error); }
+
+            try {
+                fs.unlink(newPath, (error) => {
+                    if(error) {
+                      console.error(error);
+                    };
+                });
+            } catch(error) {} 
+        });
+    });
+}
+
 // Method to fetch the notes of a chosen user entry
 exports.fetchNotesOfSystemUserEntry = async (req, res) => {
     let entry = null;
@@ -155,7 +202,7 @@ exports.fetchNotesOfSystemUserEntry = async (req, res) => {
 // Method to fetch comments of an entry 
 exports.getComments = async (req, res) => {
     let entry = null;
-    let comments = null;
+    let comment = null;
 
     // Retrieving entry by its ID
     try {
@@ -169,13 +216,13 @@ exports.getComments = async (req, res) => {
 
     // Fetching comment recording
     try {
-        comments = await SpecialistComment.findAll({where: {SpecialistId: req.session.userId, UserEntryId: entry.id}});
+        comment = await SpecialistComment.findOne({where: {SpecialistId: req.session.userId, UserEntryId: entry.id}});
     } catch(error) {
         console.log(error);
         return res.sendStatus(400);
     }
 
-    return res.status(200).send({comments: comments});
+    return res.status(200).send({comment: comment});
 }
 
 // Method to add a new comment to an entry 
@@ -455,4 +502,236 @@ exports.browseByDateRange = async (req, res) => {
     }
 
     return res.status(200).send({entries: entries});
+}
+
+// Method to review summary of entry
+exports.getEntrySummaryPage = async (req, res) => {
+    let entry = null;
+
+    try {
+        entry = await UserEntry.findOne({
+            where: {
+                id: req.params.entryId
+            },
+            include: [
+                {
+                    model: SystemUser,
+                    attributes: ["id", "name", "surname", "SpecialistId", "CentreId"],
+                    required: true,
+                    where: {SpecialistId: req.session.userId}
+                },
+                {
+                    model: UserEntryResult,
+                    required: true,
+                    include: {
+                        model: UserEntrySentence,
+                        required: true
+                    }
+                },
+                {
+                    model: UserEntryFile
+                },
+                {
+                    model: SpecialistComment
+                }
+            ]
+        });
+    } catch(error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    if(entry == null) { console.log("Not found"); return res.redirect("/dashboard"); }
+    const renderView = (entryFiles) => {
+        res.render("entries/specialist/entry-summary-spec", {
+            title: "Entry Summary",
+            isAdmin: req.session.isAdmin,
+            isSpecialist: req.session.isSpecialist,
+            isSystemUser: req.session.isSystemUser,
+            isIndUser: req.session.isIndUser,
+            userName: req.session.name,
+            userSurname: req.session.surname,
+            titleToDisplay: "Entry Summary",
+            entry: entry,
+            mainpredictions: JSON.stringify(entry.UserEntryResult.predictions),
+            sentencespredictions: JSON.stringify(entry.UserEntryResult.UserEntrySentences),
+            files: JSON.stringify(entryFiles),
+            filesLength: filesLength
+        });
+    }
+
+    let filesLength = 0;
+    if((entry.UserEntryFiles).length > 0) {
+        let files = [];
+        let promises = [];
+        for(let f of entry.UserEntryFiles) {
+            promises.push(new Promise((resolve, reject) => {
+                let fileName = f.fileId.replace(/\//g, '_');
+                let fileStream = fs.createWriteStream(path.join(__dirname, '..', 'public', 'temp', fileName));
+                let s3Stream = s3.getObject({Bucket: S3_BUCKET, Key: f.fileId}).createReadStream();
+
+                s3Stream.on('error', function(err) {
+                    console.error(err);
+                    return renderView("");
+                });
+                
+                s3Stream.pipe(fileStream).on('error', function(err) {
+                    console.error('File Stream:', err);
+                    return renderView("");
+                }).on('close',  () => {
+                
+                    files.push(fileName);
+                    resolve(true);
+                });
+            
+            }));
+        }
+
+        await Promise.all(promises)
+        .then("Finished.")
+        .catch(error => { console.log(error) })
+
+        filesLength = files.length;
+        return renderView(files);
+
+    } else {
+        return renderView("");
+    }
+}
+
+// Fetching entries for the excel spreadsheet
+exports.fetchEntries = async (req, res) => {
+    let today = moment().format("YYYY-MM-DD");
+    let monthBefore = moment().subtract(30, "days");
+    monthBefore = monthBefore.format("YYYY-MM-DD");
+    let entries = [];
+    let query = "";
+
+    if(req.query.entryDate != "") {
+        query = {date: req.query.entryDate, disabled: false};
+    } else if (req.query.dateFrom != "" || req.query.dateTo != "") {
+        let dateFrom = req.query.dateFrom;
+        let dateTo = req.query.dateTo;
+        if(dateFrom != "" && dateTo != "") {
+            query = { date: {[Op.gte]: dateFrom, [Op.lte]: dateTo}, disabled: false };      
+        } else if (dateFrom == "" && dateTo != "") {
+            query = { date: {[Op.lte]: dateTo}, disabled: false };
+        } else if (dateFrom != "" && dateTo == "") {
+            query = { date: {[Op.gte]: dateFrom}, disabled: false };
+        }
+    } else if (req.query.entryTitle != "") {
+        query = {title: {[Op.like]: '%' + req.query.entryTitle + '%'}, disabled: false}
+    } else {
+        query = { date: {[Op.gte]: monthBefore, [Op.lte]: today}, disabled: false };    
+    }
+
+    try {
+        entries = await UserEntry.findAll(
+            {
+                where: query,
+                include: [
+                    {
+                        model: SystemUser,
+                        attributes: ["name", "surname"],
+                        where: {SpecialistId: req.session.userId, CentreId: req.session.centreId}
+                    },
+                    {
+                        model: UserEntryResult
+                    }
+                ]
+            }
+        );
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+    let entriesobj = [];
+    for(let entry of entries) {
+        entriesobj.push(
+            {
+                "Title": entry.title,
+                "Date": entry.date,
+                "Time": entry.time,
+                "Added by": `${entry.SystemUser.name} ${entry.SystemUser.surname}`,
+                "Main Emotion": entry.UserEntryResult.emotion,
+                "Joy [%]": entry.UserEntryResult.predictions[0].percentage, 
+                "Fear [%]": entry.UserEntryResult.predictions[1].percentage, 
+                "Anger [%]": entry.UserEntryResult.predictions[2].percentage, 
+                "Sadness [%]": entry.UserEntryResult.predictions[3].percentage, 
+                "Neutral [%]": entry.UserEntryResult.predictions[4].percentage
+            }
+        )
+    }
+
+    return res.status(200).send({entries: entriesobj});
+}
+
+// Fetching entries of individual users for the excel spreadsheet
+exports.fetchEntriesInd = async (req, res) => {
+    let today = moment().format("YYYY-MM-DD");
+    let monthBefore = moment().subtract(30, "days");
+    monthBefore = monthBefore.format("YYYY-MM-DD");
+    let entries = [];
+    let query = "";
+    let userId = req.query.id;
+
+    if(req.query.entryDate != "") {
+        query = {date: req.query.entryDate, disabled: false, SystemUserId: userId};
+    } else if (req.query.dateFrom != "" || req.query.dateTo != "") {
+        let dateFrom = req.query.dateFrom;
+        let dateTo = req.query.dateTo;
+        if(dateFrom != "" && dateTo != "") {
+            query = { date: {[Op.gte]: dateFrom, [Op.lte]: dateTo}, disabled: false, SystemUserId: userId };      
+        } else if (dateFrom == "" && dateTo != "") {
+            query = { date: {[Op.lte]: dateTo}, disabled: false, SystemUserId: userId };
+        } else if (dateFrom != "" && dateTo == "") {
+            query = { date: {[Op.gte]: dateFrom}, disabled: false, SystemUserId: userId };
+        }
+    } else if (req.query.entryTitle != "") {
+        query = {title: {[Op.like]: '%' + req.query.entryTitle + '%'}, disabled: false, SystemUserId: userId}
+    } else {
+        query = { date: {[Op.gte]: monthBefore, [Op.lte]: today}, disabled: false, SystemUserId: userId };    
+    }
+
+    try {
+        entries = await UserEntry.findAll(
+            {
+                where: query,
+                include: [
+                    {
+                        model: SystemUser,
+                        attributes: ["name", "surname"],
+                        where: {SpecialistId: req.session.userId, CentreId: req.session.centreId}
+                    },
+                    {
+                        model: UserEntryResult
+                    }
+                ]
+            }
+        );
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+    let entriesobj = [];
+    for(let entry of entries) {
+        entriesobj.push(
+            {
+                "Title": entry.title,
+                "Date": entry.date,
+                "Time": entry.time,
+                "Added by": `${entry.SystemUser.name} ${entry.SystemUser.surname}`,
+                "Main Emotion": entry.UserEntryResult.emotion,
+                "Joy [%]": entry.UserEntryResult.predictions[0].percentage, 
+                "Fear [%]": entry.UserEntryResult.predictions[1].percentage, 
+                "Anger [%]": entry.UserEntryResult.predictions[2].percentage, 
+                "Sadness [%]": entry.UserEntryResult.predictions[3].percentage, 
+                "Neutral [%]": entry.UserEntryResult.predictions[4].percentage
+            }
+        )
+    }
+
+    return res.status(200).send({entries: entriesobj});
 }

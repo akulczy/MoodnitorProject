@@ -1,4 +1,4 @@
-<%- include("../elements/header.ejs") %>
+<%- include("../../elements/header.ejs") %>
 <link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
 <script>let mainpred = '<%- mainpredictions %>'; </script>
@@ -8,12 +8,12 @@
 
 <body class="entry-body">
     <% if(isSystemUser || isIndUser) { %>
-        <%- include("../elements/sidebar-user.ejs") %>
+        <%- include("../../elements/sidebar-user.ejs") %>
     <% } else { %>
-        <%- include("../elements/sidebar-specialist.ejs") %>
+        <%- include("../../elements/sidebar-specialist.ejs") %>
     <% } %>
 
-    <%- include("../elements/topbar-internal.ejs") %>
+    <%- include("../../elements/topbar-internal.ejs") %>
 
     <div class="main-body entry-pad">
 
@@ -25,12 +25,16 @@
         </div>
 
         <div class="entry-cont summary-entry-cont">
+            <div class="entry-author">
+                <div class="summary-title">&#8226; Author: <span class="p-dark"><%- entry.SystemUser.name + " " + entry.SystemUser.surname %></span></div>
+            </div>
+
             <div class="entry-date">
                 <div class="summary-title">&#8226; Date and time: <span class="p-dark"><%- entry.date + " " + entry.time.slice(0, 5) %></span></div>
             </div>
-            
+
             <div class="entry-content">
-                <div class="summary-title">&#8226; Content of your entry:</div>
+                <div class="summary-title">&#8226; Content of the entry:</div>
                 <div class="entry-content-txt">
                     <%- entry.contentHtml %>
                 </div>
@@ -39,11 +43,7 @@
             <div class="entry-main-emotion">
                 <div class="summary-title">&#8226; The main detected emotion is:</div>
                 <div class="entry-main-emotion-lbl" id="detected-emotion-class">
-                    <% if(isSystemUser) { %>
-                        <%- entry.UserEntryResult.emotion %>
-                    <% } else { %>
-                        <%- entry.IndividualEntryResult.emotion %>
-                    <% } %>
+                    <%- entry.UserEntryResult.emotion %>
                 </div>
             </div>
 
@@ -61,11 +61,21 @@
 
             <% if(entry.usernotes != null && entry.usernotes != "") { %>
                 <div>
-                    <div class="summary-title">&#8226; Your notes:</div>
+                    <div class="summary-title">&#8226; User's notes:</div>
                 </div>
 
                 <div class="add-note-cont align-notes-cont">
                     <%- entry.usernotes %>
+                </div>
+            <% } %>
+
+            <% if(entry.SpecialistComment != null && entry.SpecialistComment.comment != "") { %>
+                <div>
+                    <div class="summary-title">&#8226; Your comments:</div>
+                </div>
+
+                <div class="comm-cont align-notes-cont">
+                    <%- entry.SpecialistComment.comment %>
                 </div>
             <% } %>
 
@@ -75,14 +85,8 @@
                 </div>
 
                 <div class="frames-group">
-                    <% if(isSystemUser) { %>
-                        <% for(let i = 0; i < entry.UserEntryFiles.length; i++) { %>
-                            <iframe class="alignframe" id="file<%- i %>" src=""></iframe>
-                        <% } %>
-                    <% } else { %>
-                        <% for(let i = 0; i < entry.IndividualEntryFiles.length; i++) { %>
-                            <iframe class="alignframe" id="file<%- i %>" src=""></iframe>
-                        <% } %>
+                    <% for(let i = 0; i < entry.UserEntryFiles.length; i++) { %>
+                        <iframe class="alignframe" id="file<%- i %>" src=""></iframe>
                     <% } %>
                 </div>
 
@@ -91,33 +95,21 @@
                 </div>
 
                 <div class="buttons-group">
-                    <% if(isSystemUser) { %>
-                        <% for(let i = 0; i < entry.UserEntryFiles.length; i++) { %>
-                            <form method="POST" action="/dashboard/user/entries/sys/file">
-                                <button type="submit" class="btn btn-primary">
-                                    <img class="btnicon" src="/files/multimedia-download.png" alt="icon" />
-                                    File <%- (i+1) %>
-                                </button>
-                                <input type="hidden" value="<%- entry.UserEntryFiles[i].id %>" name="fileid" />
-                            </form>
-                        <% } %>
-                    <% } else { %>
-                        <% for(let i = 0; i < entry.IndividualEntryFiles.length; i++) { %>
-                            <form method="POST" action="/dashboard/user/entries/ind/file">
-                                <button type="submit" class="btn btn-primary">
-                                    <img class="btnicon" src="/files/multimedia-download.png" alt="icon" />
-                                    File <%- (i+1) %>
-                                </button>
-                                <input type="hidden" value="<%- entry.IndividualEntryFiles[i].id %>" name="fileid" />
-                            </form>
-                        <% } %>
+                    <% for(let i = 0; i < entry.UserEntryFiles.length; i++) { %>
+                        <form method="POST" action="/dashboard/specialist/entries/file">
+                            <button type="submit" class="btn btn-primary">
+                                <img class="btnicon" src="/files/multimedia-download.png" alt="icon" />
+                                File <%- (i+1) %>
+                            </button>
+                            <input type="hidden" value="<%- entry.UserEntryFiles[i].id %>" name="fileid" />
+                        </form>
                     <% } %>
                 </div>
             <% } %>
 
             <div class="review-entries">
-                <a class="linkNoStyle" href="/dashboard/user/entries/review">
-                    <button class="btnGradBlue margin-auto">Review Your Entries</button>
+                <a class="linkNoStyle" href="/dashboard/specialist/entries/review">
+                    <button class="btnGradBlue margin-auto">Review All Entries</button>
                 </a>
             </div>
         </div>

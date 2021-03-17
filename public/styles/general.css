@@ -1289,6 +1289,10 @@ th, tbody {
     margin-right: 0.5rem;
 }
 
+.p-dark {
+    color: rgb(71, 72, 73);
+}
+
 @keyframes popupon {
     from {
         transform: scale(0);

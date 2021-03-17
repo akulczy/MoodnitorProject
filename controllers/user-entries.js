@@ -19,6 +19,7 @@ const fs = require("fs");
 const path = require("path");
 
 const aws = require('aws-sdk');
+const IndividualEntry = require("../models/individualentry");
 const S3_BUCKET = process.env.S3_BUCKET_NAME;
 aws.config = {
     region: process.env.AWS_REGION,
@@ -380,9 +381,13 @@ exports.getSystemUserEntrySummaryPage = async (req, res) => {
             entry: entry,
             mainpredictions: JSON.stringify(entry.UserEntryResult.predictions),
             sentencespredictions: JSON.stringify(entry.UserEntryResult.UserEntrySentences),
-            files: JSON.stringify(entryFiles)
+            files: JSON.stringify(entryFiles),
+            filesLength: filesLength
         });
     }
+
+    let filesLength = 0;
+
     if((entry.UserEntryFiles).length > 0) {
         let files = [];
         let promises = [];
@@ -413,6 +418,7 @@ exports.getSystemUserEntrySummaryPage = async (req, res) => {
         .then("Finished.")
         .catch(error => { console.log(error) })
 
+        filesLength = files.length;
         return renderView(files);
 
     } else {
@@ -980,4 +986,135 @@ exports.fetchUserNotes = async (req, res) => {
     if(entry == null) { return res.sendStatus(404); }
 
     return res.status(200).send({notes: entry.usernotes});
+}
+
+// Method to fetch entries for Excel spreadsheet
+exports.fetchEntries = async (req, res) => {
+    let today = moment().format("YYYY-MM-DD");
+    let monthBefore = moment().subtract(30, "days");
+    monthBefore = monthBefore.format("YYYY-MM-DD");
+    let entries = [];
+    let query = "";
+    let userId = req.session.userId;
+
+    if(req.session.isSystemUser) {
+        if(req.query.entryDate != "") {
+            query = {date: req.query.entryDate, disabled: false, SystemUserId: userId};
+        } else if (req.query.dateFrom != "" || req.query.dateTo != "") {
+            let dateFrom = req.query.dateFrom;
+            let dateTo = req.query.dateTo;
+            if(dateFrom != "" && dateTo != "") {
+                query = { date: {[Op.gte]: dateFrom, [Op.lte]: dateTo}, disabled: false, SystemUserId: userId };      
+            } else if (dateFrom == "" && dateTo != "") {
+                query = { date: {[Op.lte]: dateTo}, disabled: false, SystemUserId: userId };
+            } else if (dateFrom != "" && dateTo == "") {
+                query = { date: {[Op.gte]: dateFrom}, disabled: false, SystemUserId: userId };
+            }
+        } else if (req.query.entryTitle != "") {
+            query = {title: {[Op.like]: '%' + req.query.entryTitle + '%'}, disabled: false, SystemUserId: userId}
+        } else {
+            query = { date: {[Op.gte]: monthBefore, [Op.lte]: today}, disabled: false, SystemUserId: userId };    
+        }
+    } else {
+        if(req.query.entryDate != "") {
+            query = {date: req.query.entryDate, disabled: false, IndividualUserId: userId};
+        } else if (req.query.dateFrom != "" || req.query.dateTo != "") {
+            let dateFrom = req.query.dateFrom;
+            let dateTo = req.query.dateTo;
+            if(dateFrom != "" && dateTo != "") {
+                query = { date: {[Op.gte]: dateFrom, [Op.lte]: dateTo}, disabled: false, IndividualUserId: userId };      
+            } else if (dateFrom == "" && dateTo != "") {
+                query = { date: {[Op.lte]: dateTo}, disabled: false, IndividualUserId: userId };
+            } else if (dateFrom != "" && dateTo == "") {
+                query = { date: {[Op.gte]: dateFrom}, disabled: false, IndividualUserId: userId };
+            }
+        } else if (req.query.entryTitle != "") {
+            query = {title: {[Op.like]: '%' + req.query.entryTitle + '%'}, disabled: false, IndividualUserId: userId}
+        } else {
+            query = { date: {[Op.gte]: monthBefore, [Op.lte]: today}, disabled: false, IndividualUserId: userId };    
+        }
+    }
+
+    if(req.session.isSystemUser) {
+        try {
+            entries = await UserEntry.findAll(
+                {
+                    where: query,
+                    include: [
+                        {
+                            model: SystemUser,
+                            attributes: ["name", "surname"],
+                            where: {id: req.session.userId, CentreId: req.session.centreId}
+                        },
+                        {
+                            model: UserEntryResult
+                        }
+                    ]
+                }
+            );
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+
+    } else {
+        try {
+            entries = await IndEntry.findAll(
+                {
+                    where: query,
+                    include: [
+                        {
+                            model: IndUser,
+                            attributes: ["name", "surname"],
+                            where: {id: req.session.userId}
+                        },
+                        {
+                            model: IndEntryResult
+                        }
+                    ]
+                }
+            );
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    }
+
+    let entriesobj = [];
+    if(req.session.isSystemUser) {
+        for(let entry of entries) {
+            entriesobj.push(
+                {
+                    "Title": entry.title,
+                    "Date": entry.date,
+                    "Time": entry.time,
+                    "Main Emotion": entry.UserEntryResult.emotion,
+                    "Joy [%]": entry.UserEntryResult.predictions[0].percentage, 
+                    "Fear [%]": entry.UserEntryResult.predictions[1].percentage, 
+                    "Anger [%]": entry.UserEntryResult.predictions[2].percentage, 
+                    "Sadness [%]": entry.UserEntryResult.predictions[3].percentage, 
+                    "Neutral [%]": entry.UserEntryResult.predictions[4].percentage
+                }
+            )
+        }
+    } else {
+        for(let entry of entries) {
+            console.log(entry)
+            entriesobj.push(
+                {
+                    "Title": entry.title,
+                    "Date": entry.date,
+                    "Time": entry.time,
+                    "Main Emotion": entry.IndividualEntryResult.emotion,
+                    "Joy [%]": entry.IndividualEntryResult.predictions[0].percentage, 
+                    "Fear [%]": entry.IndividualEntryResult.predictions[1].percentage, 
+                    "Anger [%]": entry.IndividualEntryResult.predictions[2].percentage, 
+                    "Sadness [%]": entry.IndividualEntryResult.predictions[3].percentage, 
+                    "Neutral [%]": entry.IndividualEntryResult.predictions[4].percentage
+                }
+            )
+        }
+    }
+
+    return res.status(200).send({entries: entriesobj});
 }
