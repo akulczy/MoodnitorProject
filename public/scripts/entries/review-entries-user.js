@@ -1,4 +1,4 @@
-const appendEntries = (entries) => {
+const appendEntries = (entries, individual) => {
     let i = 1;
     // Apending results to the table
     for(let entry of entries) {
@@ -7,6 +7,13 @@ const appendEntries = (entries) => {
             entryTitle = (entry.title).slice(0, 17) + "...";
         } else {
             entryTitle = entry.title;
+        }
+
+        let link = "";
+        if(individual == true) {
+            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/ind/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>';
+        } else {
+            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/sys/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>';
         }
 
         let addNotesBtn = "";
@@ -21,11 +28,12 @@ const appendEntries = (entries) => {
         }
 
         $("#entries-body").append(
-            '<tr>' +
+            '<tr>' +                            
+                '<input type="hidden" class="enid" value="' + entry.id + '" />' +
                 '<td class="e-no"><strong>' + eval(i) + '</strong></td>' +
                 '<td class="e-date">' + entry.date + '</td>' +
                 '<td class="e-title">' + entryTitle + '</td>' +
-                `<td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>` +
+                link +
                 `<td>` +
                 addNotesBtn +
                 `</td>` +
@@ -46,7 +54,7 @@ const appendEntries = (entries) => {
     }
 }
 
-const appendDisabledEntries = (entries) => {
+const appendDisabledEntries = (entries, individual) => {
     let i = 1;
     // Apending results to the table
     for(let entry of entries) {
@@ -55,6 +63,13 @@ const appendDisabledEntries = (entries) => {
             entryTitle = (entry.title).slice(0, 17) + "...";
         } else {
             entryTitle = entry.title;
+        }
+
+        let link = "";
+        if(individual == true) {
+            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/ind/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>';
+        } else {
+            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/sys/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>';
         }
 
         let addNotesBtn = "";
@@ -70,10 +85,11 @@ const appendDisabledEntries = (entries) => {
 
         $("#entries-body").append(
             '<tr class="disabledTr">' +
+                '<input type="hidden" class="enid" value="' + entry.id + '" />' +
                 '<td class="e-no"><strong>' + eval(i) + '</strong></td>' +
                 '<td class="e-date">' + entry.date + '</td>' +
                 '<td class="e-title">' + entryTitle + '</td>' +
-                `<td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>` +
+                link +
                 `<td>` +
                 addNotesBtn +
                 `</td>` +
@@ -161,7 +177,8 @@ $("#browse-title").click(() => {
             200: (data) => {
                 $("#entries-body").empty();
                 let entries = data.entries;
-                appendEntries(entries);
+                let individual = data.individual;
+                appendEntries(entries, individual);
 
                 $(".spinner-grow").remove();
                 $("#browse-title").removeClass(".activeBtn");
@@ -177,7 +194,11 @@ $("#browse-title").click(() => {
                 
                 $(".notesBtn").click((event) => {
                     updateNotesOfEntry(event);
-                });                
+                }); 
+
+                $(".pdf-btn").click((event) => {
+                    downloadPDF(event);
+                });
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -218,7 +239,8 @@ $("#browse-date").click(() => {
             200: (data) => {
                 $("#entries-body").empty();
                 let entries = data.entries;
-                appendEntries(entries);
+                let individual = data.individual;
+                appendEntries(entries, individual);
 
                 $(".spinner-grow").remove();
                 $("#browse-date").removeClass(".activeBtn");
@@ -234,7 +256,11 @@ $("#browse-date").click(() => {
                 
                 $(".notesBtn").click((event) => {
                     updateNotesOfEntry(event);
-                });                
+                });      
+                
+                $(".pdf-btn").click((event) => {
+                    downloadPDF(event);
+                });
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -282,7 +308,8 @@ $("#browse-range").click(() => {
             200: (data) => {
                 $("#entries-body").empty();
                 let entries = data.entries;
-                appendEntries(entries);
+                let individual = data.individual;
+                appendEntries(entries, individual);
 
                 $(".spinner-grow").remove();
                 $("#browse-range").removeClass(".activeBtn");
@@ -298,7 +325,12 @@ $("#browse-range").click(() => {
                 
                 $(".notesBtn").click((event) => {
                     updateNotesOfEntry(event);
-                });                
+                });     
+                
+                
+                $(".pdf-btn").click((event) => {
+                    downloadPDF(event);
+                });
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -340,7 +372,8 @@ $("#browse-disabled-date").click(() => {
             200: (data) => {
                 $("#entries-body").empty();
                 let entries = data.entries;
-                appendDisabledEntries(entries);
+                let individual = data.individual;
+                appendDisabledEntries(entries, individual);
 
                 $(".spinner-grow").remove();
                 $("#browse-disabled-date").removeClass(".activeBtn");
@@ -356,7 +389,11 @@ $("#browse-disabled-date").click(() => {
                 
                 $(".notesBtn").click((event) => {
                     updateNotesOfEntry(event);
-                });                
+                });
+                
+                $(".pdf-btn").click((event) => {
+                    downloadPDF(event);
+                });
             },
             400: () => {
                 $(".spinner-grow").remove();

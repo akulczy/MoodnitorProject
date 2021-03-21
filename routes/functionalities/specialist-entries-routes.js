@@ -65,4 +65,7 @@ router.get("/fetch", entries.fetchEntries);
 // GET - fetch entries of an individual user
 router.get("/fetch/ind", entries.fetchEntriesInd);
 
+// GET - fetch individual entry with results
+router.get("/fetch/:userId/:entryId", entries.fetchEntryWithResults);
+
 module.exports = router;

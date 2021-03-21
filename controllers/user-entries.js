@@ -708,7 +708,7 @@ exports.browseByTitle = async (req, res) => {
         });
     }
 
-    return res.status(200).send({entries: entries});
+    return res.status(200).send({entries: entries, individual: req.session.isIndUser});
 }
 
 // Method to browse entries by date 
@@ -748,7 +748,7 @@ exports.browseByDate = async (req, res) => {
         });
     }
 
-    return res.status(200).send({entries: entries});
+    return res.status(200).send({entries: entries, individual: req.session.isIndUser});
 }
 
 // Method to browse entries by date range
@@ -798,7 +798,7 @@ exports.browseByDateRange = async (req, res) => {
         });
     }
 
-    return res.status(200).send({entries: entries});
+    return res.status(200).send({entries: entries, individual: req.session.isIndUser});
 }
 
 // Disable an entry (move it to an archive)
@@ -927,7 +927,7 @@ exports.browseDisabledByDate = async (req, res) => {
         });
     }
 
-    return res.status(200).send({entries: entries});
+    return res.status(200).send({entries: entries, individual: req.session.isIndUser});
 }
 
 // Add user notes to an entry
@@ -1117,4 +1117,227 @@ exports.fetchEntries = async (req, res) => {
     }
 
     return res.status(200).send({entries: entriesobj});
+}
+
+exports.fetchEntryWithResults = async (req, res) => {
+    let entry = null;
+
+    if(req.session.isSystemUser) {
+        try {
+            entry = await UserEntry.findOne({
+                where: {
+                    id: req.params.entryId,
+                    SystemUserId: req.session.userId
+                },
+                include: [
+                    {
+                        model: UserEntryResult,
+                        include: {
+                            model: UserEntrySentence
+                        }
+                    }, 
+                    {
+                        model: SystemUser,
+                        where: {id: req.session.userId}
+                    }
+                ]
+            })
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    } else {
+        try {
+            entry = await IndEntry.findOne({
+                where: {
+                    id: req.params.entryId,
+                    IndividualUserId: req.session.userId
+                },
+                include: [
+                    {
+                        model: IndEntryResult,
+                        include: {
+                            model: IndEntrySentence
+                        }
+                    }, 
+                    {
+                        model: IndUser,
+                        where: {id: req.session.userId}
+                    }
+                ]
+            })
+        } catch (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+    }
+
+    if (entry == null) { return res.sendStatus(404); }
+
+    return res.status(200).send({ entry: entry, individual: req.session.isIndUser });
+}
+
+// Method to render default User Journey view
+exports.getDefaultUserJourneyPage = async (req, res) => {
+    let titleToDisplay = "Your Week with the Moodnitor"
+    let entries;
+    // Calculating last week - from monday to sunday
+    let monday = moment().isoWeekday(0).subtract(6, "days");
+    let weekLater = moment(monday).add(6, "days");
+    monday = monday.format('YYYY-MM-DD');
+    weekLater = weekLater.format('YYYY-MM-DD');
+
+    try {
+        entries = await UserEntry.findAll({
+            where: {
+                date: {
+                    [Op.gte]: monday,
+                    [Op.lte]: weekLater
+                },
+                SystemUserId: req.session.userId
+            }, 
+            include: [
+                {
+                    model: SystemUser,
+                    where: {id: req.session.userId},
+                    attributes: ["id", "name", "surname", "SpecialistId", "CentreId"]
+                },
+                {
+                    model: UserEntryResult
+                }
+            ],
+            order: [["date", "ASC"]]
+        })
+    } catch (error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    let dates = groupByDate(entries, 'DD-MM');
+    let entriesNo = 0;
+    let daysMissed = 0;
+
+    // Calculating all dates within a chosen period of time
+    let timeperiod = [];
+    let start = new Date(monday);
+    let end = new Date(weekLater);
+
+    while(start <= end){
+        timeperiod.push(moment(start).format('DD-MM'));
+        let newDate = start.setDate(start.getDate() + 1);
+        start = new Date(newDate);  
+    }
+
+    let dataset = [];
+    let emotions = [];
+
+    for(let p of timeperiod) {
+        let entryFound = false;
+        for (let [key, values] of Object.entries(dates)) {
+            if(p == key) {
+                let emotion = "";        
+                for(let val of values) {
+                    // To count the total number of entries
+                    entriesNo++;
+                    // To get the detected emotion from the entry record
+                    emotion = val.UserEntryResult.emotion;
+                    // Pushing all the emotion to subsequently find the most frequently occurring one 
+                    emotions.push(emotion);
+                    dataset.push({
+                        x : key,
+                        y : emotion
+                    });
+                }                
+
+                entryFound = true;
+            }             
+        }
+                    
+        if(!entryFound) {
+            daysMissed++;
+            dataset.push({
+                x : p,
+                y : "None"
+            });
+        }
+    } 
+
+    let daysActive = 7 - daysMissed;
+    let mainEmotions = evaluateMainEmotion(emotions);
+    let average = parseFloat((entriesNo/7).toFixed(2));
+
+    // Render the page
+    return res.render("entries/user-journey", {
+        title: "Your Week with the Moodnitor",
+        isAdmin: req.session.isAdmin,
+        isSpecialist: req.session.isSpecialist,
+        isSystemUser: req.session.isSystemUser,
+        isIndUser: req.session.isIndUser,
+        userName: req.session.name,
+        userSurname: req.session.surname,
+        titleToDisplay: "Your Journey",
+        mainTitle: titleToDisplay,
+        dataset: JSON.stringify(dataset),
+        labels: JSON.stringify(timeperiod),
+        dateFrom: monday,
+        dateTo: weekLater,
+        entriesNo: entriesNo,
+        daysActive: daysActive,
+        mainEmotions: mainEmotions,
+        average: average
+    });
+}
+
+const groupByDate = (dates, token) => {
+    return dates.reduce(function(val, obj) {
+        let comp = moment(obj.date, 'YYYY-MM-DD').format(token);
+        (val[comp] = val[comp] || []).push(obj);
+        return val;
+    }, {});
+}
+
+const evaluateMainEmotion = (data) => {
+    let neutral = {"emotion": "Neutral", "times": 0};
+    let joy = {"emotion": "Joy", "times": 0};
+    let sadness = {"emotion": "Sadness", "times": 0};
+    let anger = {"emotion": "Anger", "times": 0};
+    let fear = {"emotion": "Fear", "times": 0};
+
+    for (let d of data) {
+        switch(d) {
+            case "Joy":
+                joy.times++;
+                break;
+            case "Fear":
+                fear.times++;
+                break;
+            case "Sadness":
+                sadness.times++;
+                break;
+            case "Neutral":
+                neutral.times++;
+                break;
+            case "Anger":
+                fear.times++;
+                break;
+            default:
+                //        
+        }
+    }
+
+    let maxVal = 0;
+    for (let i of [joy, fear, sadness, neutral, fear]) {
+        if(i.times > maxVal) {
+            maxVal = i.times;
+        }
+    }
+
+    let mainemotions = [];
+    for (let j of [joy, fear, sadness, neutral, fear]) {
+        if(j.times == maxVal) {
+            mainemotions.push(j);
+        }
+    }
+
+    return mainemotions;
 }

@@ -789,13 +789,13 @@ th, tbody {
 }
 
 .cont-no {
-    margin-bottom: 0.5rem;
     font-size: 1.5rem;
 }
 
 .min-cont-desc {
-    margin-top: 0.5rem;
-    font-size: 1.1rem;
+    padding: 0.7rem 0 0.7rem 0;
+    font-size: 0.9rem;
+    text-align: center;
 }
 
 .main-graph-cont {
@@ -1291,6 +1291,23 @@ th, tbody {
 
 .p-dark {
     color: rgb(71, 72, 73);
+}
+
+.chart-sm {
+    width: 600px !important;
+    height: auto !important;
+    visibility: hidden !important;
+}
+
+.sub-browse-2 {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    padding-right: 1rem;
+}
+
+.line-chart-align {
+    margin: 2rem 0 6rem 0;
 }
 
 @keyframes popupon {

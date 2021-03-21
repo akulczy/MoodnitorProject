@@ -318,3 +318,17 @@
 .align-chart-sm {
     padding: 3.5rem;
 }
+
+.journey-cont {
+    margin-top: 4rem !important;
+}
+
+.align-sm-txt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.browse-journey {
+    margin-bottom: 1rem !important;
+}

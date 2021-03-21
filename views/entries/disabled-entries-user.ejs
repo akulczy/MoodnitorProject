@@ -1,5 +1,7 @@
 <%- include("../elements/header.ejs") %>
 <link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
 </head>
 
 <body class="entry-body">
@@ -48,6 +50,7 @@
                 <tbody id="entries-body">
                     <% for(let i=0; i < entries.length; i++) { %>
                         <tr class="disabledTr">
+                            <input type="hidden" class="enid" value="<%= entries[i].id %>" />
                             <td class="e-no"><strong><%= eval(i+1) %></strong></td>
                             <td class="e-date"><%= entries[i].date %></td>
                             <% if(entries[i].title.length > 18) { %>
@@ -55,7 +58,13 @@
                             <% } else { %>
                                 <td class="e-title"><%= entries[i].title %></td>
                             <% } %>
-                            <td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/<%= entries[i].id %>"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>
+
+                            <% if(isSystemUser) { %>
+                                <td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/sys/<%= entries[i].id %>"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>
+                            <% } else { %>
+                                <td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/ind/<%= entries[i].id %>"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>
+                            <% } %>
+
                             <td class="e-notes">
                                 <% if(entries[i].usernotes != "" && entries[i].usernotes != null) { %>
                                     <button class="btnGradPurpleSm margin-auto notesBtn" value="<%= entries[i].id %>">Notes</button>
@@ -93,6 +102,7 @@
 <script type="text/javascript" src="/scripts/close-popup.js"></script>
 <script type="text/javascript" src="/scripts/entries/add-notes.js"></script>
 <script type="text/javascript" src="/scripts/entries/review-entries-user.js"></script>
+<script type="text/javascript" src="/scripts/entries/download-pdf-users.js"></script>
 </body>
 
 </html>

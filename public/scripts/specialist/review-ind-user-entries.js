@@ -47,10 +47,12 @@ const appendEntries = (entries) => {
 
         $("#entries-body").append(
             '<tr>' +
+                '<input type="hidden" class="enid" value="' + entry.id + '" />' +
+                '<input type="hidden" class="uid" value="' + entry.SystemUser.id + '" />' +
                 '<td class="e-no"><strong>' + eval(i) + '</strong></td>' +
                 '<td class="e-date">' + entry.date + '</td>' +
                 '<td class="e-title">' + entryTitle + '</td>' +
-                `<td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>` +
+                `<td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/entries/summary/${entry.id}"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>` +
                 `<td class="e-notes"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradPurpleSm margin-auto">Notes</button></a></td>` +
                 '<td class="e-comments">' +
                     entryComment +
@@ -123,6 +125,10 @@ $("#browse-title").click(() => {
                     let userId = $("#uid").val();
                     updateCommentOfEntrySpecialist(event, userId);
                 });
+
+                $(".pdf-btn").click((event) => {
+                    downloadPDF(event);
+                });
             },
             400: () => {
                 $(".spinner-grow").remove();
@@ -186,6 +192,10 @@ $("#browse-date").click(() => {
                 $(".commentsBtn").click((event) => {
                     let userId = $("#uid").val();
                     updateCommentOfEntrySpecialist(event, userId);
+                });
+
+                $(".pdf-btn").click((event) => {
+                    downloadPDF(event);
                 });
             },
             400: () => {
@@ -257,6 +267,10 @@ $("#browse-range").click(() => {
                 $(".commentsBtn").click((event) => {
                     let userId = $("#uid").val();
                     updateCommentOfEntrySpecialist(event, userId);
+                });
+
+                $(".pdf-btn").click((event) => {
+                    downloadPDF(event);
                 });
             },
             400: () => {

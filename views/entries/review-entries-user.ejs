@@ -2,6 +2,8 @@
 <link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.0/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
 </head>
 
 <body class="entry-body">
@@ -86,6 +88,7 @@
                 <tbody id="entries-body">
                     <% for(let i=0; i < entries.length; i++) { %>
                         <tr>
+                            <input type="hidden" class="enid" value="<%= entries[i].id %>" />
                             <td class="e-no"><strong><%= eval(i+1) %></strong></td>
                             <td class="e-date"><%= entries[i].date %></td>
                             <% if(entries[i].title.length > 18) { %>
@@ -118,7 +121,6 @@
                             </td>
                             <td class="e-pdf">
                                 <div class="pdf-btn">
-                                    <input type="hidden" value="<%= entries[i].id %>" />
                                     <img src="/files/pdf-icon.png" alt="pdf" />
                                 </div>
                             </td>
@@ -134,6 +136,8 @@
 <script>
     $("#review-entry-element").addClass("active-sidebar-element");
 </script>
+<script type="text/javascript" src="/scripts/entries/download-pdf-users.js"></script>
+<script type="text/javascript" src="/scripts/browsing-fields.js"></script>
 <script type="text/javascript" src="/scripts/close-popup.js"></script>
 <script type="text/javascript" src="/scripts/entries/add-notes.js"></script>
 <script type="text/javascript" src="/scripts/entries/review-entries-user.js"></script>

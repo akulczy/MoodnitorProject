@@ -27,12 +27,18 @@ const s3 = new aws.S3();
 // Method to render page where the entries can be reviewed by the specialist
 exports.getReviewEntriesPageSpecialist = async (req, res) => {
     let entries = [];
+    let today = moment().format("YYYY-MM-DD");
+    let monthBefore = moment().subtract(30, "days");
 
     // Retrieving all the assigned users' entries to display them on the page
     try {
         entries = await UserEntry.findAll( {
             where: {
-                disabled: false 
+                disabled: false,
+                date: {
+                    [Op.gte]: monthBefore,
+                    [Op.lte]: today
+                } 
             }, 
             order: [
                 ["createdAt", "DESC"]
@@ -76,6 +82,8 @@ exports.getReviewEntriesPageSpecialist = async (req, res) => {
 exports.getReviewEntriesOfIndUserPage = async (req, res) => {
     let entries = [];
     let user = null;
+    let today = moment().format("YYYY-MM-DD");
+    let monthBefore = moment().subtract(30, "days");
 
     // Finding the relevant user
     try {
@@ -90,7 +98,11 @@ exports.getReviewEntriesOfIndUserPage = async (req, res) => {
         entries = await UserEntry.findAll( {
             where: {
                 disabled: false,
-                SystemUserId: req.params.userId 
+                SystemUserId: req.params.userId,
+                date: {
+                    [Op.gte]: monthBefore,
+                    [Op.lte]: today
+                }  
             }, 
             order: [
                 ["createdAt", "DESC"]
@@ -734,4 +746,39 @@ exports.fetchEntriesInd = async (req, res) => {
     }
 
     return res.status(200).send({entries: entriesobj});
+}
+
+exports.fetchEntryWithResults = async (req, res) => {
+    let entry = null;
+
+    try {
+        entry = await UserEntry.findOne({
+            where: {
+                id: req.params.entryId,
+                SystemUserId: req.params.userId
+            },
+            include: [
+                {
+                    model: UserEntryResult,
+                    include: {
+                        model: UserEntrySentence
+                    }
+                }, 
+                {
+                    model: SystemUser,
+                    where: {
+                        id: req.params.userId,
+                        SpecialistId: req.session.userId
+                    }
+                }
+            ]
+        });
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+    if (entry == null) { return res.sendStatus(404); }
+
+    return res.status(200).send({ entry: entry });
 }

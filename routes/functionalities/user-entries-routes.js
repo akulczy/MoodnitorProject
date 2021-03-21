@@ -68,4 +68,10 @@ router.post("/ind/file", entries.downloadIndividualUserEntryFile);
 // GET - fetch entries according to parameters passed in the body
 router.get("/fetch", entries.fetchEntries);
 
+// GET - fetch individual entry with results
+router.get("/fetch/:entryId", entries.fetchEntryWithResults);
+
+// GET - view with user journey
+router.get("/journey", entries.getDefaultUserJourneyPage);
+
 module.exports = router;

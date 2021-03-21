@@ -1,0 +1,94 @@
+<%- include("../elements/header.ejs") %>
+<link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
+<script>let dataset = '<%- dataset %>';</script>
+<script>let datalabels = '<%- labels %>';</script>
+</head>
+
+<body class="entry-body">
+    <% if(isSystemUser || isIndUser) { %>
+        <%- include("../elements/sidebar-user.ejs") %>
+    <% } else { %>
+        <%- include("../elements/sidebar-specialist.ejs") %>
+    <% } %>
+
+    <%- include("../elements/topbar-internal.ejs") %>
+
+    
+    <div class="main-body entry-pad">
+
+        <div class="title-wrapper">
+            <div class="title-with-border">
+                <div><%- mainTitle %></div>
+                <div class="title-line"></div>
+            </div>
+        </div>
+
+        <div class="browse-cont disabled-cont browse-journey">
+            <form>
+                <div class="sub-browse-2">
+                    <div>
+                        <div class="browse-label">Date from:</div>
+                        <div class="sub-browse-align">
+                            <input type="date" class="form-control" name="entry-date" id="entry-date" />
+                        </div>
+                    </div>
+                    <div>
+                        <div class="browse-label">Date to:</div>
+                        <div class="sub-browse-align">
+                            <input type="date" class="form-control" name="entry-date" id="entry-date" />
+                            <button type="button" class="btn btn-sm btn-secondary" id="browse-disabled-date">
+                                <img src="/files/magni-glass-icon.png" alt="search" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="browse-reset">
+                <button type="button" class="btn btn-sm btn-dark" id="reset-btn">
+                    <img src="/files/reset-icon.png" alt="search" />
+                </button>
+            </div>
+        </div>
+        <div class="align-sm-txt">
+            <small>Please fill in the fields above to see reports from other periods of time.</small>
+        </div>
+
+        <div class="entry-cont summary-entry-cont journey-cont">
+
+            <div class="entry-date">
+                <div class="summary-title">&#8226; Time period: <span class="p-dark"><%- dateFrom + " - " + dateTo %></span></div>
+            </div>
+
+            <div class="line-chart-align">
+                <canvas id="line-chart"></canvas>
+            </div>
+
+            <div class="dash-line dash-line-2" style="padding-top: 0.1rem;">
+                <div class="cont-h cont-2 cont-shadow cont-first">
+                    <div class="min-cont-desc">You added...</div>
+                    <div class="cont-no"><%- entriesNo %></div>
+                    <div class="min-cont-desc">entries in total</div>
+                </div>
+                <div class="cont-h cont-2 cont-shadow cont-middle">
+                    <div class="min-cont-desc">You were active...</div>
+                    <div class="cont-no"><%- daysActive %></div>
+                    <div class="min-cont-desc">days in total</div>
+                </div>
+                <div class="cont-h cont-2 cont-shadow cont-last">
+                    <div class="min-cont-desc">On average, you added...</div>
+                    <div class="cont-no"><%- average %></div>
+                    <div class="min-cont-desc">entries a day</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+<script type="text/javascript" src="/scripts/entries/user-journey.js"></script>
+<script>
+    $("#your-journey-element").addClass("active-sidebar-element");
+</script>
+</body>
+
+</html>
