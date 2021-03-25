@@ -72,17 +72,21 @@ const createBarChart = (data, container) => {
     let class_names = ['joy', 'fear', 'anger', 'sadness', 'neutral'];
 
     for(let cl of class_names) {  
+        let bg;
+        let lbl;
         let percentages = [];          
         for(let j = 0; j < data.length; j++) {
             for(let k = 0; k < data[j].predictions.length; k++) {
                 if(cl == data[j].predictions[k].emotion) {
                     percentages.push(data[j].predictions[k].percentage);
                     bg = chooseBackgroundColor(data[j].predictions[k].emotion);
+                    lbl = data[j].predictions[k].emotion;
                 }
             }
         }
 
         barChartData.push({
+            label: lbl,
             backgroundColor: bg,
             data: percentages
         });

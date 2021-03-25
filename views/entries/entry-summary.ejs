@@ -51,6 +51,14 @@
                 <canvas id="piechart"></canvas>
             </div>
 
+            <div class="detected-main-emotions" style="list-style-type:circle;">
+                <ul class="detected-main-emotions-list">
+                    <% for (let pred of mainpred) { %>
+                        <li><span class='emotion-list-title'><%- (pred.emotion).charAt(0).toUpperCase() + (pred.emotion).slice(1) %>: </span><%- pred.percentage %> %</li>
+                    <% } %>
+                </ul>
+            </div>
+
             <div>
                 <div class="summary-title">&#8226; Emotional variations in individual sentences:</div>
             </div>

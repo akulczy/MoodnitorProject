@@ -139,17 +139,21 @@ const createBarChart = (data, container) => {
     let class_names = ['joy', 'fear', 'anger', 'sadness', 'neutral'];
 
     for(let cl of class_names) {  
+        let bg;
+        let lbl;
         let percentages = [];          
         for(let j = 0; j < data.length; j++) {
             for(let k = 0; k < data[j].prediction.length; k++) {
                 if(cl == data[j].prediction[k].emotion) {
                     percentages.push(data[j].prediction[k].percentage);
                     bg = chooseBackgroundColor(data[j].prediction[k].emotion);
+                    lbl = data[j].prediction[k].emotion;
                 }
             }
         }
 
         barChartData.push({
+            label: lbl,
             backgroundColor: bg,
             data: percentages
         });
@@ -236,6 +240,14 @@ const addEntry = () => {
 
                     createPieChart(data.totalClasses, boxTemplate.find("#chart"));
                     createBarChart(data.predictions, boxTemplate.find("#chart2"));
+
+                    for(let emotion of data.totalClasses) {
+                        boxTemplate.find(".detected-main-emotions-list").append(
+                            `<li><span class='emotion-list-title'>${(emotion.emotion).charAt(0).toUpperCase() + (emotion.emotion).slice(1)}: </span>${emotion.percentage} %</li>`
+                        );
+                    }
+
+                    console.log(data.totalClasses)
 
                     $(".main-body").append(boxTemplate);
 

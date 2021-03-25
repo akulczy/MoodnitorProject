@@ -367,7 +367,7 @@ exports.getSystemUserEntrySummaryPage = async (req, res) => {
     }
 
     if(entry == null) { return res.redirect("/dashboard"); }
-
+    console.log( JSON.stringify(entry.UserEntryResult.predictions))
     const renderView = (entryFiles) => {
         res.render("entries/entry-summary", {
             title: "Entry Summary",
@@ -380,6 +380,7 @@ exports.getSystemUserEntrySummaryPage = async (req, res) => {
             titleToDisplay: "Entry Summary",
             entry: entry,
             mainpredictions: JSON.stringify(entry.UserEntryResult.predictions),
+            mainpred: entry.UserEntryResult.predictions,
             sentencespredictions: JSON.stringify(entry.UserEntryResult.UserEntrySentences),
             files: JSON.stringify(entryFiles),
             filesLength: filesLength
@@ -517,6 +518,7 @@ exports.getIndividualUserEntrySummaryPage = async (req, res) => {
             titleToDisplay: "Entry Summary",
             entry: entry,
             mainpredictions: JSON.stringify(entry.IndividualEntryResult.predictions),
+            mainpred: entry.UserEntryResult.predictions,
             sentencespredictions: JSON.stringify(entry.IndividualEntryResult.IndividualEntrySentences),
             files: JSON.stringify(entryFiles),
             filesLength: filesLength

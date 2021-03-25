@@ -1,6 +1,9 @@
 <%- include("../elements/header.ejs") %>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
+<script>let dataentries = '<%- dataset %>';</script>
+<script>let datalabels = '<%- timeperiod %>'</script>
+
 </head>
 
 <body>
@@ -24,31 +27,64 @@
         </div>
 
         <div class="dash-line dash-line-3">
-            <div class="cont-shadow cont-hover cont-summ">
-                
-            </div>
+            <% if(noOfEntries > 0) { %>
+                <div class="cont-shadow cont-hover cont-summ">
+                    <div class="align-cont-summ">
+                        <div>Today, you have added...</div>
+                        <div class="no-entries-dash"><%- noOfEntries %> entries</div>
+                        <div>
+                            <div><a href="/dashboard/user/entries/review" class="linkNoStyle"><div class="v-bg-btn">Review Your Entries</div></a></div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="/files/il-18.svg" alt="entryicon">
+                    </div>                    
+                </div>
+            <% } else if (noOfEntries == 0) { %>
+                <div class="cont-shadow cont-hover cont-summ">
+                    <div class="no-entries-yet align-cont-summ">
+                        <div class="no-entries-yet-title">You have not added your daily entry yet</div>
+                        <div><small>Please press the button below to add a new entry...</small></div>
+                        <div>
+                            <div><a href="/dashboard/user/entries/add" class="linkNoStyle"><div class="v-bg-btn">Add New Entry</div></a></div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="/files/il-18.svg" alt="entryicon">
+                    </div>                    
+                </div>
+            <% } %>
         </div>
 
         <div class="dash-line dash-line-2" style="padding-top: 0.1rem;">
             <div class="cont-h cont-2 cont-shadow cont-first">
-                <div class="min-cont-desc">You added...</div>
-                <div class="cont-no">5</div>
-                <div class="min-cont-desc">so far</div>
+                <div class="min-cont-desc">You added</div>
+                <div class="cont-no"><%- noOfEntries %></div>
+                <% if(noOfEntries == 1) { %>
+                    <div class="min-cont-desc">entry today</div>
+                <% } else { %>
+                    <div class="min-cont-desc">entries today</div>
+                <% } %>
             </div>
             <div class="cont-h cont-2 cont-shadow cont-middle">
-                <div class="min-cont-desc">You added...</div>
-                <div class="cont-no">56</div>
-                <div class="min-cont-desc">description</div>
+                <div class="min-cont-desc">You have been active</div>
+                <div class="cont-no">3</div>
+                <div class="min-cont-desc">days in a row</div>
             </div>
             <div class="cont-h cont-2 cont-shadow cont-last">
-                <div class="cont-no">12</div>
-                <div class="min-cont-desc">description</div>
+                <div class="min-cont-desc">You added</div>
+                <div class="cont-no"><%- noOfEntriesTillNow %></div>
+                <% if(noOfEntries == 1) { %>
+                    <div class="min-cont-desc">entries in total</div>
+                <% } else { %>
+                    <div class="min-cont-desc">entries in total</div>
+                <% } %>
             </div>
         </div>
 
         <div class="dash-line dash-line-3">
             <div class="main-graph-cont cont-shadow">
-                <div id="graph-title">Your entries:</div>
+                <div id="graph-title">Your activity:</div>
                 <canvas id="usage-graph"></canvas>
             </div>
         </div>

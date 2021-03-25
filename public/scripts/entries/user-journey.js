@@ -1,6 +1,5 @@
 const createLineChart = (dataentries) => {
     const ctx = $("#line-chart");
-    console.log(datalabels)
     const lineChart = new Chart(ctx, {
         type: 'scatter',
         labels: [0, 1, 2, 3],
@@ -29,7 +28,7 @@ const createLineChart = (dataentries) => {
                 xAxes: [{
                     type: 'category',
                     position: 'bottom',
-                    labels: ["08-03","09-03","10-03","11-03","12-03","13-03","14-03"]
+                    labels: JSON.parse(datalabels)
                 }],
                 /*yAxes: [{
                     type: 'linear',

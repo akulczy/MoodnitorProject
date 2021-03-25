@@ -332,3 +332,16 @@
 .browse-journey {
     margin-bottom: 1rem !important;
 }
+
+.detected-main-emotions {
+    color: rgb(71, 72, 73);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+    padding: 2rem 0 2rem 0;
+}
+
+.emotion-list-title {
+    color: #3c4198;
+}

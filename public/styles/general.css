@@ -672,6 +672,22 @@ th, tbody {
     background-color:#2a5e85;
 }
 
+.v-bg-btn {
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    border-radius: 10px;
+    background-color: #4a50c0;
+    margin-top: 1rem;
+    cursor: pointer;
+    text-align: center;
+    color:#fff;
+    transition: 0.4s ease-in-out;
+}
+
+.v-bg-btn:hover {
+    color: #4a50c0;
+    background-color:#fff;
+}
+
 .dash-line {
     padding: 1rem 3rem 1rem 3rem;
     display: flex;
@@ -812,9 +828,43 @@ th, tbody {
 }
 
 .cont-summ {
-    padding: 1.5rem;
+    color: #2a5e85;
+    padding: 2rem 7rem 2rem 7rem;
     width: 100%;
     border-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.cont-summ img {
+    width: 9rem;
+}
+
+.align-cont-summ {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.no-entries-dash {
+    padding: 1rem 0 0.5rem 0;
+    font-size: 1.3rem;
+    color: #4a50c0;
+    text-align: center;
+}
+
+.no-entries-yet {
+    color: #ab293c !important;
+}
+
+.no-entries-yet-title {
+    font-size: 1.1rem;
+}
+
+.no-entries-yet small {
+    color: rgb(71, 72, 73) !important;
 }
 
 /* Users List */
