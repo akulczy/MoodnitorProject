@@ -1,6 +1,8 @@
 <%- include("../elements/header.ejs") %>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
+<script>let dataentries = '<%- dataset %>';</script>
+<script>let datalabels = '<%- timeperiod %>';</script>
 </head>
 
 <body>
@@ -25,22 +27,37 @@
 
         <div class="dash-line dash-line-2">
             <div class="cont-h cont-2 cont-shadow cont-first">
-                <div class="cont-no">5</div>
-                <div class="min-cont-desc">description</div>
+                <div class="min-cont-desc">You are assigned</div>
+                <div class="cont-no"><%- noOfUsers %></div>
+                <% if(noOfUsers == 1) { %>
+                    <div class="min-cont-desc">user in total</div>
+                <% } else { %>
+                    <div class="min-cont-desc">users in total</div>
+                <% } %>
             </div>
             <div class="cont-h cont-2 cont-shadow cont-middle">
-                <div class="cont-no">56</div>
-                <div class="min-cont-desc">description</div>
+                <div class="min-cont-desc">Your users added</div>
+                <div class="cont-no"><%- noOfEntriesSpec %></div>
+                <% if(noOfEntriesSpec == 1) { %>
+                    <div class="min-cont-desc">entry today</div>
+                <% } else { %>
+                    <div class="min-cont-desc">entries today</div>
+                <% } %>
             </div>
             <div class="cont-h cont-2 cont-shadow cont-last">
-                <div class="cont-no">12</div>
-                <div class="min-cont-desc">description</div>
+                <div class="min-cont-desc">Your users added</div>
+                <div class="cont-no"><%- noOfEntriesTotal %></div>
+                <% if(noOfEntriesTotal == 1) { %>
+                    <div class="min-cont-desc">entry in past 7 days</div>
+                <% } else { %>
+                    <div class="min-cont-desc">entries in past 7 days</div>
+                <% } %>
             </div>
         </div>
 
         <div class="dash-line dash-line-3">
             <div class="main-graph-cont cont-shadow">
-                <div id="graph-title">Statistics:</div>
+                <div id="graph-title">Number of entries added by assigned users in past 7 days:</div>
                 <canvas id="usage-graph"></canvas>
             </div>
         </div>

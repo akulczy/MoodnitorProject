@@ -700,6 +700,19 @@ th, tbody {
     padding-top: 3rem;
 }
 
+.dash-line-column {
+    display: flex;
+    flex-direction: column !important;
+    align-items: flex-start;
+    justify-content: flex-start;
+    color: rgb(71, 72, 73);
+}
+
+.emo-color {
+    color: #3053a0;
+    font-weight: bold;
+}
+
 .cont-welcome {
     display: flex;
     flex-direction: row;
@@ -1354,6 +1367,12 @@ th, tbody {
     align-items: center;
     flex-direction: row;
     padding-right: 1rem;
+}
+
+.sub-browse-3 {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
 }
 
 .line-chart-align {

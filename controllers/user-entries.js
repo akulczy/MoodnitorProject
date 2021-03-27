@@ -129,7 +129,7 @@ exports.addEntry = async (req, res) => {
             (key, i) => indprediction.push(
                 {
                     "emotion": class_names[i], 
-                    "percentage": parseFloat((pred.prediction[0][i]*100).toFixed(5))
+                    "percentage": parseFloat((pred.prediction[0][i]*100).toFixed(2))
                 }
             )
         );
@@ -163,14 +163,12 @@ exports.addEntry = async (req, res) => {
         j++;
     }
 
-    console.log(joy + " " + sadness + " " + anger + " " + fear + " " + neutral)
-
-    let total = parseFloat((joy + sadness + anger + fear + neutral).toFixed(5));
-    let prJoy = parseFloat(((joy/total)*100).toFixed(5));
-    let prSadness = parseFloat(((sadness/total)*100).toFixed(5));
-    let prAnger = parseFloat(((anger/total)*100).toFixed(5));
-    let prFear = parseFloat(((fear/total)*100).toFixed(5));
-    let prNeutral = parseFloat(((neutral/total)*100).toFixed(5));
+    let total = parseFloat((joy + sadness + anger + fear + neutral).toFixed(2));
+    let prJoy = parseFloat(((joy/total)*100).toFixed(2));
+    let prSadness = parseFloat(((sadness/total)*100).toFixed(2));
+    let prAnger = parseFloat(((anger/total)*100).toFixed(2));
+    let prFear = parseFloat(((fear/total)*100).toFixed(2));
+    let prNeutral = parseFloat(((neutral/total)*100).toFixed(2));
 
     let totalClasses = [
         {'emotion': 'joy', 'percentage': prJoy},
@@ -1180,39 +1178,78 @@ exports.fetchEntryWithResults = async (req, res) => {
 }
 
 // Method to render default User Journey view
-exports.getDefaultUserJourneyPage = async (req, res) => {
-    let titleToDisplay = "Your Week with the Moodnitor"
+exports.getUserJourneyPage = async (req, res) => {
+    let titleToDisplay = "Your Week with the Moodnitor";
     let entries;
-    // Calculating last week - from monday to sunday
-    let monday = moment().isoWeekday(0).subtract(6, "days");
-    let weekLater = moment(monday).add(6, "days");
-    monday = monday.format('YYYY-MM-DD');
-    weekLater = weekLater.format('YYYY-MM-DD');
+    // Calculating period of time
+    let startDate, endDate;
 
-    try {
-        entries = await UserEntry.findAll({
-            where: {
-                date: {
-                    [Op.gte]: monday,
-                    [Op.lte]: weekLater
-                },
-                SystemUserId: req.session.userId
-            }, 
-            include: [
-                {
-                    model: SystemUser,
-                    where: {id: req.session.userId},
-                    attributes: ["id", "name", "surname", "SpecialistId", "CentreId"]
-                },
-                {
-                    model: UserEntryResult
-                }
-            ],
-            order: [["date", "ASC"]]
-        })
-    } catch (error) {
-        console.log(error);
-        return res.redirect("/dashboard");
+    if(req.body.dateFrom && req.body.dateTo) {
+        titleToDisplay = "Your journey with the Moodnitor";
+        startDate = moment(req.body.dateFrom);
+        endDate = moment(req.body.dateTo);
+    } else {
+        startDate = moment().isoWeekday(0).subtract(6, "days");
+        endDate = moment(startDate).add(6, "days");
+    }
+
+    let noOfDays = endDate.diff(startDate, "days") + 1;
+
+    startDate = startDate.format("YYYY-MM-DD");
+    endDate = endDate.format("YYYY-MM-DD");
+
+    if(req.session.isSystemUser) {
+        try {
+            entries = await UserEntry.findAll({
+                where: {
+                    date: {
+                        [Op.gte]: startDate,
+                        [Op.lte]: endDate
+                    },
+                    SystemUserId: req.session.userId
+                }, 
+                include: [
+                    {
+                        model: SystemUser,
+                        where: {id: req.session.userId},
+                        attributes: ["id", "name", "surname", "SpecialistId", "CentreId"]
+                    },
+                    {
+                        model: UserEntryResult
+                    }
+                ],
+                order: [["date", "ASC"]]
+            });
+        } catch (error) {
+            console.log(error);
+            return res.redirect("/dashboard");
+        }
+    } else if (req.session.isIndUser) {
+        try {
+            entries = await IndividualEntry.findAll({
+                where: {
+                    date: {
+                        [Op.gte]: startDate,
+                        [Op.lte]: endDate
+                    },
+                    IndividualUserId: req.session.userId
+                }, 
+                include: [
+                    {
+                        model: IndUser,
+                        where: {id: req.session.userId},
+                        attributes: ["id", "name", "surname"]
+                    },
+                    {
+                        model: IndEntryResult
+                    }
+                ],
+                order: [["date", "ASC"]]
+            });
+        } catch (error) {
+            console.log(error);
+            return res.redirect("/dashboard");
+        }
     }
 
     let dates = groupByDate(entries, 'DD-MM');
@@ -1221,8 +1258,8 @@ exports.getDefaultUserJourneyPage = async (req, res) => {
 
     // Calculating all dates within a chosen period of time
     let timeperiod = [];
-    let start = new Date(monday);
-    let end = new Date(weekLater);
+    let start = new Date(startDate);
+    let end = new Date(endDate);
 
     while(start <= end){
         timeperiod.push(moment(start).format('DD-MM'));
@@ -1233,25 +1270,40 @@ exports.getDefaultUserJourneyPage = async (req, res) => {
     let dataset = [];
     let emotions = [];
 
+    let frequencyset = [];
+
     for(let p of timeperiod) {
         let entryFound = false;
         for (let [key, values] of Object.entries(dates)) {
             if(p == key) {
-                let emotion = "";        
+                let emotion = "";  
+                // i - to count the number of values   
+                let i = 0;    
                 for(let val of values) {
                     // To count the total number of entries
                     entriesNo++;
                     // To get the detected emotion from the entry record
-                    emotion = val.UserEntryResult.emotion;
-                    // Pushing all the emotion to subsequently find the most frequently occurring one 
+                    if(req.session.isSystemUser) {
+                        emotion = val.UserEntryResult.emotion;
+                    } else {
+                        emotion = val.IndividualEntryResult.emotion;
+                    }
+                    // Pushing all the emotion to be able to find the most frequently occurring one 
                     emotions.push(emotion);
                     dataset.push({
                         x : key,
                         y : emotion
                     });
+                    i++;
                 }                
 
                 entryFound = true;
+
+                // Frequency set - to show users' activity on a line chart
+                frequencyset.push({
+                    x: key,
+                    y: i
+                });
             }             
         }
                     
@@ -1261,16 +1313,21 @@ exports.getDefaultUserJourneyPage = async (req, res) => {
                 x : p,
                 y : "None"
             });
+
+            frequencyset.push({
+                x: p,
+                y: 0
+            });
         }
     } 
 
-    let daysActive = 7 - daysMissed;
+    let daysActive = noOfDays - daysMissed;
     let mainEmotions = evaluateMainEmotion(emotions);
     let average = parseFloat((entriesNo/7).toFixed(2));
 
     // Render the page
     return res.render("entries/user-journey", {
-        title: "Your Week with the Moodnitor",
+        title: "Your Journey with the Moodnitor",
         isAdmin: req.session.isAdmin,
         isSpecialist: req.session.isSpecialist,
         isSystemUser: req.session.isSystemUser,
@@ -1281,12 +1338,13 @@ exports.getDefaultUserJourneyPage = async (req, res) => {
         mainTitle: titleToDisplay,
         dataset: JSON.stringify(dataset),
         labels: JSON.stringify(timeperiod),
-        dateFrom: monday,
-        dateTo: weekLater,
+        dateFrom: startDate,
+        dateTo: endDate,
         entriesNo: entriesNo,
         daysActive: daysActive,
         mainEmotions: mainEmotions,
-        average: average
+        average: average,
+        frequencyset: JSON.stringify(frequencyset)
     });
 }
 
@@ -1304,7 +1362,6 @@ const evaluateMainEmotion = (data) => {
     let sadness = {"emotion": "Sadness", "times": 0};
     let anger = {"emotion": "Anger", "times": 0};
     let fear = {"emotion": "Fear", "times": 0};
-
     for (let d of data) {
         switch(d) {
             case "Joy":
@@ -1320,7 +1377,7 @@ const evaluateMainEmotion = (data) => {
                 neutral.times++;
                 break;
             case "Anger":
-                fear.times++;
+                anger.times++;
                 break;
             default:
                 //        

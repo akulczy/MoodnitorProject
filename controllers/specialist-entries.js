@@ -782,3 +782,221 @@ exports.fetchEntryWithResults = async (req, res) => {
 
     return res.status(200).send({ entry: entry });
 }
+
+// Render default page for reports regarding users
+exports.getDefaultReportsPage = async (req, res) => {
+    let users = null;
+
+    try {
+        users = await SystemUser.findAll({where: {SpecialistId: req.session.userId, CentreId: req.session.centreId, disabled: false}, attributes: ["id", "name", "surname", "disabled", "CentreId", "SpecialistId"]});
+    } catch (error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    res.render("entries/specialist/reports-default", {
+        title: "Users' Reports",
+        isAdmin: req.session.isAdmin,
+        isSpecialist: req.session.isSpecialist,
+        isSystemUser: req.session.isSystemUser,
+        isIndUser: req.session.isIndUser,
+        userName: req.session.name,
+        userSurname: req.session.surname,
+        titleToDisplay: "Users' Reports",
+        users: users
+    });
+}
+
+// Render page with report's result
+exports.getReportPage = async (req, res) => {
+    let entries = [];
+    let user = null;
+    let startDate = req.body.dateFrom;
+    let endDate = req.body.dateTo;
+    let startMoment = moment(startDate);
+    let endMoment = moment(endDate);
+    let userId = req.body.userSelect;
+
+    let noOfDays = endMoment.diff(startMoment, "days") + 1;
+
+    try {
+        user = await SystemUser.findOne({where: {id: userId, SpecialistId: req.session.userId, CentreId: req.session.centreId}, attributes: ["id", "name", "surname", "SpecialistId", "CentreId"]});
+    } catch (error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    try {
+        entries = await UserEntry.findAll({
+            where: {
+                date: {
+                    [Op.gte]: startDate,
+                    [Op.lte]: endDate
+                },
+                SystemUserId: userId
+            }, 
+            include: [
+                {
+                    model: SystemUser,
+                    where: {id: userId, SpecialistId: req.session.userId, CentreId: req.session.centreId},
+                    attributes: ["id", "name", "surname", "SpecialistId", "CentreId"]
+                },
+                {
+                    model: UserEntryResult
+                }
+            ],
+            order: [["date", "ASC"]]
+        });
+    } catch (error) {
+        console.log(error);
+        return res.redirect("/dashboard");
+    }
+
+    let dates = groupByDate(entries, 'DD-MM');
+    let entriesNo = 0;
+    let daysMissed = 0;
+
+    // Calculating all dates within a chosen period of time
+    let timeperiod = [];
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+
+    while(start <= end){
+        timeperiod.push(moment(start).format('DD-MM'));
+        let newDate = start.setDate(start.getDate() + 1);
+        start = new Date(newDate);  
+    }
+
+    // Dataset to store information about emotions predicted at given days
+    let dataset = [];
+    let emotions = [];
+
+    // Frequencyset to store information about user activity (how many entries at each day of the time period)
+    let frequencyset = [];
+
+    for(let p of timeperiod) {
+        let entryFound = false;
+        for (let [key, values] of Object.entries(dates)) {
+            if(p == key) {
+                let emotion = "";  
+                // i - to count the number of values   
+                let i = 0;    
+                for(let val of values) {
+                    // To count the total number of entries
+                    entriesNo++;
+                    // To get the detected emotion from the entry record
+                    emotion = val.UserEntryResult.emotion;
+
+                    // Pushing all the emotion to be able to find the most frequently occurring one 
+                    emotions.push(emotion);
+                    dataset.push({
+                        x : key,
+                        y : emotion
+                    });
+                    i++;
+                }                
+
+                entryFound = true;
+
+                // Frequency set - to show users' activity on a line chart
+                frequencyset.push({
+                    x: key,
+                    y: i
+                });
+            }             
+        }
+                    
+        if(!entryFound) {
+            daysMissed++;
+            dataset.push({
+                x : p,
+                y : "None"
+            });
+
+            frequencyset.push({
+                x: p,
+                y: 0
+            });
+        }
+    } 
+
+    let daysActive = noOfDays - daysMissed;
+    let mainEmotions = evaluateMainEmotion(emotions);
+    let average = parseFloat((entriesNo/7).toFixed(2));
+
+    // Render the page
+    return res.render("entries/specialist/reports-user", {
+        title: "User's Activity Report",
+        isAdmin: req.session.isAdmin,
+        isSpecialist: req.session.isSpecialist,
+        isSystemUser: req.session.isSystemUser,
+        isIndUser: req.session.isIndUser,
+        userName: req.session.name,
+        userSurname: req.session.surname,
+        titleToDisplay: "User's Activity Report",
+        mainTitle: "User's Activity Report",
+        dataset: JSON.stringify(dataset),
+        labels: JSON.stringify(timeperiod),
+        dateFrom: startDate,
+        dateTo: endDate,
+        entriesNo: entriesNo,
+        daysActive: daysActive,
+        mainEmotions: mainEmotions,
+        average: average,
+        frequencyset: JSON.stringify(frequencyset),
+        user: user
+    });
+}
+
+const groupByDate = (dates, token) => {
+    return dates.reduce(function(val, obj) {
+        let comp = moment(obj.date, 'YYYY-MM-DD').format(token);
+        (val[comp] = val[comp] || []).push(obj);
+        return val;
+    }, {});
+}
+
+const evaluateMainEmotion = (data) => {
+    let neutral = {"emotion": "Neutral", "times": 0};
+    let joy = {"emotion": "Joy", "times": 0};
+    let sadness = {"emotion": "Sadness", "times": 0};
+    let anger = {"emotion": "Anger", "times": 0};
+    let fear = {"emotion": "Fear", "times": 0};
+    for (let d of data) {
+        switch(d) {
+            case "Joy":
+                joy.times++;
+                break;
+            case "Fear":
+                fear.times++;
+                break;
+            case "Sadness":
+                sadness.times++;
+                break;
+            case "Neutral":
+                neutral.times++;
+                break;
+            case "Anger":
+                anger.times++;
+                break;
+            default:
+                //        
+        }
+    }
+
+    let maxVal = 0;
+    for (let i of [joy, fear, sadness, neutral, fear]) {
+        if(i.times > maxVal) {
+            maxVal = i.times;
+        }
+    }
+
+    let mainemotions = [];
+    for (let j of [joy, fear, sadness, neutral, fear]) {
+        if(j.times == maxVal) {
+            mainemotions.push(j);
+        }
+    }
+
+    return mainemotions;
+}

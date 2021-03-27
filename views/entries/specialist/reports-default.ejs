@@ -1,0 +1,66 @@
+<%- include("../../elements/header.ejs") %>
+<link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
+</head>
+
+<body class="entry-body">
+    <% if(isSystemUser || isIndUser) { %>
+        <%- include("../../elements/sidebar-user.ejs") %>
+    <% } else { %>
+        <%- include("../../elements/sidebar-specialist.ejs") %>
+    <% } %>
+
+    <%- include("../../elements/topbar-internal.ejs") %>
+    <div class="main-body entry-pad">
+        <div class="container-shadow report-default-cont">
+
+            <div class="title-wrapper">
+                <div class="title-with-border">
+                    <div>Generate Report</div>
+                    <div class="title-line"></div>
+                </div>
+            </div>
+
+            <div class="align-sm-txt">
+                <small>Please fill in the fields below to generate a report of the chosen user's activity.</small>
+            </div>
+            <div class="def-cont-form">
+            <form method="POST" action="/dashboard/specialist/entries/report">
+                <div class="def-report-row">
+                    <label class="form-check-label align-label" for="select-user">Select assigned user:</label>
+                    <select class="custom-select" id="select-user" name="userSelect">
+                        <% for(let user of users) { %>
+                            <option value="<%- user.id %>"><%- user.name + " " + user.surname %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="sub-browse-3 def-report-row">
+                    <div style="padding-right: 1rem;">
+                        <div class="browse-label">Date from:</div>
+                        <div class="sub-browse-align">
+                            <input type="date" class="form-control" name="dateFrom" id="entry-date" required />
+                        </div>
+                    </div>
+                    <div>
+                        <div class="browse-label">Date to:</div>
+                        <div class="sub-browse-align">
+                            <input type="date" class="form-control" name="dateTo" id="entry-date" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="sub-browse-2 def-report-row def-report-btn">
+                    <div>
+                        <button type="submit" class="btn btn-sm btn-secondary" id="browse-disabled-date">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+<script>
+    $("#reports-element").addClass("active-sidebar-element");
+</script>
+</body>
+
+</html>

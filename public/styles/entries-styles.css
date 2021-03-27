@@ -345,3 +345,27 @@
 .emotion-list-title {
     color: #3c4198;
 }
+
+.report-default-cont {
+    border-radius: 15px;
+    padding: 2rem;
+    padding-bottom: 4rem;
+    margin-top: 4rem;
+}
+
+.def-cont-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.def-report-row {
+    padding-top: 1.2rem;
+}
+
+.def-report-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 2rem;
+}

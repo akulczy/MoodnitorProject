@@ -1,7 +1,6 @@
 // Chart displayed on the main page
 $(document).ready(() => {
     let ctx = document.getElementById("usage-graph");
-    console.log(JSON.parse(dataentries))
     const lineChart = new Chart(ctx, {
         type: 'scatter',
         data: {            

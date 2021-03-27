@@ -2,7 +2,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
 <script>let dataentries = '<%- dataset %>';</script>
-<script>let datalabels = '<%- timeperiod %>'</script>
+<script>let datalabels = '<%- timeperiod %>';</script>
 
 </head>
 
@@ -31,7 +31,11 @@
                 <div class="cont-shadow cont-hover cont-summ">
                     <div class="align-cont-summ">
                         <div>Today, you have added...</div>
-                        <div class="no-entries-dash"><%- noOfEntries %> entries</div>
+                        <% if(noOfEntries > 1) { %>
+                            <div class="no-entries-dash"><%- noOfEntries %> entries</div>
+                        <% } else { %>
+                            <div class="no-entries-dash"><%- noOfEntries %> entry</div>
+                        <% } %>
                         <div>
                             <div><a href="/dashboard/user/entries/review" class="linkNoStyle"><div class="v-bg-btn">Review Your Entries</div></a></div>
                         </div>
@@ -67,14 +71,18 @@
                 <% } %>
             </div>
             <div class="cont-h cont-2 cont-shadow cont-middle">
-                <div class="min-cont-desc">You have been active</div>
-                <div class="cont-no">3</div>
-                <div class="min-cont-desc">days in a row</div>
+                <div class="min-cont-desc">You were active</div>
+                <div class="cont-no"><%- daysActive %></div>
+                <% if(daysActive == 1) { %>
+                    <div class="min-cont-desc">day in past 7 days</div>
+                <% } else { %>
+                    <div class="min-cont-desc">days in past 7 days</div>
+                <% } %>
             </div>
             <div class="cont-h cont-2 cont-shadow cont-last">
                 <div class="min-cont-desc">You added</div>
                 <div class="cont-no"><%- noOfEntriesTillNow %></div>
-                <% if(noOfEntries == 1) { %>
+                <% if(noOfEntriesTillNow == 1) { %>
                     <div class="min-cont-desc">entries in total</div>
                 <% } else { %>
                     <div class="min-cont-desc">entries in total</div>
@@ -84,7 +92,7 @@
 
         <div class="dash-line dash-line-3">
             <div class="main-graph-cont cont-shadow">
-                <div id="graph-title">Your activity:</div>
+                <div id="graph-title">Your activity in past 7 days:</div>
                 <canvas id="usage-graph"></canvas>
             </div>
         </div>

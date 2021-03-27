@@ -72,6 +72,9 @@ router.get("/fetch", entries.fetchEntries);
 router.get("/fetch/:entryId", entries.fetchEntryWithResults);
 
 // GET - view with user journey
-router.get("/journey", entries.getDefaultUserJourneyPage);
+router.get("/journey", entries.getUserJourneyPage);
+
+// POST - view with user journey
+router.post("/journey", entries.getUserJourneyPage);
 
 module.exports = router;

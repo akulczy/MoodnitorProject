@@ -13,18 +13,34 @@ const { Op } = require("sequelize");
 
 exports.getDashboard = async (req, res) => {
     let dateToday =  moment(new Date()).format("DD/MM/YYYY");
-    let noOfEntries, noOfEntriesTillNow, freq;
+    let noOfEntries, noOfEntriesTillNow, freq, specfreq;
+    let daysActive = 0;
+    let noOfUsers = 0;
+    let noOfEntriesSpec = 0;
+    let noOfEntriesTotal = 0;
     let timeperiod = [];
     let dataset = [];
 
-    if(req.session.isIndividualUser || req.session.isSystemUser) {
-        noOfEntries = await getEntriesFromToday(req.session.isIndividualUser, req.session.isSystemUser, req.session.userId);
-        noOfEntriesTillNow = await getHowManyEntriesTillNow(req.session.isIndividualUser, req.session.isSystemUser, req.session.userId);
-        freq = await getUserFrequency(req.session.isIndividualUser, req.session.isSystemUser, req.session.userId);
-        if(freq.length == 2) {
+    if(req.session.isIndUser || req.session.isSystemUser) {
+        noOfEntries = await getEntriesFromToday(req.session.isIndUser, req.session.isSystemUser, req.session.userId);
+        noOfEntriesTillNow = await getHowManyEntriesTillNow(req.session.isIndUser, req.session.isSystemUser, req.session.userId);
+        freq = await getUserFrequency(req.session.isIndUser, req.session.isSystemUser, req.session.userId);
+        if(freq.length >= 3) {
             timeperiod = freq[0];
             dataset = freq[1];
+            daysActive = freq[2];
         }        
+    }
+
+    if(req.session.isSpecialist || req.session.isAdmin) {
+        noOfUsers = await getNumberOfAssignedUsers(req.session.userId);
+        noOfEntriesSpec = await getNumberOfEntriesTodaySpec(req.session.userId);
+        specfreq = await getNumberOfEntriesTotalSpec(req.session.userId);
+        if(specfreq.length >= 3) {
+            timeperiod = specfreq[0];
+            dataset = specfreq[1];
+            noOfEntriesTotal = specfreq[2];
+        }
     }
 
     if(req.session.isSpecialist) {
@@ -37,7 +53,12 @@ exports.getDashboard = async (req, res) => {
             userName: req.session.name,
             userSurname: req.session.surname,
             titleToDisplay: "Dashboard",
-            dateToday: dateToday
+            dateToday: dateToday,
+            noOfUsers: noOfUsers,
+            noOfEntriesSpec: noOfEntriesSpec,
+            noOfEntriesTotal: noOfEntriesTotal,
+            dataset: JSON.stringify(dataset),
+            timeperiod: JSON.stringify(timeperiod)
         });
     }
 
@@ -55,7 +76,8 @@ exports.getDashboard = async (req, res) => {
             noOfEntries: noOfEntries,
             noOfEntriesTillNow: noOfEntriesTillNow,
             timeperiod: JSON.stringify(timeperiod),
-            dataset: JSON.stringify(dataset)
+            dataset: JSON.stringify(dataset),
+            daysActive: daysActive
         });
     }
 
@@ -73,7 +95,8 @@ exports.getDashboard = async (req, res) => {
             noOfEntries: noOfEntries,
             noOfEntriesTillNow: noOfEntriesTillNow,
             timeperiod: JSON.stringify(timeperiod),
-            dataset: JSON.stringify(dataset)
+            dataset: JSON.stringify(dataset),
+            daysActive: daysActive
         });
     }
 }
@@ -344,9 +367,9 @@ const getHowManyEntriesTillNow = async (isIndividualUser, isSystemUser, userId) 
 }
 
 const getUserFrequency = async (isIndividualUser, isSystemUser, userId) => {
-    let entries = [];
+    let daysActive = 0;
     let today = moment();
-    let weekBefore = moment(today).subtract(7, "days");
+    let weekBefore = moment(today).subtract(6, "days");
     today = today.format('YYYY-MM-DD');
     weekBefore = weekBefore.format('YYYY-MM-DD');
 
@@ -360,25 +383,14 @@ const getUserFrequency = async (isIndividualUser, isSystemUser, userId) => {
         start = new Date(newDate);  
     }
 
-    if(isIndividualUser) {
-        try{
-            entries = await IndividualEntry.findAll({where: {IndividualUserId: userId, date: {[Op.gte]: weekBefore, [Op.lte]: today}, order: [["date", "ASC"]]}});
-        } catch(error) {
-            console.log(error);
-        }
-    } else if(isSystemUser) {
-        try{
-            entries = await UserEntry.findAll({where: {SystemUserId: userId, date: {[Op.gte]: weekBefore, [Op.lte]: today}, order: [["date", "ASC"]]}});
-        } catch(error) {
-            console.log(error);
-        }
-    }
-
     let dataset = [];
     let entry;
     if(isIndividualUser) {
         for(let tp of timeperiod) {
             entry = await IndividualEntry.findAndCountAll({where: {IndividualUserId: userId, date: tp}});
+            if(entry.count != 0) {
+                daysActive++;
+            }
             dataset.push({
                 x: tp,
                 y: entry.count
@@ -387,6 +399,9 @@ const getUserFrequency = async (isIndividualUser, isSystemUser, userId) => {
     } else if(isSystemUser) {
         for(let tp of timeperiod) {
             entry = await UserEntry.findAndCountAll({where: {SystemUserId: userId, date: tp}});
+            if(entry.count != 0) {
+                daysActive++;
+            }
             dataset.push({
                 x: tp,
                 y: entry.count
@@ -394,5 +409,70 @@ const getUserFrequency = async (isIndividualUser, isSystemUser, userId) => {
         }
     }
 
-    return [timeperiod, dataset];    
+    return [timeperiod, dataset, daysActive];    
+}
+
+const getNumberOfAssignedUsers = async (userId) => {
+    let noOfUsers = 0;
+    let users;
+
+    try{
+        users = await SystemUser.findAndCountAll({where: {SpecialistId: userId}});
+        noOfUsers = users.count;
+    } catch(error) {
+        console.log(error);
+        noOfUsers = 0;
+    }
+
+    return noOfUsers;
+}
+
+const getNumberOfEntriesTodaySpec = async (userId) => {
+    let noOfEntries = 0;
+    let entries;
+    let today = moment().format('YYYY-MM-DD');
+
+    try {
+        entries = await UserEntry.findAndCountAll({where: {date: today}, include: {model: SystemUser, where: {SpecialistId: userId}, required: true}})
+        noOfEntries = entries.count;
+    } catch(error) {
+        console.log(error);
+        noOfEntries = 0;
+    }
+
+    return noOfEntries;
+}
+
+const getNumberOfEntriesTotalSpec = async (userId) => {
+    let noOfEntries = 0;
+    let today = moment();
+    let weekBefore = moment(today).subtract(6, "days");
+    today = today.format('YYYY-MM-DD');
+    weekBefore = weekBefore.format('YYYY-MM-DD');
+
+    let timeperiod = [];
+    let start = new Date(weekBefore);
+    let end = new Date(today);
+
+    while(start <= end){
+        timeperiod.push(moment(start).format('YYYY-MM-DD'));
+        let newDate = start.setDate(start.getDate() + 1);
+        start = new Date(newDate);  
+    }
+
+    let dataset = [];
+    let entry;
+
+    for(let tp of timeperiod) {
+        entry = await UserEntry.findAndCountAll({where: {date: tp}, include: {model: SystemUser, where: {SpecialistId: userId}, required: true}});
+        if(entry.count != 0) {
+            noOfEntries += entry.count;
+        }
+        dataset.push({
+            x: tp,
+            y: entry.count
+        });
+    }
+
+    return [timeperiod, dataset, noOfEntries];    
 }

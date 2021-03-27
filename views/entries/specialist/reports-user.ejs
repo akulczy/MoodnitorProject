@@ -1,4 +1,4 @@
-<%- include("../elements/header.ejs") %>
+<%- include("../../elements/header.ejs") %>
 <link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
 <script>let dataset = '<%- dataset %>';</script>
@@ -8,12 +8,12 @@
 
 <body class="entry-body">
     <% if(isSystemUser || isIndUser) { %>
-        <%- include("../elements/sidebar-user.ejs") %>
+        <%- include("../../elements/sidebar-user.ejs") %>
     <% } else { %>
-        <%- include("../elements/sidebar-specialist.ejs") %>
+        <%- include("../../elements/sidebar-specialist.ejs") %>
     <% } %>
 
-    <%- include("../elements/topbar-internal.ejs") %>
+    <%- include("../../elements/topbar-internal.ejs") %>
 
     
     <div class="main-body entry-pad">
@@ -26,35 +26,17 @@
         </div>
 
         <div class="browse-cont disabled-cont browse-journey">
-            <form method="POST" action="/dashboard/user/entries/journey">
-                <div class="sub-browse-2">
-                    <div>
-                        <div class="browse-label">Date from:</div>
-                        <div class="sub-browse-align">
-                            <input type="date" class="form-control" name="dateFrom" id="entry-date" />
-                        </div>
-                    </div>
-                    <div>
-                        <div class="browse-label">Date to:</div>
-                        <div class="sub-browse-align">
-                            <input type="date" class="form-control" name="dateTo" id="entry-date" />
-                            <button type="submit" class="btn btn-sm btn-secondary" id="browse-disabled-date">
-                                <img src="/files/magni-glass-icon.png" alt="search" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
             <div class="browse-reset">
-                <a class="linkNoStyle" href="/dashboard/user/entries/journey">
+                <a class="linkNoStyle" href="/dashboard/specialist/entries/reports">
                     <button type="button" class="btn btn-sm btn-dark" id="reset-btn">
-                        <img src="/files/reset-icon.png" alt="search" />
+                        Generate Report
                     </button>
                 </a>
             </div>
+            
         </div>
         <div class="align-sm-txt">
-            <small>Please fill in the fields above to see reports from other periods of time.</small>
+            <small>Please press the button above to go back to the "Generate Report" page.</small>
         </div>
 
         <div class="entry-cont summary-entry-cont journey-cont">
@@ -63,23 +45,27 @@
                 <div class="summary-title">&#8226; Time period: <span class="p-dark"><%- dateFrom + " - " + dateTo %></span></div>
             </div>
 
+            <div class="entry-date">
+                <div class="summary-title">&#8226; Assigned user: <span class="p-dark"><%- user.name + " - " + user.surname %></span></div>
+            </div>
+
             <div class="line-chart-align">
                 <canvas id="line-chart"></canvas>
             </div>
 
             <div class="dash-line dash-line-2" style="padding-top: 0.1rem;">
                 <div class="cont-h cont-2 cont-shadow cont-first">
-                    <div class="min-cont-desc">You added...</div>
+                    <div class="min-cont-desc">User added...</div>
                     <div class="cont-no"><%- entriesNo %></div>
                     <div class="min-cont-desc">entries in total</div>
                 </div>
                 <div class="cont-h cont-2 cont-shadow cont-middle">
-                    <div class="min-cont-desc">You were active...</div>
+                    <div class="min-cont-desc">User was active...</div>
                     <div class="cont-no"><%- daysActive %></div>
                     <div class="min-cont-desc">days in total</div>
                 </div>
                 <div class="cont-h cont-2 cont-shadow cont-last">
-                    <div class="min-cont-desc">On average, you added...</div>
+                    <div class="min-cont-desc">On average, user added...</div>
                     <div class="cont-no"><%- average %></div>
                     <div class="min-cont-desc">entries a day</div>
                 </div>
@@ -102,7 +88,7 @@
             </div>
 
             <div class="dash-line-1 dash-line-column" style="padding-top: 1.5rem">
-                <div class="summary-title">&#8226; Your activity in this period:</div>
+                <div class="summary-title">&#8226; User's activity in this period:</div>
             </div>
 
             <div class="line-chart-align">
@@ -114,7 +100,7 @@
     </div>
 <script type="text/javascript" src="/scripts/entries/user-journey.js"></script>
 <script>
-    $("#your-journey-element").addClass("active-sidebar-element");
+    $("#reports-element").addClass("active-sidebar-element");
 </script>
 </body>
 

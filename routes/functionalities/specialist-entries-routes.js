@@ -68,4 +68,10 @@ router.get("/fetch/ind", entries.fetchEntriesInd);
 // GET - fetch individual entry with results
 router.get("/fetch/:userId/:entryId", entries.fetchEntryWithResults);
 
+// GET - default reports page
+router.get("/reports", entries.getDefaultReportsPage);
+
+// POST - rendering report
+router.post("/report", entries.getReportPage);
+
 module.exports = router;
