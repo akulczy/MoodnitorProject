@@ -5,6 +5,10 @@
 <script>let dataset = '<%- dataset %>';</script>
 <script>let datalabels = '<%- labels %>';</script>
 <script>let freqdata = '<%- frequencyset %>';</script>
+<script>let entriesNoPDF = '<%- entriesNo %>';</script>
+<script>let daysActivePDF = '<%- daysActive %>';</script>
+<script>let averagePDF = '<%- average %>';</script>
+<script>let mainEmotionsPDF = JSON.parse('<%- mainEmo %>');</script>
 </head>
 
 <body class="entry-body">
@@ -42,16 +46,18 @@
 
         <div class="entry-cont summary-entry-cont journey-cont">
 
-            <button type="button" class="btn btn-sm btn-info" id="download-btn">
-                Download Report
-            </button>
-
-            <div class="entry-date">
-                <div class="summary-title">&#8226; Time period: <span class="p-dark"><%- dateFrom + " - " + dateTo %></span></div>
+            <div class="report-btn-align">
+                <button type="button" class="btn btn-sm btn-info" id="download-btn">
+                    Download Report
+                </button>
             </div>
 
             <div class="entry-date">
-                <div class="summary-title">&#8226; Assigned user: <span class="p-dark"><%- user.name + " - " + user.surname %></span></div>
+                <div class="summary-title">&#8226; Time period: <span class="p-dark" id="time-period"><%- dateFrom + " - " + dateTo %></span></div>
+            </div>
+
+            <div class="entry-date">
+                <div class="summary-title">&#8226; Assigned user: <span class="p-dark" id="username"><%- user.name + " " + user.surname %></span></div>
             </div>
 
             <div class="line-chart-align">
@@ -86,8 +92,12 @@
                 </div>
 
                 <ul>
-                    <% for (let em of mainEmotions) { %>
-                        <li><span class="emo-color"><%- em.emotion %></span> - <%- em.times %> times</li>
+                    <% if(mainEmotions.length == 0) { %>
+                        <li>N/A</li>
+                    <% } else { %>
+                        <% for (let em of mainEmotions) { %>
+                            <li><span class="emo-color"><%- em.emotion %></span> - <%- em.times %> times</li>
+                        <% } %>
                     <% } %>
                 </ul>
             </div>
@@ -104,6 +114,8 @@
 
     </div>
 <script type="text/javascript" src="/scripts/entries/user-journey.js"></script>
+<script type="text/javascript" src="/scripts/specialist/download-report-specialist.js"></script>
+
 <script>
     $("#reports-element").addClass("active-sidebar-element");
 </script>

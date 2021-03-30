@@ -1343,6 +1343,7 @@ exports.getUserJourneyPage = async (req, res) => {
         entriesNo: entriesNo,
         daysActive: daysActive,
         mainEmotions: mainEmotions,
+        mainEmo: JSON.stringify(mainEmotions),
         average: average,
         frequencyset: JSON.stringify(frequencyset)
     });
@@ -1393,7 +1394,7 @@ const evaluateMainEmotion = (data) => {
 
     let mainemotions = [];
     for (let j of [joy, fear, sadness, neutral, fear]) {
-        if(j.times == maxVal) {
+        if(j.times == maxVal && j.times != 0) {
             mainemotions.push(j);
         }
     }

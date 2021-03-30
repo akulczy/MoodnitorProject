@@ -8,6 +8,7 @@
 <script>let entriesNoPDF = '<%- entriesNo %>';</script>
 <script>let daysActivePDF = '<%- daysActive %>';</script>
 <script>let averagePDF = '<%- average %>';</script>
+<script>let mainEmotionsPDF = JSON.parse('<%- mainEmo %>');</script>
 
 </head>
 
@@ -106,8 +107,12 @@
                 </div>
 
                 <ul>
-                    <% for (let em of mainEmotions) { %>
-                        <li><span class="emo-color"><%- em.emotion %></span> - <%- em.times %> times</li>
+                    <% if(mainEmotions.length == 0) { %>
+                        <li>N/A</li>
+                    <% } else { %>
+                        <% for (let em of mainEmotions) { %>
+                            <li><span class="emo-color"><%- em.emotion %></span> - <%- em.times %> times</li>
+                        <% } %>
                     <% } %>
                 </ul>
             </div>

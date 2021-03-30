@@ -1,11 +1,23 @@
 const generateReportPDF = (emotionChartImg) => {
+    let assignedUser = $("#username").text();
+
     const doc = new jsPDF("p", "mm", "a4");
     let y = 25;
 
     doc.setFont("times", "bold");
     doc.setFontSize(15);
-    doc.text("Your Journey with the Moodnitor", 105, y, null, null, "center");
+    doc.text("User's Journey with the Moodnitor", 105, y, null, null, "center");
     y += 15;
+
+    doc.setFont("times", "bold");
+    doc.setFontSize(12);
+    doc.text("Patient's details:", 20, y);
+    y += 7;
+
+    doc.setFont("times", "normal");
+    doc.setFontSize(12);
+    doc.text(assignedUser, 20, y);
+    y += 10;
 
     doc.setFont("times", "bold");
     doc.setFontSize(12);
@@ -34,13 +46,13 @@ const generateReportPDF = (emotionChartImg) => {
 
     doc.setFont("times", "normal");
     doc.setFontSize(12);
-    doc.text("- You added " + entriesNoPDF + " entries in total.", 20, y);
+    doc.text("- User added " + entriesNoPDF + " entries in total.", 20, y);
     y += 10;
 
-    doc.text("- You were active " + daysActivePDF + " days in total.", 20, y);
+    doc.text("- User active " + daysActivePDF + " days in total.", 20, y);
     y += 10;
 
-    doc.text("- On average, you added " + averagePDF + " entries a day.", 20, y);
+    doc.text("- On average, user added " + averagePDF + " entries a day.", 20, y);
     y += 15;
 
     if(mainEmotionsPDF.length > 0) {
@@ -61,7 +73,7 @@ const generateReportPDF = (emotionChartImg) => {
     y = 30;
     doc.setFont("times", "bold");
     doc.setFontSize(12);
-    doc.text("Your frequency of usage:", 20, y);
+    doc.text("User's frequency of usage:", 20, y);
     y += 15;
     let image2 = new Image();
     image2.src = freqChartImg;
