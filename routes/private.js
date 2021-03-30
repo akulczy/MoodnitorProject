@@ -25,6 +25,9 @@ router.get("/account/update", dashboard.getUpdateAccountPage);
 // POST - update account
 router.post("/account/update", dashboard.updateUserDetails);
 
+// GET - get page where information about emotion classes are displayed
+router.get("/emotions", dashboard.getMoreInfoPage);
+
 // USE - dashboard
 router.use("/", dashboard.getDashboard);
 

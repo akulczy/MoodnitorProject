@@ -1402,6 +1402,43 @@ th, tbody {
     padding: 3rem 5rem 0rem 5rem;
 }
 
+.emotions-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 2rem 6rem 2rem 6rem;
+}
+
+.emotion-container {
+    width: 40%;
+    background-color: #fff;
+    border-radius: 15px;
+    padding: 2rem;
+}
+
+.emotion-rows {
+    padding-top: 3rem;
+}
+
+.pad-ex {
+    padding-bottom: 2rem !important;
+    text-align: center;
+}
+
+.emotion-title {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #4a50c0;
+    font-weight: bold;
+    padding-bottom: 1.2rem;
+}
+
+.emotion-description {
+    text-align: justify;
+    color: rgb(71, 72, 73);
+    font-size: 0.9rem;
+}
+
 @keyframes popupon {
     from {
         transform: scale(0);

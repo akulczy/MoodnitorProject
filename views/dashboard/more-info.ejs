@@ -1,0 +1,64 @@
+<%- include("../elements/header.ejs") %>
+<link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
+</head>
+
+<body class="entry-body">
+    <% if(isSystemUser || isIndUser) { %>
+        <%- include("../elements/sidebar-user.ejs") %>
+    <% } else { %>
+        <%- include("../elements/sidebar-specialist.ejs") %>
+    <% } %>
+
+    <%- include("../elements/topbar-internal.ejs") %>
+    <div class="main-body entry-pad">
+
+        <div class="title-wrapper">
+            <div class="title-with-border">
+                <div>Emotion Classes in the Moodnitor</div>
+                <div class="title-line"></div>
+            </div>
+        </div>
+
+        <div class="align-sm-txt">
+            <small>Please read the information below to find out about the emotion classes which can be predicted by the Moodnitor's automated emotion recognition system.</small>
+        </div>
+
+        <div class="emotion-rows">
+            <div class="align-sm-txt pad-ex">
+                <small>The emotion classes which can be detected by the Moodnitor system are based on the fundamental emotions determined by the psychologist Robert Plutchik. Below, you can find descriptions of each of the classes. <i>(source: www.6seconds.org)</i></small>
+            </div>
+            <div class="emotions-row">
+                <div class="emotion-container cont-shadow cont-hover">
+                    <div class="emotion-title">Joy</div>
+                    <div class="emotion-description">Joy is a pleasant emotional state, characterised by feelings of well-being, happiness, content, and satisfcation.</div>
+                </div>
+                <div class="emotion-container cont-shadow cont-hover">
+                    <div class="emotion-title">Neutral</div>
+                    <div class="emotion-description">Neutral emotion </div>
+                </div>
+            </div>
+            <div class="emotions-row">
+                <div class="emotion-container cont-shadow cont-hover">
+                    <div class="emotion-title">Sadness</div>
+                    <div class="emotion-description">Sadness is characterised by an emotional pain, and feelings associated with a negative state, such as despair, grief, disappointment, sorrow.</div>
+                </div>
+                <div class="emotion-container cont-shadow cont-hover">
+                    <div class="emotion-title">Fear</div>
+                    <div class="emotion-description">Fear is an emotion which gets triggered by a perceived threat or danger. It usually occurrs due to a certain stimulus identified as risk.</div>
+                </div>
+            </div>
+            <div class="emotions-row">
+                <div class="emotion-container cont-shadow cont-hover">
+                    <div class="emotion-title">Anger</div>
+                    <div class="emotion-description">Anger is an intense emotion, associated with a negative state. It usually occurs as a response to a certain unfavorable event being a source of pain, provocation, threat.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<script>
+    $("#more-info-element").addClass("active-sidebar-element");
+</script>
+</body>
+
+</html>

@@ -476,3 +476,16 @@ const getNumberOfEntriesTotalSpec = async (userId) => {
 
     return [timeperiod, dataset, noOfEntries];    
 }
+
+exports.getMoreInfoPage = (req, res) => {
+    return res.render("dashboard/more-info", {
+        title: "Emotion Classes",
+        isAdmin: req.session.isAdmin,
+        isSpecialist: req.session.isSpecialist,
+        isSystemUser: req.session.isSystemUser,
+        isIndUser: req.session.isIndUser,
+        userName: req.session.name,
+        userSurname: req.session.surname,
+        titleToDisplay: "Emotion Classes"
+    });
+}
