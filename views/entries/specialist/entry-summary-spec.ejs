@@ -53,7 +53,7 @@
 
             <div class="detected-main-emotions" style="list-style-type:circle;">
                 <ul class="detected-main-emotions-list">
-                    <% for (let pred of mainpred) { %>
+                    <% for (let pred of mpred) { %>
                         <li><span class='emotion-list-title'><%- (pred.emotion).charAt(0).toUpperCase() + (pred.emotion).slice(1) %>: </span><%- pred.percentage %> %</li>
                     <% } %>
                 </ul>

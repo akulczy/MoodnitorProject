@@ -43,7 +43,6 @@ const generateReportPDF = (emotionChartImg) => {
     doc.text("- On average, you added " + average + " entries a day.", 20, y);
     y += 10;
 
-
     doc.addPage();
     let image2 = new Image();
     image2.src = freqChartImg;

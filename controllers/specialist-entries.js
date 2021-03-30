@@ -12,7 +12,6 @@ const { Op } = require("sequelize");
 const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
-
 const aws = require('aws-sdk');
 
 const S3_BUCKET = process.env.S3_BUCKET_NAME;
@@ -22,7 +21,6 @@ aws.config = {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 };
 const s3 = new aws.S3();
-
 
 // Method to render page where the entries can be reviewed by the specialist
 exports.getReviewEntriesPageSpecialist = async (req, res) => {
@@ -565,6 +563,7 @@ exports.getEntrySummaryPage = async (req, res) => {
             userSurname: req.session.surname,
             titleToDisplay: "Entry Summary",
             entry: entry,
+            mpred: entry.UserEntryResult.predictions,
             mainpredictions: JSON.stringify(entry.UserEntryResult.predictions),
             sentencespredictions: JSON.stringify(entry.UserEntryResult.UserEntrySentences),
             files: JSON.stringify(entryFiles),
