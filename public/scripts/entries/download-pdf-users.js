@@ -159,7 +159,7 @@ createPDFForSys = (entry, chart) => new Promise((resolve, reject) => {
     resolve("Fine");
 });
 
-const generateCanvas = (entry, individual) => new Promise((resolve, reject) =>{
+const generateCanvas = (entry, individual) => new Promise((resolve, reject) => {
     $("body").append("<canvas class='chart-sm' id='chart'></canvas>");
     const ctx = $("#chart");
     let emotions = [];

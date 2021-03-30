@@ -1,6 +1,7 @@
 <%- include("../../elements/header.ejs") %>
 <link rel="stylesheet" types="text/css" href="/styles/entries-styles.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js" integrity="sha512-SuxO9djzjML6b9w9/I07IWnLnQhgyYVSpHZx0JV97kGBfTIsUYlWflyuW4ypnvhBrslz1yJ3R+S14fdCWmSmSA==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
 <script>let dataset = '<%- dataset %>';</script>
 <script>let datalabels = '<%- labels %>';</script>
 <script>let freqdata = '<%- frequencyset %>';</script>
@@ -40,6 +41,10 @@
         </div>
 
         <div class="entry-cont summary-entry-cont journey-cont">
+
+            <button type="button" class="btn btn-sm btn-info" id="download-btn">
+                Download Report
+            </button>
 
             <div class="entry-date">
                 <div class="summary-title">&#8226; Time period: <span class="p-dark"><%- dateFrom + " - " + dateTo %></span></div>

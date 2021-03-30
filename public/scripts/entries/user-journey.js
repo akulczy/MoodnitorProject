@@ -1,4 +1,7 @@
-const createLineChart = (dataentries) => {
+let emotionChartImg;
+let freqChartImg;
+
+const createLineChart = (dataentries) => new Promise((resolve, reject) => {
     const ctx = $("#line-chart");
     const lineChart = new Chart(ctx, {
         type: 'scatter',
@@ -13,6 +16,12 @@ const createLineChart = (dataentries) => {
         },
         options: {
             responsive: true,
+            animation : {
+                onComplete : function(){    
+                    emotionChartImg = lineChart.toBase64Image(); 
+                    resolve("Chart Loaded");                   
+                }
+            },
             tooltips: {
                 mode: 'index',
                 intersect: true,
@@ -47,9 +56,9 @@ const createLineChart = (dataentries) => {
         }
     }
     );
-}
+});
 
-const createActivityLineChart = (dataentries) => {
+const createActivityLineChart = (dataentries) => new Promise((resolve, reject) => {
     const ctx = document.getElementById("activity-chart");
     const lineChart = new Chart(ctx, {
         type: 'scatter',
@@ -63,6 +72,12 @@ const createActivityLineChart = (dataentries) => {
         },
         options: {
             responsive: true,
+            animation : {
+                onComplete : function(){    
+                    freqChartImg = lineChart.toBase64Image(); 
+                    resolve("Chart Loaded");                   
+                }
+            },
             tooltips: {
                 mode: 'index',
                 intersect: true,
@@ -84,9 +99,13 @@ const createActivityLineChart = (dataentries) => {
             }
         }
     });
-}
+});
 
 $(document).ready(() => {
-    createLineChart(JSON.parse(dataset));
-    createActivityLineChart(JSON.parse(freqdata));
+    Promise.all([createLineChart(JSON.parse(dataset)), createActivityLineChart(JSON.parse(freqdata))])
+    .then(() => {
+        $("#download-btn").click(() => {
+            generateReportPDF(emotionChartImg);
+        });
+    });
 });

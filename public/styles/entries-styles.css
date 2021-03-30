@@ -369,3 +369,9 @@
     justify-content: center;
     padding-top: 2rem;
 }
+
+.report-btn-align {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
