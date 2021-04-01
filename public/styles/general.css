@@ -1243,7 +1243,24 @@ th, tbody {
     width: 60%;
     height: 55%;
     top: 20%;
-    left: 20%;
+    left: 22%;
+}
+
+.popupbox-size2 {
+    width: 60%;
+    height: 60%;
+    top: 15%;
+    left: 22%;
+}
+
+.popupbox-size2 #popup-box-content {
+    display: block;
+    overflow-y: scroll;
+    background-color: #fff;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    height: 100%;
+    color: rgb(71, 72, 73);
 }
 
 #popup-box-topline {
@@ -1307,6 +1324,10 @@ th, tbody {
 
 #comment-content, #notes-content {
     margin-bottom: 1.5rem;
+}
+
+.popup-emotions-list {
+    padding: 2rem 0 2rem 0;
 }
 
 .custom-file-label {

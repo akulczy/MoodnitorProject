@@ -62,7 +62,47 @@ const createPieChart = (data, box) => {
     });
 }
 
+const createSentencePieChart = (data, box) => {
+    const ctx = $(box);
+    let emotions = [];
+    let percentages = [];
+    let colors = [];
+
+    for(let i=0; i<data.predictions.length; i++) {
+        let color;
+        emotions.push(data.predictions[i].emotion);
+        percentages.push(data.predictions[i].percentage);
+
+        color = chooseBackgroundColor(data.predictions[i].emotion);
+        colors.push(color);
+    }
+
+    const pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: emotions,
+            datasets: [{
+                label: "Emotions",
+                data: percentages,
+                backgroundColor: colors,
+                borderColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+
 const createBarChart = (data, container) => {
+    console.log(data)
     let chartLabels = [];
     let barChartData = [];
     for(let pr of data) {
@@ -119,6 +159,12 @@ const createBarChart = (data, container) => {
                 yAxes: [{
                     stacked: true
                 }]
+            },
+            onClick: function(event, array) {
+                // Index of a given bar
+                let ind = array[0]._index;
+                let bardata = data[ind];
+                appendChart(bardata, false);
             }
         }
     });
