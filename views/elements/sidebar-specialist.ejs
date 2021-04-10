@@ -1,4 +1,10 @@
+<div class="sidebar-closed">
+    <button class="btnNoStyle" onclick="openSidebar()">&#9776;</button>
+</div>
 <div class="sidebar">
+    <div class="xBtn">
+        <button class="btnNoStyle" onclick="closeSidebar()">×</button>
+    </div>
     <div class="sidebar-title">
         Moodnitor
     </div>
@@ -96,3 +102,16 @@
 
     </div>
 </div>
+
+<script>
+    function openSidebar() {
+        $(".sidebar").css("display", "block");
+        $(".xBtn").css("visibility", "visible");
+    }
+
+    /* Set the width of the sidebar to 0 (hide it) */
+    function closeSidebar() {
+        $(".sidebar").css("display", "none");
+        $(".xBtn").css("visibility", "hidden");
+    }
+</script>

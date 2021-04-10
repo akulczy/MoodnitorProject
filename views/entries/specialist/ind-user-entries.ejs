@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <div class="browse-cont">
+        <div class="browse-cont browse-spec-cont">
             <div class="sub-browse">
                 <div class="browse-label">Title:</div>
                 <div class="sub-browse-align">
@@ -74,9 +74,9 @@
                     <th scope="col"><strong>#</strong></th>
                     <th scope="col">Date</th>
                     <th scope="col">Title</th>
-                    <th scope="col">Summary</th>
-                    <th scope="col">User's Notes</th>
-                    <th scope="col" style="width: 15%;">Your Comments</th>
+                    <th scope="col">Overview</th>
+                    <th scope="col">Patient Notes</th>
+                    <th scope="col">Specialist Comments</th>
                     <th scope="col" style="width:10%">Download</th>
                   </tr>
                 </thead>
@@ -92,7 +92,7 @@
                             <% } else { %>
                                 <td class="e-title"><%= entries[i].title %></td>
                             <% } %>
-                            <td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/entries/summary/<%= entries[i].id %>"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>
+                            <td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/entries/summary/<%= entries[i].id %>"><button class="btnGradBlueSm margin-auto">Overview</button></a></td>
                             <td class="e-notes">                                
                                 <button class="btnGradPurpleSm margin-auto notesBtn" value="<%= entries[i].id %>">Notes</button>
                             </td>

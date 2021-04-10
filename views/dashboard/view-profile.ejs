@@ -29,6 +29,20 @@
                     <div class="profile-container-column profile-container-title">
                         Your Details
                     </div>
+
+                    <div class="profile-container-column">
+                        Role: 
+                        
+                        <% if(isSystemUser) { %>
+                            <span class="user-txt">Patient</span>
+                        <% } else if (isIndUser) { %>
+                            <span class="user-txt">Individual User</span>
+                        <% } else if (isSpecialist && !isAdmin) { %>
+                            <span class="user-txt">Specialist</span>
+                        <% } else if (isAdmin) { %>
+                            <span class="user-txt">Clinic's Administrator</span>
+                        <% } %>
+                    </div>
     
                     <div class="profile-container-column">
                         Name: <span class="user-txt"><%- user.name %></span>

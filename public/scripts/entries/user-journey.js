@@ -1,17 +1,49 @@
 let emotionChartImg;
 let freqChartImg;
 
+const chooseBackgroundColor = (data) => {
+    let color = "";
+    switch(data) {
+        case "Joy":
+            color = "#ffcf66";
+            break;
+        case "Fear":
+            color = "#000";
+            break;
+        case "Sadness":
+            color = "#498a9e";
+            break;
+        case "Neutral":
+            color = "#696764";
+            break;
+        case "Anger":
+            color = "#ba3d2b";
+            break;
+        case "None":
+            color = "#8c8c8c";
+            break;
+        default:
+            //        
+    }
+
+    return color;
+}
+
 const createLineChart = (dataentries) => new Promise((resolve, reject) => {
+    let colours = [];
+    for(let entry of dataentries) {
+        colours.push(chooseBackgroundColor(entry.y));
+    }
     const ctx = $("#line-chart");
     const lineChart = new Chart(ctx, {
         type: 'scatter',
-        labels: [0, 1, 2, 3],
         data: {            
             datasets: [{
                 label: "Emotional Variations",
                 data: dataentries,
-                borderColor:"rgba(75, 192, 192, 1)",
-                showLine: true,
+                borderColor: colours,
+                showLine: false,
+                pointRadius: 5
             }]
         },
         options: {
@@ -39,18 +71,9 @@ const createLineChart = (dataentries) => new Promise((resolve, reject) => {
                     position: 'bottom',
                     labels: JSON.parse(datalabels)
                 }],
-                /*yAxes: [{
-                    type: 'linear',
-                    position: 'left',
-                    ticks: {
-                        min: 0,
-                        beginAtZero: true,
-                        max: 5
-                    }
-                }],*/
                 yAxes: [{
                     type: 'category',
-                    labels: ['Joy', 'Fear', 'Anger', 'Sadness', 'Neutral', 'None']
+                    labels: ['', 'Joy', 'Fear', 'Anger', 'Sadness', 'Neutral', 'None']
                 }]
             }
         }

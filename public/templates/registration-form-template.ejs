@@ -3,32 +3,40 @@
     <div class="row">
         <div class="col">
             <label for="adminName">Name:</label>
-            <input type="text" class="form-control" id="adminName" name="adminName">
+            <input type="text" class="form-control" id="adminName" name="adminName" required>
         </div>
     </div>
     <div class="row">
         <div class="col">
             <label for="adminSurname">Surname:</label>
-            <input type="text" class="form-control" id="adminSurname" name="adminSurname">
+            <input type="text" class="form-control" id="adminSurname" name="adminSurname" required>
         </div>
     </div>
     <div class="row">
         <div class="col">
             <label for="adminEmail">Email address:</label>
-            <input type="email" class="form-control" id="adminEmail" name="adminEmail">
+            <input type="email" class="form-control" id="adminEmail" name="adminEmail" required>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="adminPhone">Phone number:</label>
+            <input type="text" class="form-control" id="adminPhone" name="adminPhone" required>
         </div>
     </div>
     <div class="row">
         <div class="col">
             <label for="adminPassword">Password:</label>
-            <input type="password" class="form-control" id="adminPassword" name="adminPassword">
+            <input type="password" class="form-control" id="adminPassword" name="adminPassword" required>
+            <small>Minimum 8 characters.</small>
         </div>
         <div class="col">
             <label for="adminPasswordRepeat">Repeat Password:</label>
-            <input type="password" class="form-control" id="adminPasswordRepeat" name="adminPasswordRepeat">
+            <input type="password" class="form-control" id="adminPasswordRepeat" name="adminPasswordRepeat" required>
+            <small id="pass-info"></small>
         </div>
     </div>
     <div class="row alignnextbtn">
-        <button type="submit" class="btnNoStyle btnGradBlue">Register</button>
+        <button id="registrationBtn" class="btnNoStyle btnGradBlue">Register</button>
     </div>
 </form>

@@ -95,9 +95,14 @@
                             <select class="custom-select" id="select-specialist">
                                 <option selected value="0">Choose</option>
                                 <% for(let specialist of specialists) { %>
-                                    <option value="<%- specialist.id %>"><%- specialist.name + " " + specialist.surname %></option>
+                                    <option value="<%- specialist.id %>"><%- specialist.name + " " + specialist.surname + " (" + specialist.title + ")" %></option>
                                 <% } %>
                             </select>
+                        </div>
+
+                        <div class="col-lg-6" id="dropDownRow2" style="display:none;">
+                            <label class="form-check-label align-label" for="specTitle">Job title:</label>
+                            <input type="text" class="form-control" id="specTitle" name="specTitle" required>
                         </div>
                     </div>
                     <div class="row alignnextbtn">

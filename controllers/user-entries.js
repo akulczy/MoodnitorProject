@@ -365,7 +365,7 @@ exports.getSystemUserEntrySummaryPage = async (req, res) => {
     }
 
     if(entry == null) { return res.redirect("/dashboard"); }
-    console.log( JSON.stringify(entry.UserEntryResult.predictions))
+    
     const renderView = (entryFiles) => {
         res.render("entries/entry-summary", {
             title: "Entry Summary",
@@ -611,6 +611,8 @@ exports.getReviewEntriesPage = async (req, res) => {
     let today = moment().format("YYYY-MM-DD");
     let monthBefore = moment().subtract(30, "days");
     monthBefore = monthBefore.format("YYYY-MM-DD");
+    today = new Date(today);
+    monthBefore = new Date(monthBefore);
 
     // Retrieving all the users' entries to display them on the page
     if(req.session.isIndUser) {
@@ -626,7 +628,8 @@ exports.getReviewEntriesPage = async (req, res) => {
                 }, 
                 order: [
                     ["createdAt", "DESC"]
-                ] 
+                ],
+                attributes: ["id", "date", "time", "createdAt", "title", "disabled", "usernotes", "IndividualUserId"] 
             });
         } catch(error) {
             console.log(error);
@@ -645,19 +648,19 @@ exports.getReviewEntriesPage = async (req, res) => {
                 }, 
                 order: [
                     ["createdAt", "DESC"]
-                ] ,                
+                ],                
                 include: [{ 
                     model: SystemUser, 
                     where: { id: req.session.userId, CentreId: req.session.centreId },
                     attributes: ["id", "CentreId"] 
-                }]
+                }],
+                attributes: ["id", "date", "time", "createdAt", "title", "disabled", "usernotes", "SystemUserId"]
             });
         } catch(error) {
             console.log(error);
             return res.redirect("/dashboard");
         }
     }
-
     return res.render("entries/review-entries-user", {
         title: "Review your entries",
         isAdmin: req.session.isAdmin,
@@ -715,11 +718,13 @@ exports.browseByTitle = async (req, res) => {
 exports.browseByDate = async (req, res) => {
     let entries = [];
     let dateVal = req.body.date;
+    dateVal = moment(dateVal).format("YYYY-MM-DD");
+    dateVal = new Date(dateVal);
 
     if(req.session.isIndUser) {
         try {
-            entries = await IndEntry.findAll( 
-                { where: { 
+            entries = await IndEntry.findAll( {
+                where: { 
                     date: dateVal, 
                     disabled: false,
                     IndividualUserId: req.session.userId 
@@ -739,7 +744,7 @@ exports.browseByDate = async (req, res) => {
             }, 
             order: [
                 ["createdAt", "DESC"]
-            ] ,                
+            ],                
             include: [{ 
                 model: SystemUser, 
                 where: { id: req.session.userId, CentreId: req.session.centreId },
@@ -1323,7 +1328,7 @@ exports.getUserJourneyPage = async (req, res) => {
 
     let daysActive = noOfDays - daysMissed;
     let mainEmotions = evaluateMainEmotion(emotions);
-    let average = parseFloat((entriesNo/7).toFixed(2));
+    let average = parseFloat((entriesNo/noOfDays).toFixed(2));
 
     // Render the page
     return res.render("entries/user-journey", {

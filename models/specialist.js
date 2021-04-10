@@ -29,6 +29,11 @@ const Specialist = sequelize.define("Specialist", {
         allowNull: false,
         default: 0
     },
+    title: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: 'N/A'
+    },
     telephone: {
         type: Sequelize.STRING,
         allowNull: false

@@ -375,3 +375,58 @@
     align-items: flex-end;
     justify-content: flex-end;
 }
+
+@media (max-width: 768px) {
+
+    .add-note-cont {
+        width: 100%;
+    }
+
+    .comm-cont {
+        width: 100%;
+    }
+
+    .entry-cont-body input {
+        width: 75% !important;
+    }
+
+    .entry-cont-body .custom-file-label, .entry-cont-body .custom-file-input {
+        width: 75% !important;
+    }
+
+    .files-cont {
+        width: 100%;
+    }
+
+    .align-chart {
+        margin: 0;
+        padding: 2rem !important;
+    }
+
+    .results-cont canvas {
+        width: 90% !important;
+        height: auto !important;
+        margin: 0 auto !important;
+    }
+
+    .add-notes {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .note-area {
+        width: 90%;
+        margin: 1rem;
+    }
+
+    #detected-emotion-desc {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    #note-content {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+}

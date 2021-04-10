@@ -165,7 +165,8 @@ exports.addUser = async (req, res) => {
                 password: hashedPass,
                 telephone: req.body.telephone,
                 isAdmin: (privilege == "Administrator" ? true : false),
-                CentreId: specialist.CentreId
+                CentreId: specialist.CentreId,
+                title: ((req.body.specTitle == "" || req.body.specTitle == null) ? "N/A" : req.body.specTitle)
             });
         } catch (error) {
             console.log(error);

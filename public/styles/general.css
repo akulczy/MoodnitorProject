@@ -35,6 +35,7 @@ body {
 
 /* Sidebar */
 .sidebar {
+    display: block;
     width: 15rem;
     height: 100%;
     position: fixed;
@@ -159,8 +160,19 @@ th, tbody {
     align-items: center;
     flex-direction: row;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 6px;
-    background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.683), #c2e9fb79 100%);
     color: #474849;
+}
+
+.topbar-colour-1 {
+    background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.683), #c2e9fb79 100%);
+}
+
+.topbar-colour-2 {
+    background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.683), #c6bcff3f 100%);
+}
+
+.topbar-colour-3 {
+    background-image: linear-gradient(150deg, rgba(255, 255, 255, 0.683), #9bb9f82a 100%);
 }
 
 .page-topbar-user {
@@ -612,7 +624,7 @@ th, tbody {
 
 /* Registration page 1 */
 .cl-reg-cont-bd {
-    height: 100vh;
+    height: 125vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1460,6 +1472,44 @@ th, tbody {
     font-size: 0.9rem;
 }
 
+.thead-dark {
+    font-size: 0.8rem !important;
+}
+
+.sidebar-closed {
+    display: none;
+}
+
+.xBtn {
+    display: block;
+    position: absolute;
+    color: #082d44;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0.3rem 0 0 0.5rem;
+    visibility: hidden;
+    left: 12rem;
+}
+
+.sidebar-title, .sidebar-links {
+    width: inherit !important;
+}
+
+.alignauthbtn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.alignauthbtn a:first-child {
+    margin-right: 2rem;
+}
+
+.auth-error-txt {
+    text-align: center;
+}
+
 @keyframes popupon {
     from {
         transform: scale(0);
@@ -1469,4 +1519,304 @@ th, tbody {
     }
 }
 
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .sidebar-closed {
+        display: block;
+        position: absolute;
+        color: #082d44;
+        font-size: 2rem;
+        cursor: pointer;
+        padding: 0.3rem 0 0 0.5rem;
+    }
+
+    .page-topbar  {
+        margin-left: 0rem;
+        padding: 0rem 0.5rem 0rem 3rem;
+    }
+
+    .page-topbar-title {
+        font-size: 1rem;
+    }
+
+    .main-body {
+        padding-left: 0rem;
+    }
+
+    .topbar-username {
+        display: none;
+        padding: 0 0.2rem 0 0.2rem;
+    }
+
+    .page-topbar-user-icon {
+        padding: 0;
+        margin: 0;
+    }
+
+    .title-with-border {
+        font-size: 1.1rem;
+    }
+
+    /* User Profile */
+    .profile-container-align {
+        width: 100%;
+        padding: 1rem 1rem 3rem 1rem;
+    }
+
+    /* Dashboard */
+
+    .dash-line {
+        flex-direction: column;
+        padding: 1rem 0.5rem 1rem 0.5rem;
+    }
+
+    .cont-welcome {
+        width: 100%;
+        margin-bottom: 2rem;
+        margin-top: 2rem;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cont-welcome img {
+        width: 10rem;
+    }
+
+    .cont-date {
+        width: 100%;
+    }
+
+    .cont-welcome-txt {
+        padding-right: 0;
+        padding-bottom: 1rem;
+    }
+
+    .cont-welcome-img {
+        padding-left: 0;
+    }
+
+    .cont-first, .cont-middle, .cont-last {
+        width: 100%;
+    }
+
+    .cont-first, .cont-middle {
+        margin-bottom: 2rem;
+    }
+
+    .no-entr {
+        flex-direction: column;
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+    }
+
+    .no-entr-icon {
+        padding-top: 1.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .dash-line-3 {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Users List */
+
+    #all-users .grid-container {
+        grid-template-columns: 100%;
+    }
+
+    .user-table-align {
+        padding:0.5rem;
+        max-width: 100%;
+        overflow-x: scroll;
+    }
+
+    .choice-tab-list {
+        flex-direction: column;
+    }
+
+    .choice-tab-list .choice-tab-1:first-child {
+        margin-bottom: 1rem !important;
+    }
+
+    .add-user-wrapper {
+        padding: 0.5rem;
+    }
+
+    /* Reviewing Entries */
+
+    .browse-cont.browse-spec-cont, .browse-cont.browse-user-cont  {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding-left: 2rem;
+    }
+
+    .browse-spec-cont input, .browse-user-cont input {
+        width: 200px;
+    }
+
+    .browse-spec-cont .sub-browse, .browse-user-cont .sub-browse {
+        padding-bottom: 0.7rem;
+    }
+
+    .date-range-align {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .date-range-align input:first-child {
+        margin-bottom: 0.6rem;
+    }
+
+    .date-range-align button {
+        margin-top: 1rem;
+    }
+
+    .browse-spec-cont .browse-reset, .browse-user-cont .browse-reset {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .table-cont {
+        width: 100%;
+        padding: 0.5rem !important;
+        overflow-x: scroll;
+    }
+
+    /* Generating Reports */
+    .entry-pad {
+        padding: 0.5rem !important;
+    }
+
+    .def-cont-form form {
+        width: 100%;
+    }
+
+    .def-report-row {
+        flex-direction: column;
+        align-items: flex-start
+    }
+
+    .sub-browse-3 {
+        margin: 0 auto;
+    }
+
+    .align-def-row {
+        margin-bottom: 1rem;
+    }
+
+    /* Pop-up windows */
+
+    .popupbox-size1 {
+        width: 80%;
+        height: 55%;
+        top: 20%;
+        left: 10%;
+    }
+    
+    .popupbox-size2 {
+        width: 80%;
+        height: 60%;
+        top: 15%;
+        left: 10%;
+    }
+
+    /* Contact Form */
+
+    .mail-field-align {
+        padding: 3rem 1rem 0rem 1rem;
+    }
+
+    .user-select-contact {
+        padding: 3rem 1rem 0 1rem;
+    }
+
+    /* More Info */
+
+    .emotions-row {
+        flex-direction: column;
+        padding: 0rem 1rem 0rem 1rem;
+    }
+
+    .emotion-container {
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+
+    .align-chart-sm {
+        padding: 0 !important;
+    }
+
+    /* Your Journey - User */
+
+    .browse-journey form .sub-browse-2 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .browse-journey form .sub-browse-2 div:first-child {
+        margin-bottom: 0.7rem;
+    }
+
+    /* Contacting as User */
+
+    .mobile-sm-1 {
+        margin-top: 1rem;
+    }
+
+    /* Registration */
+
+    #choose-registration-containers {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .reg-page-container {
+        width: 100%;
+    }
+
+    .reg-page-container:first-child {
+        margin-bottom: 2rem;
+    }
+
+    #registrationFormPlaceholder {
+        width: 100%;
+    }
+
+    #registrationFormPlaceholder form {
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .cl-reg-cont-cont {
+        width: 100%;
+    }
+
+    .cl-reg-cont-bd {
+        padding: 1rem;
+    }
+
+    .blue-border-long-dark {
+        width: 18rem;
+    }
+    
+    /* Login */
+
+    .login-page-container {
+        width: 100%;
+    }
+
+    .mobile-cont-1 {
+        margin-bottom: 2rem;
+    }
+}
 

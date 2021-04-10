@@ -23,7 +23,7 @@ const chooseBackgroundColor = (data) => {
     return color;
 }
 
-createPDFForInd = (entry, chart) => new Promise((resolve, reject) => {
+const createPDFForInd = (entry, chart) => new Promise((resolve, reject) => {
     const doc = new jsPDF("p", "mm", "a4");
     let y;
 
@@ -91,7 +91,7 @@ createPDFForInd = (entry, chart) => new Promise((resolve, reject) => {
     resolve("Fine");
 });
 
-createPDFForSys = (entry, chart) => new Promise((resolve, reject) => {
+const createPDFForSys = (entry, chart) => new Promise((resolve, reject) => {
     const doc = new jsPDF("p", "mm", "a4");
     let y;
 

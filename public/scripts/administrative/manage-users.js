@@ -1,5 +1,6 @@
 // Method to send the request to add the user
 const addUser = () => {
+    let specTitle = "";
     // Checking if the user left any of the fields empty
     if(($("#userName").val().replace(/ /g, ";") == "") || ($("#userSurname").val().replace(/ /g, ";") == "") || ($("#userEmail").val().replace(/ /g, ";") == "") || ($("#userPhone").val().replace(/ /g, ";") == "") || ($("#userPassword").val().replace(/ /g, ";") == "")) {
         return alert("Please fill in all the fields.");
@@ -16,7 +17,8 @@ const addUser = () => {
         telephone: $("#userPhone").val(),
         password: $("#userPassword").val(),
         privileges: $("input[name=privileges]:checked").val(),
-        SpecialistId: $("#select-specialist").val()
+        SpecialistId: $("#select-specialist").val(),
+        specTitle: $("#specTitle").val()        
     };
 
     $.ajax({
@@ -114,8 +116,10 @@ $(".disableBtn").click((event) => {
 $(".form-check").change(() => {
     if($("#inlineRadio1").prop("checked") == false) {
         $("#dropDownRow").css("display", "none");
+        $("#dropDownRow2").css("display", "unset");
     } else {
         $("#dropDownRow").css("display", "unset");
+        $("#dropDownRow2").css("display", "none");
     }
 });
 

@@ -1,8 +1,35 @@
-<div class="page-topbar">
+<% if (isSystemUser || isIndUser) { %>
+    <div class="page-topbar topbar-colour-1">
+<% } else if (isSpecialist && !isAdmin) { %>
+    <div class="page-topbar topbar-colour-3">
+<% } else if (isAdmin) { %>
+    <div class="page-topbar topbar-colour-2">
+<% } %>
+
     <div class="page-topbar-title"><%- titleToDisplay %></div>
 
     <a class="page-topbar-user linkNoStyle" href="/dashboard/account">
-        <div class="page-topbar-user-icon"><img src="/files/usericon.png" alt="User"></div>
-        <div><%- userName %> <%- userSurname %></div>       
+
+        <% if (isSystemUser || isIndUser) { %>
+            <div class="page-topbar-user-icon"><img src="/files/usericon.png" alt="User"></div>
+        <% } else if (isSpecialist && !isAdmin) { %>
+            <div class="page-topbar-user-icon"><img src="/files/science.png" alt="User"></div>
+        <% } else if (isAdmin) { %>
+            <div class="page-topbar-user-icon"><img src="/files/computer.png" alt="User"></div>
+        <% } %>
+
+        <div class="topbar-username"><%- userName %> <%- userSurname %> 
+            
+            <% if(isSpecialist && !isAdmin) { %>
+            
+                <span> | Specialist</span>
+
+            <% } else if (isAdmin) { %>
+
+                <span> | Admin</span>
+
+            <% } %>      
+        
+        </div>       
     </a>
 </div>

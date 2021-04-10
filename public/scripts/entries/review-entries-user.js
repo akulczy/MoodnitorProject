@@ -11,9 +11,9 @@ const appendEntries = (entries, individual) => {
 
         let link = "";
         if(individual == true) {
-            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/ind/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>';
+            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/ind/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Overview</button></a></td>';
         } else {
-            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/sys/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>';
+            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/sys/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Overview</button></a></td>';
         }
 
         let addNotesBtn = "";
@@ -67,9 +67,9 @@ const appendDisabledEntries = (entries, individual) => {
 
         let link = "";
         if(individual == true) {
-            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/ind/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>';
+            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/ind/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Overview</button></a></td>';
         } else {
-            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/sys/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Summary</button></a></td>';
+            link = '<td class="e-summary"><a class="linkNoStyle" href="/dashboard/user/entries/sys/' + entry.id +'"><button class="btnGradBlueSm margin-auto">Overview</button></a></td>';
         }
 
         let addNotesBtn = "";

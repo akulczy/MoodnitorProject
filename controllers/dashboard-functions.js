@@ -12,7 +12,8 @@ let moment = require("moment");
 const { Op } = require("sequelize"); 
 
 exports.getDashboard = async (req, res) => {
-    let dateToday =  moment(new Date()).format("DD/MM/YYYY");
+    let dateTodayS =  moment(new Date()).format("DD/MM/YYYY");
+    dateToday = new Date(dateTodayS);
     let noOfEntries, noOfEntriesTillNow, freq, specfreq;
     let daysActive = 0;
     let noOfUsers = 0;
@@ -53,7 +54,7 @@ exports.getDashboard = async (req, res) => {
             userName: req.session.name,
             userSurname: req.session.surname,
             titleToDisplay: "Dashboard",
-            dateToday: dateToday,
+            dateToday: dateTodayS,
             noOfUsers: noOfUsers,
             noOfEntriesSpec: noOfEntriesSpec,
             noOfEntriesTotal: noOfEntriesTotal,
@@ -72,7 +73,7 @@ exports.getDashboard = async (req, res) => {
             userName: req.session.name,
             userSurname: req.session.surname,
             titleToDisplay: "Dashboard",
-            dateToday: dateToday,
+            dateToday: dateTodayS,
             noOfEntries: noOfEntries,
             noOfEntriesTillNow: noOfEntriesTillNow,
             timeperiod: JSON.stringify(timeperiod),
@@ -295,7 +296,7 @@ exports.updateUserDetails = async (req, res) => {
         if(req.body.userEmail != null || req.body.userEmail != "") { user.email = req.body.userEmail; req.session.email = req.body.userEmail };
         if(req.body.userPhone != null || req.body.userPhone != "") { user.telephone = req.body.userPhone };
 
-        if(req.body.userPassword != null || req.body.userPassword != "") {
+        if(req.body.userPassword != null && req.body.userPassword != "") {
             let hashedPass = await bcrypt.hash(req.body.userPassword, 14);
             user.password = hashedPass;
         }
@@ -322,6 +323,7 @@ exports.logoutUser = async (req, res) => {
 
 const getEntriesFromToday = async (isIndividualUser, isSystemUser, userId) => {
     let dateToday =  moment(new Date()).format("YYYY-MM-DD");
+    dateToday = new Date(dateToday);
     let noOfEntries = 0;
 
     if(isIndividualUser) {
@@ -345,6 +347,7 @@ const getEntriesFromToday = async (isIndividualUser, isSystemUser, userId) => {
 
 const getHowManyEntriesTillNow = async (isIndividualUser, isSystemUser, userId) => {
     let dateToday =  moment(new Date()).format("YYYY-MM-DD");
+    dateToday = new Date(dateToday);
     let noOfEntries = 0;
 
     if(isIndividualUser) {
@@ -387,7 +390,8 @@ const getUserFrequency = async (isIndividualUser, isSystemUser, userId) => {
     let entry;
     if(isIndividualUser) {
         for(let tp of timeperiod) {
-            entry = await IndividualEntry.findAndCountAll({where: {IndividualUserId: userId, date: tp}});
+            tpd = new Date(tp);
+            entry = await IndividualEntry.findAndCountAll({where: {IndividualUserId: userId, date: tpd}});
             if(entry.count != 0) {
                 daysActive++;
             }
@@ -398,7 +402,8 @@ const getUserFrequency = async (isIndividualUser, isSystemUser, userId) => {
         }
     } else if(isSystemUser) {
         for(let tp of timeperiod) {
-            entry = await UserEntry.findAndCountAll({where: {SystemUserId: userId, date: tp}});
+            tpd = new Date(tp);
+            entry = await UserEntry.findAndCountAll({where: {SystemUserId: userId, date: tpd}});
             if(entry.count != 0) {
                 daysActive++;
             }
@@ -431,6 +436,7 @@ const getNumberOfEntriesTodaySpec = async (userId) => {
     let noOfEntries = 0;
     let entries;
     let today = moment().format('YYYY-MM-DD');
+    today = new Date(today);
 
     try {
         entries = await UserEntry.findAndCountAll({where: {date: today}, include: {model: SystemUser, where: {SpecialistId: userId}, required: true}})
@@ -464,7 +470,8 @@ const getNumberOfEntriesTotalSpec = async (userId) => {
     let entry;
 
     for(let tp of timeperiod) {
-        entry = await UserEntry.findAndCountAll({where: {date: tp}, include: {model: SystemUser, where: {SpecialistId: userId}, required: true}});
+        tpd = new Date(tp);
+        entry = await UserEntry.findAndCountAll({where: {date: tpd}, include: {model: SystemUser, where: {SpecialistId: userId}, required: true}});
         if(entry.count != 0) {
             noOfEntries += entry.count;
         }

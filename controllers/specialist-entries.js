@@ -921,7 +921,7 @@ exports.getReportPage = async (req, res) => {
 
     let daysActive = noOfDays - daysMissed;
     let mainEmotions = evaluateMainEmotion(emotions);
-    let average = parseFloat((entriesNo/7).toFixed(2));
+    let average = parseFloat((entriesNo/noOfDays).toFixed(2));
 
     // Render the page
     return res.render("entries/specialist/reports-user", {

@@ -18,6 +18,24 @@ router.get("/register", public.getChooseRegistrationPage);
 // GET - get the login page
 router.get("/login", public.getChooseLoginPage);
 
+// GET - get the error page
+router.get("/auth/error", public.getAuthErrorPage);
+
+// GET - get the email error page
+router.get("/auth/email/error", public.getEmailErrorPage);
+
+// GET - confirmation page
+router.get("/auth/confirm/clinic", public.getClinicRegConfirmation);
+
+// GET - confirmation page
+router.get("/auth/confirm/ind", public.getIndRegConfirmation);
+
+// GET - Account not found page
+router.get("/auth/notfound", public.accountNotFoundPage);
+
+// GET - Account not verified page
+router.get("/auth/notverified", public.accountNotVerifiedPage);
+
 // POST - submit the clinic's registration 
 router.post("/register-clinic", public.registerClinicAndAdmin);
 

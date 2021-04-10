@@ -44,6 +44,7 @@
                     <th scope="col">E-Mail</th>
                     <th scope="col">Phone</th>
                     <th scope="col">Role</th>
+                    <th scope="col">Title</th>
                     <th scope="col">Edit</th>
                     <th scope="col">Disable</th>
                   </tr>
@@ -65,6 +66,8 @@
                             <% } else { %>
                                 <td>Specialist</td>
                             <% } %>
+
+                            <td><%- users[i].title %></td>
 
                             <% if (users[i].isAdmin) { %>
                                 <td>

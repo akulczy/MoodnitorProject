@@ -11,7 +11,7 @@
                 <div class="blue-border-long-dark"></div>
             </div>
             <div id="registrationFormPlaceholder">
-                <form method="POST" action="/register/create/user">
+                <form method="POST" id="registrationUserForm" action="/register/create/user">
                     <div class="row">
                         <div class="col-lg-12">
                             <label for="userName">Name:</label>
@@ -40,10 +40,12 @@
                         <div class="col">
                             <label for="userPassword">Password:</label>
                             <input type="password" class="form-control" id="userPassword" name="userPassword" required>
+                            <small>Minimum 8 characters.</small>
                         </div>
                         <div class="col">
                             <label for="userPasswordRepeat">Repeat Password:</label>
                             <input type="password" class="form-control" id="userPasswordRepeat" name="userPasswordRepeat" required>
+                            <small id="pass-info"></small>
                         </div>
                     </div>
                     <div class="row alignnextbtn">
@@ -56,7 +58,7 @@
 
  <%- include("../elements/footer.ejs") %>
 
-<script type="text/javascript" src="\scripts\registration-script.js"></script>
+<script type="text/javascript" src="\scripts\ind-registration-script.js"></script>
 </body>
 
 </html>

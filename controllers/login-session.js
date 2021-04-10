@@ -15,7 +15,7 @@ exports.centreLogin = async (req, res,) => {
         retrievedUser = await Specialist.findOne({where: {email: email}, include: [{model: Centre, attributes: ["id", "verified"]}]});
     } catch (error) {
         console.log(error);
-        return res.redirect("/login?found=false");
+        return res.redirect("/auth/error");
     }
 
     // User not found - redirection
@@ -25,17 +25,18 @@ exports.centreLogin = async (req, res,) => {
             retrievedUser = await Patient.findOne({where: {email: email}, include: [{model: Centre, attributes: ["id", "verified"]}]});
         } catch (error) {
             console.log(error);
+            return res.redirect("/auth/error");
         }
     
         // User not found - redirection
         if(retrievedUser == null) {
-            return res.redirect("/login?found=false");
+            return res.redirect("/auth/notfound");
         }
     }
 
     // Specialist's centre not verified
     if(retrievedUser.Centre.verified == 0) {
-        return res.redirect("/login?verified=false");
+        return res.redirect("/auth/notverified");
     }
 
     // Step 2 - Check if the passwords are matching
@@ -75,11 +76,12 @@ exports.centreLogin = async (req, res,) => {
             });
         // The password in the database does not match the password inserted by the user
         } else {
-            return res.redirect("/login?found=false"); 
+            return res.redirect("/auth/notfound"); 
         }
     })
     .catch(error => {
         console.log(error);
+        return res.redirect("/auth/error");
     });
 };
 
@@ -93,11 +95,12 @@ exports.indUserLogin = async (req, res) => {
         retrievedUser = await IndUser.findOne({ where: {email: email} });
     } catch (error) {
         console.log(error);
+        return res.redirect("/auth/error");
     }
 
     // User not found - redirection
     if(retrievedUser == null) {
-        return res.redirect("/login?found=false");
+        return res.redirect("/auth/notfound");
     }
 
     // Step 2 - Check if the passwords are matching
@@ -124,7 +127,7 @@ exports.indUserLogin = async (req, res) => {
             });
         // The password in the database does not match the password inserted by the user
         } else {
-            return res.redirect("/login?found=false"); 
+            return res.redirect("/auth/notfound"); 
         }
     })
     .catch(error => {
