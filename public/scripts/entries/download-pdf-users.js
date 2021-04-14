@@ -43,10 +43,12 @@ const createPDFForInd = (entry, chart) => new Promise((resolve, reject) => {
 
     doc.setFontSize(11);
     doc.setFont("times", "normal");
-    doc.text(entry.content, 20, 50);
+    let splitContent = doc.splitTextToSize(entry.content, 170);
+
+    doc.text(splitContent, 20, 50)
 
     // Dimensions after content of an entry is added 
-    let dim = doc.getTextDimensions(entry.content);
+    let dim = doc.getTextDimensions(splitContent);
     y = eval(50 + dim.h + 15);
 
     doc.setFontSize(12);
@@ -111,10 +113,12 @@ const createPDFForSys = (entry, chart) => new Promise((resolve, reject) => {
 
     doc.setFontSize(11);
     doc.setFont("times", "normal");
-    doc.text(entry.content, 20, 50);
+    let splitContent = doc.splitTextToSize(entry.content, 170);
+
+    doc.text(splitContent, 20, 50)
 
     // Dimensions after content of an entry is added 
-    let dim = doc.getTextDimensions(entry.content);
+    let dim = doc.getTextDimensions(splitContent);
     y = eval(50 + dim.h + 15);
 
     doc.setFontSize(12);

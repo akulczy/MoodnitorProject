@@ -55,10 +55,12 @@
                         <div class="col">
                             <label for="userPassword" class="align-label">Password:</label>
                             <input type="password" class="form-control" id="userPassword" name="userPassword" required>
+                            <small>Minimum 8 characters</small>
                         </div>
                         <div class="col">
                             <label for="userPasswordRepeat" class="align-label">Repeat Password:</label>
                             <input type="password" class="form-control" id="userPasswordRepeat" name="userPasswordRepeat" required>
+                            <small id="pass-info"></small>
                         </div>
                     </div>
                     <div class="row">
@@ -103,6 +105,7 @@
                         <div class="col-lg-6" id="dropDownRow2" style="display:none;">
                             <label class="form-check-label align-label" for="specTitle">Job title:</label>
                             <input type="text" class="form-control" id="specTitle" name="specTitle" required>
+                            <small>Leave empty if you wish to add it later</small>
                         </div>
                     </div>
                     <div class="row alignnextbtn">

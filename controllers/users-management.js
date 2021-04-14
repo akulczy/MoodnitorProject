@@ -1,5 +1,6 @@
 const Specialist = require("../models/specialist");
 const Patient = require("../models/systemuser");
+const IndUser = require("../models/individualuser");
 const Centre = require("../models/centre");
 
 const bcrypt = require("bcryptjs");
@@ -108,23 +109,32 @@ exports.addUser = async (req, res) => {
     let privilege = req.body.privileges;
 
     // Step 1 - Check if user with the given email address exists already
-    if(privilege == "Patient") {
-        try {
-            user = await Patient.findOne({where: {email: req.body.email}});
-        } catch (error) {
-            console.log(error);
-            return res.sendStatus(400);
-        }
-    } else {
-        try {
-            user = await Specialist.findOne({where: {email: req.body.email}});
-        } catch (error) {
-            console.log(error);
-            return res.sendStatus(400);
-        }
-    }    
+    try {
+        user = await Patient.findOne({where: {email: req.body.email}});
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
 
     // If the user exists - return status code 403
+    if(user != null) {return res.sendStatus(403)};
+
+    try {
+        user = await Specialist.findOne({where: {email: req.body.email}});
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
+    if(user != null) {return res.sendStatus(403)};
+
+    try {
+        user = await IndUser.findOne({where: {email: req.body.email}});
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(400);
+    }
+
     if(user != null) {return res.sendStatus(403)};
 
     // Step 2 - find the specialist who adds the user
@@ -387,6 +397,7 @@ exports.editSpecialistDetails = async (req, res) => {
         user.email = req.body.userEmail;
         user.telephone = req.body.userPhone;
         user.isAdmin = (req.body.adminCheck == "1" ? true : false);
+        user.title = ((req.body.jobTitle == "" || req.body.jobTitle == null) ? "N/A" : req.body.jobTitle);
         await user.save();
     } catch (error) {
         console.log(error);

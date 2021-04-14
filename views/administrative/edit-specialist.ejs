@@ -17,7 +17,7 @@
 
         <div class="add-user-wrapper" style="margin-top: 2rem;">
             <div class="add-user-container edit-user-container container-shadow">
-                <form method="POST" action="/dashboard/specialist/users/spec/update">
+                <form method="POST" id="editSpecialistForm" action="/dashboard/specialist/users/spec/update">
                     <input type="hidden" name="uId" value="<%= user.id %>" />
                     <div class="row">
                         <div class="col-lg-12">
@@ -44,6 +44,13 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col">
+                            <label for="userPhone">Job title:</label>
+                            <input type="text" class="form-control" id="jobTitle" name="jobTitle" value="<%= user.title %>">
+                            <small>If you leave this field empty, the title will be specified as "N/A"</small>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col" style="margin-left: 1.5rem;">
                             <input class="form-check-input" type="checkbox" value="1" id="adminCheck" name="adminCheck">
                             <label class="form-check-label" for="adminCheck">
@@ -52,7 +59,7 @@
                         </div>
                     </div>
                     <div class="row alignnextbtn">
-                        <button type="submit" class="btnNoStyle btnGradBlue" id="editUserBtn">Update User</button>
+                        <button type="submit" class="btnNoStyle btnGradBlue" id="editSpecialistBtn">Update User</button>
                     </div>
                 </form>
             </div>
@@ -63,6 +70,7 @@
 <script>
     $("#users-element").addClass("active-sidebar-element");
 </script>
+<script type="text/javascript" src="/scripts/administrative/manage-users.js"></script>
 </body>
 
 </html>

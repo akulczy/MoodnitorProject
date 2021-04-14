@@ -92,7 +92,7 @@ exports.getDashboard = async (req, res) => {
             userName: req.session.name,
             userSurname: req.session.surname,
             titleToDisplay: "Dashboard",
-            dateToday: dateToday,
+            dateToday: dateTodayS,
             noOfEntries: noOfEntries,
             noOfEntriesTillNow: noOfEntriesTillNow,
             timeperiod: JSON.stringify(timeperiod),
@@ -238,6 +238,7 @@ exports.getUpdateAccountPage = async (req, res) => {
 
 exports.updateUserDetails = async (req, res) => {
     let user = null;
+    let emailuser = null;
 
     if(req.session.isIndUser) {
         try {
@@ -289,6 +290,45 @@ exports.updateUserDetails = async (req, res) => {
     }
 
     if(user == null) { return res.redirect("/dashboard"); }
+
+    // If user is updating their email
+    if(user.email != req.body.userEmail) {
+
+        // Check that the email is unique
+        try {
+            emailuser = await Specialist.findOne({where: {email: req.body.userEmail}});
+        } catch (error) {
+            console.log(error);
+            return res.redirect("/dashboard");
+        }
+    
+        // Record exists in the database already
+        if (emailuser != null) {
+            return res.redirect("/dashboard/account?unique=false");
+        } 
+    
+        try {
+            emailuser = await SystemUser.findOne({where: {email: req.body.userEmail}});
+        } catch (error) {
+            console.log(error);
+            return res.redirect("/dashboard");
+        }
+    
+        if (emailuser != null) {
+            return res.redirect("/dashboard/account?unique=false");
+        } 
+    
+        try {
+            emailuser = await IndUser.findOne({where: {email: req.body.userEmail}});
+        } catch (error) {
+            console.log(error);
+            return res.redirect("/dashboard");
+        }
+    
+        if (emailuser != null) {
+            return res.redirect("/dashboard/account?unique=false");
+        } 
+    }
 
     try {
         if(req.body.userName != null || req.body.userName != "") { user.name = req.body.userName; req.session.name = req.body.userName };

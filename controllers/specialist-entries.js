@@ -329,7 +329,7 @@ exports.browseIndByTitle = async (req, res) => {
 // Method to browse entries of individual users by date 
 exports.browseIndByDate = async (req, res) => {
     let entries = [];
-    let dateVal = req.body.date;
+    let dateVal = new Date(req.body.date);
 
     try {
         entries = await UserEntry.findAll( {
@@ -363,8 +363,8 @@ exports.browseIndByDate = async (req, res) => {
 // Method to browse entries of individual users by date range
 exports.browseIndByDateRange = async (req, res) => {
     let entries = [];
-    let dateFrom = req.body.dateFrom;
-    let dateTo = req.body.dateTo;
+    let dateFrom = new Date(req.body.dateFrom);
+    let dateTo = new Date(req.body.dateTo);
     let query = "";
 
     if(dateFrom != "" && dateTo != "") {
@@ -441,7 +441,7 @@ exports.browseByTitle = async (req, res) => {
 // Method to browse entries of assigned users by date 
 exports.browseByDate = async (req, res) => {
     let entries = [];
-    let dateVal = req.body.date;
+    let dateVal = new Date(req.body.date);
 
     try {
         entries = await UserEntry.findAll( {
@@ -474,8 +474,8 @@ exports.browseByDate = async (req, res) => {
 // Method to browse entries of assigned users by date range
 exports.browseByDateRange = async (req, res) => {
     let entries = [];
-    let dateFrom = req.body.dateFrom;
-    let dateTo = req.body.dateTo;
+    let dateFrom = new Date(req.body.dateFrom);
+    let dateTo = new Date(req.body.dateTo);
     let query = "";
 
     if(dateFrom != "" && dateTo != "") {

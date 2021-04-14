@@ -28,7 +28,11 @@
 
                 <span> | Admin</span>
 
-            <% } %>      
+            <% } else if (isSystemUser) { %>    
+
+                <span> | Patient</span>
+
+            <% } %>
         
         </div>       
     </a>

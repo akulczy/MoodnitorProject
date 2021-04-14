@@ -1,3 +1,34 @@
+let acceptedMimeTypes = ["image/jpg", "image/png", "image/jpeg", "application/pdf"];
+const MAX_FILES = 3;
+
+const checkFilesNo = () => {
+    let files = document.getElementById("customFile").files;
+    if(files.length > MAX_FILES) {
+        document.getElementById("customFile").value = "";
+        $(".custom-file-label").html("Choose files...");
+        return alert("The maximum number of files is 3.");
+    }
+}
+
+const checkMimeTypes = () => {
+    let files = document.getElementById("customFile").files;
+
+    for(let file of files) {
+        if(file != null) {
+            if(!(acceptedMimeTypes.includes(file.type))) {
+                document.getElementById("customFile").value = "";
+                $(".custom-file-label").html("Choose files...");
+                return alert("Wrong file type. Please ensure you upload JPG, JPEG, PNG, or PDF files.");
+            }
+        }
+    }
+};
+
+$("#customFile").change(() => {
+    checkFilesNo();
+    checkMimeTypes();
+});
+
 let options = {
     modules: {
         toolbar: [
@@ -243,7 +274,7 @@ const addEntry = () => {
 
     // Entry cannot be submitted if the main field is left empty
     if(entryContent.replace(/\s+/g, "") == "") {
-        return alert("Please fill in you entry before submitting.");
+        return alert("Please fill in your entry before submitting.");
     }
 
     // Apending elements from the form to the FormData object

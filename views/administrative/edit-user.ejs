@@ -17,7 +17,7 @@
 
         <div class="add-user-wrapper" style="margin-top: 2rem;">
             <div class="add-user-container edit-user-container container-shadow">
-                <form method="POST" action="/dashboard/specialist/users/update">
+                <form method="POST" id="editUserForm" action="/dashboard/specialist/users/update">
                     <input type="hidden" name="uId" value="<%= user.id %>" />
                     <div class="row">
                         <div class="col-lg-12">
@@ -57,18 +57,8 @@
                             </select>
                         </div>
                     </div>
-                    <!-- <div class="row">
-                        <div class="col">
-                            <label for="userPassword">Password:</label>
-                            <input type="password" class="form-control" id="userPassword" name="userPassword" value="<%= user.name %>" required>
-                        </div>
-                        <div class="col">
-                            <label for="userPasswordRepeat">Repeat Password:</label>
-                            <input type="password" class="form-control" id="userPasswordRepeat" name="userPasswordRepeat" required>
-                        </div>
-                    </div> -->
                     <div class="row alignnextbtn">
-                        <button type="submit" class="btnNoStyle btnGradBlue" id="editUserBtn">Update User</button>
+                        <button class="btnNoStyle btnGradBlue" id="editUserBtn">Update User</button>
                     </div>
                 </form>
             </div>

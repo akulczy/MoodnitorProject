@@ -9,7 +9,7 @@ $("#nextRegistrationStepBtn").click(() => {
     clinicPhone = $("#clinicPhone").val();
 
     let emailRegex = /^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$/;
-    let phoneRegex = /^\s*\(?((\+0?44)?\)?[ \-]?(\(0\))|0)((20[7,8]{1}\)?[ \-]?[1-9]{1}[0-9]{2}[ \-]?[0-9]{4})|([1-8]{1}[0-9]{3}\)?[ \-]?[1-9]{1}[0-9]{2}[ \-]?[0-9]{3}))\s*$/;
+    let phoneRegex = /(((\+44)? ?(\(0\))? ?)|(0))( ?[0-9]{3,4}){3}/;
 
     if(clinicName == "" || clinicEmail == "" || clinicPhone == "") {
         return alert("Please fill in all the fields.");

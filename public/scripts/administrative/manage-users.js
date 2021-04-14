@@ -1,6 +1,18 @@
+$("#userPasswordRepeat").keyup(() => {
+    if($("#userPasswordRepeat").val() == $("#userPassword").val()) {
+        $("#pass-info").text("Passwords matching");
+        $("#pass-info").css("color", "#277a4b");
+    } else {
+        $("#pass-info").text("Passwords not matching");
+        $("#pass-info").css("color", "#8c2a2a");
+    }
+});
+
+let emailRegex = /^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$/;
+let phoneRegex = /(((\+44)? ?(\(0\))? ?)|(0))( ?[0-9]{3,4}){3}/;
+
 // Method to send the request to add the user
 const addUser = () => {
-    let specTitle = "";
     // Checking if the user left any of the fields empty
     if(($("#userName").val().replace(/ /g, ";") == "") || ($("#userSurname").val().replace(/ /g, ";") == "") || ($("#userEmail").val().replace(/ /g, ";") == "") || ($("#userPhone").val().replace(/ /g, ";") == "") || ($("#userPassword").val().replace(/ /g, ";") == "")) {
         return alert("Please fill in all the fields.");
@@ -9,6 +21,28 @@ const addUser = () => {
     if(($("#inlineRadio1").prop("checked") == true) && ($("#select-specialist").val() == 0)) {
         return alert("Please choose a Specialist to which the new user shall be assigned.");
     }
+
+    if(!($("#userEmail").val().match(emailRegex))) {
+        return alert("Please ensure email is in correct format.");
+    }
+
+    if(!($("#userPhone").val().match(phoneRegex))) {
+        return alert("Please ensure telephone is in correct format (British telephone number).");
+    }
+
+    if($("#userPassword").val() != $("#userPasswordRepeat").val()) {
+        return alert("Please ensure that the Password and Repeat Password fields have the same value.");
+    }
+
+    if($("#userPassword").val().length < 8) {
+        return alert("Please ensure that the password is at least 8 characters long.");
+    }
+
+    // Displaying spinner element once the submit button is clicked
+    if(!($("#submitBtn").hasClass(".activeBtn"))) {
+        $("#submitBtn").append('<span class="spinner-grow text-light spinner-grow-sm" role="status" aria-hidden="true"></span><span class="sr-only">Loading...</span>');
+        $("#submitBtn").addClass(".activeBtn");   
+    } 
 
     let userToAdd = {
         name: $("#userName").val(),
@@ -30,12 +64,23 @@ const addUser = () => {
             200: () => {
                 $("input").val("");
                 $("#inlineRadio1").prop("checked", true);
+                $("#pass-info").text("");
+                $("#pass-info").css("color", "#000");
+                $("#select-specialist").val(0);
+
+                $(".spinner-grow").remove();
+                $("#submitBtn").removeClass(".activeBtn");
+
                 alert("User added successfully.");
             },
             400: () => {
+                $(".spinner-grow").remove();
+                $("#submitBtn").removeClass(".activeBtn");
                 alert("An error occurred while processing your request. Please try again.");
             },
             403: () => {
+                $(".spinner-grow").remove();
+                $("#submitBtn").removeClass(".activeBtn");
                 alert("User with the given email address exists already.");
             }
         }
@@ -47,6 +92,59 @@ $("#submitBtn").click((event) => {
     addUser();
 });
 
+$("#editUserBtn").click((event) => {
+    event.preventDefault();
+
+    // Checking if the user left any of the fields empty
+    if(($("#userName").val().replace(/ /g, ";") == "") || ($("#userSurname").val().replace(/ /g, ";") == "") || ($("#userEmail").val().replace(/ /g, ";") == "") || ($("#userPhone").val().replace(/ /g, ";") == "")) {
+        return alert("Please fill in all the fields.");
+    }
+
+    if($("#assign-specialist").val() == 0) {
+        return alert("Please choose a Specialist to which the new user shall be assigned.");
+    }
+
+    if(!($("#userEmail").val().match(emailRegex))) {
+        return alert("Please ensure email is in correct format.");
+    }
+
+    if(!($("#userPhone").val().match(phoneRegex))) {
+        return alert("Please ensure telephone is in correct format (British telephone number).");
+    }
+
+    // Displaying spinner element once the submit button is clicked
+    if(!($("#editUserBtn").hasClass(".activeBtn"))) {
+        $("#editUserBtn").append('<span class="spinner-grow text-light spinner-grow-sm" role="status" aria-hidden="true"></span><span class="sr-only">Loading...</span>');
+        $("#editUserBtn").addClass(".activeBtn");   
+    } 
+
+    $("#editUserForm").submit();
+});
+
+$("#editSpecialistBtn").click((event) => {
+    event.preventDefault();
+
+    // Checking if the user left any of the fields empty
+    if(($("#userName").val().replace(/ /g, ";") == "") || ($("#userSurname").val().replace(/ /g, ";") == "") || ($("#userEmail").val().replace(/ /g, ";") == "") || ($("#userPhone").val().replace(/ /g, ";") == "")) {
+        return alert("Please fill in all the fields.");
+    }
+
+    if(!($("#userEmail").val().match(emailRegex))) {
+        return alert("Please ensure email is in correct format.");
+    }
+
+    if(!($("#userPhone").val().match(phoneRegex))) {
+        return alert("Please ensure telephone is in correct format (British telephone number).");
+    }
+
+    // Displaying spinner element once the submit button is clicked
+    if(!($("#editSpecialistBtn").hasClass(".activeBtn"))) {
+        $("#editSpecialistBtn").append('<span class="spinner-grow text-light spinner-grow-sm" role="status" aria-hidden="true"></span><span class="sr-only">Loading...</span>');
+        $("#editSpecialistBtn").addClass(".activeBtn");   
+    } 
+
+    $("#editSpecialistForm").submit();
+});
 
 // Methods for the tooltip with a phone number
 const closePopover = (event) => {

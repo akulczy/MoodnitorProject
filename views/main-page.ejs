@@ -2,21 +2,21 @@
 
 </head>
 
-<body>
+<body style="background-color: #fff;">
     <%- include("elements/topbar-external.ejs") %>
     <div class="bg-section">
         <div class="cont-internal">
             <div class="bg-section-container">
                 <div class="bg-section-container-title">
                     <span>Moodnitor</span>
-                    <div class="blue-border"></div>
+                    <div class="blue-border-light"></div>
                 </div>
                 <div class="bg-section-container-desc">
                     Moodnitor is a tool which employs artificial intelligence in order to provide functionalities allowing to keep track of one's daily emotional variations.
                 </div>
                 <div class="bg-section-container-btn">
-                    <button class="btnNoStyle btnGradBlue">Register</button>
-                    <button class="btnNoStyle btnGradBlue btnTransparent">Login</button>
+                    <a class="linkNoStyle" href="/register"><button class="btnNoStyle btnGradBlue">Register</button></a>
+                    <a class="linkNoStyle" href="/login"><button class="btnNoStyle btnGradBlue btnTransparent">Login</button></a>
                 </div>
             </div>
         </div>
@@ -27,7 +27,7 @@
             <div class="titleBlockWrapper">
                 <div class="titleBlockLeftSide">Emotion detection software solution</div>
                 <div class="verticalLine"></div>
-                <div class="titleBlockRightSide">Moodnitor was developed as an undergraduate Final Year Project in University of Westminster.</div>
+                <div class="titleBlockRightSide">Moodnitor uses machine learning to perform multilabel classification and recognise emotion classes in textual corpora.</div>
             </div>
         </div>
     </div>
@@ -48,9 +48,8 @@
         </div>
     </div>
 
-    <div>Hello</div>
-    <div>
-        <a href="/register">Register Your Clinic</a>
+    <div class="mainpage-footer">
+        <div>Kulczynska Agata, University of Westminster</div>
     </div>
 
 <%- include("elements/footer.ejs") %>

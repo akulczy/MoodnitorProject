@@ -20,6 +20,12 @@ let editor = new Quill(container, options);
 $("#submitMailBtn").click(() => {
     let emailHtmlContent = $(".ql-editor").first().html();
     let userId = $("#select-user").val();
+    let mailContent = editor.getText();
+
+    // Mail cannot be submitted if the main field is left empty
+    if(mailContent.replace(/\s+/g, "") == "") {
+        return alert("Please fill in your message before submitting.");
+    }
 
     // Displaying spinner element once the submit button is clicked
     if(!($("#submitMailBtn").hasClass(".activeBtn"))) {
