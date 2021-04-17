@@ -105,7 +105,7 @@ exports.addEntry = async (req, res) => {
     let predictions = [];
 
     // Connecting to the Python API
-    await axios.post('http://localhost:5000/predict', {
+    await axios.post('https://moodnitor-api.herokuapp.com/predict', {
             emotion: entryContent
         })
         .then((response) => {
