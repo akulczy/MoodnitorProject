@@ -335,6 +335,7 @@ exports.updateUserDetails = async (req, res) => {
         if(req.body.userSurname != null || req.body.userSurname != "") { user.surname = req.body.userSurname; req.session.surname = req.body.userSurname };
         if(req.body.userEmail != null || req.body.userEmail != "") { user.email = req.body.userEmail; req.session.email = req.body.userEmail };
         if(req.body.userPhone != null || req.body.userPhone != "") { user.telephone = req.body.userPhone };
+        if(req.body.jobTitle != null || req.body.jobTitle != "") { user.title = req.body.jobTitle };
 
         if(req.body.userPassword != null && req.body.userPassword != "") {
             let hashedPass = await bcrypt.hash(req.body.userPassword, 14);

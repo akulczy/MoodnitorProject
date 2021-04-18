@@ -43,6 +43,14 @@
                             <span class="user-txt">Clinic's Administrator</span>
                         <% } %>
                     </div>
+
+                    <% if(isSpecialist || isAdmin) { %>
+                        <div class="profile-container-column">
+                            Job Title: 
+                            
+                            <span class="user-txt"><%- user.title %></span>
+                        </div>
+                    <% } %>
     
                     <div class="profile-container-column">
                         Name: <span class="user-txt"><%- user.name %></span>

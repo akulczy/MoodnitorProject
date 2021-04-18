@@ -53,6 +53,13 @@
                                 <input type="text" class="form-control" id="userPhone" name="userPhone" value="<%- user.telephone %>" required>
                             </div>
 
+                            <% if(isAdmin) { %>
+                                <div class="profile-container-column">
+                                    <label for="userPhone">Job Title:</label>
+                                    <input type="text" class="form-control" id="jobTitle" name="jobTitle" value="<%- user.title %>" required>
+                                </div>
+                            <% } %>
+
                             <div class="profile-container-column">
                                 <label for="userPassword">Password:</label>
                                 <input type="password" class="form-control" id="userPassword" name="userPassword">
