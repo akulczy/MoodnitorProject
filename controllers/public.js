@@ -246,10 +246,12 @@ exports.registerClinicAndAdmin = async (req, res) => {
 exports.verifyRegistratrion = async (req, res) => {
     const verId = req.params.verId;
     let verification = null;
+    let centreEmail;
 
     // Step 1 - find the Verification record with the ID from the url
     try {
-        verification = await VerificationString.findOne({where: {token: verId, archived: 0}, include: [{model: Centre, attributes: ["id", "verified", "name"]}]});
+        verification = await VerificationString.findOne({where: {token: verId, archived: 0}, include: [{model: Centre, attributes: ["id", "verified", "name", "email"]}]});
+        centreEmail = verification.Centre.email;
     } catch (error) {
         console.log(error);
         return res.redirect("/");
@@ -271,6 +273,30 @@ exports.verifyRegistratrion = async (req, res) => {
             pageTitle: "Registration Verification",
             name: verification.Centre.name
         });
+
+        try{
+            let message = "Dear " + verification.Centre.name + ", <br /><br />We are pleased to inform you that your registration in the Moodnitor system has been verified. You can now login by accessing the link below: <br /><br />https://moodnitor.herokuapp.com/login/centre<br /><br /> Kind Regards, <br />Moodnitor<br /><br /><br />";
+    
+            let msg = {
+                to: "w1694656@my.westminster.ac.uk",
+                from: "w1694656@my.westminster.ac.uk",
+                subject: "Moodnitor - Your Account has been verified",
+                html: message
+            }
+    
+            sgMail
+            .send(msg)
+            .then(() => {
+                console.log("E-Mail Sent");
+            }, error => {
+                console.log(error);
+                if (error.response) {
+                    console.log(error.response.body)
+                }
+            });
+        } catch(error){
+            console.log(error);
+        }
     }
 };
 
