@@ -124,6 +124,28 @@ const createActivityLineChart = (dataentries) => new Promise((resolve, reject) =
     });
 });
 
+const validateDateRange = () => {
+    if($("#entry-date-from").val() != "" && $("#entry-date-to").val() != "") {
+        let dateFrom = new Date($("#entry-date-from").val());
+        let dateTo = new Date($("#entry-date-to").val());
+
+        if(dateTo < dateFrom) {
+            $("#entry-date-from").val("");
+            $("#entry-date-to").val("");
+
+            return alert("Please insert a valid date range");
+        }        
+    }
+}
+
+$("#entry-date-from").change(() => {
+    validateDateRange();
+});
+
+$("#entry-date-to").change(() => {
+    validateDateRange();
+});
+
 $(document).ready(() => {
     Promise.all([createLineChart(JSON.parse(dataset)), createActivityLineChart(JSON.parse(freqdata))])
     .then(() => {

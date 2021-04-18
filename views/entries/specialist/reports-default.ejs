@@ -37,13 +37,13 @@
                     <div class="align-def-row" style="padding-right: 1rem;">
                         <div class="browse-label">Date from:</div>
                         <div class="sub-browse-align">
-                            <input type="date" class="form-control" name="dateFrom" id="entry-date" required />
+                            <input type="date" class="form-control" name="dateFrom" id="entry-date-from" required />
                         </div>
                     </div>
                     <div>
                         <div class="browse-label">Date to:</div>
                         <div class="sub-browse-align">
-                            <input type="date" class="form-control" name="dateTo" id="entry-date" required />
+                            <input type="date" class="form-control" name="dateTo" id="entry-date-to" required />
                         </div>
                     </div>
                 </div>
@@ -60,6 +60,28 @@
     </div>
 <script>
     $("#reports-element").addClass("active-sidebar-element");
+
+    const validateDateRange = () => {
+        if($("#entry-date-from").val() != "" && $("#entry-date-to").val() != "") {
+            let dateFrom = new Date($("#entry-date-from").val());
+            let dateTo = new Date($("#entry-date-to").val());
+
+            if(dateTo < dateFrom) {
+                $("#entry-date-from").val("");
+                $("#entry-date-to").val("");
+
+                return alert("Please insert a valid date range");
+            }        
+        }
+    }
+
+    $("#entry-date-from").change(() => {
+        validateDateRange();
+    });
+
+    $("#entry-date-to").change(() => {
+        validateDateRange();
+    });
 </script>
 </body>
 
