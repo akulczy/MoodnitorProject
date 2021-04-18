@@ -1528,6 +1528,24 @@ th, tbody {
     text-align: center;
 }
 
+.title-main-2 {
+    padding-top: 2rem;
+    background-color: rgba(126, 175, 219, 0.5);
+    margin-bottom: 0;
+}
+
+.instructions-container {
+    background-color: rgba(126, 175, 219, 0.5);
+    padding: 2rem 7rem 5rem 7rem;
+}
+
+.text-cont-main {
+    border-radius: 10px;
+    padding: 2rem;
+    background-color: rgba(231, 242, 252, 0.76);
+    color: rgb(60, 60, 60);
+}
+
 @keyframes popupon {
     from {
         transform: scale(0);
