@@ -489,7 +489,7 @@ th, tbody {
     flex-direction: column;
     transition: ease-in-out 0.4s;
     background-color: rgba(254, 254, 255, 0.5);
-    min-height: 33rem;
+    min-height: 35rem;
 }
 
 .main-page-container:hover, .reg-page-container:hover, .login-page-container:hover {

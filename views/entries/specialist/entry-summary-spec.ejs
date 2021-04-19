@@ -30,7 +30,7 @@
             </div>
 
             <div class="entry-date">
-                <div class="summary-title">&#8226; Date and time: <span class="p-dark"><%- entry.date + " " + entry.time.slice(0, 5) %></span></div>
+                <div class="summary-title">&#8226; Date and time: <span class="p-dark"><%- entry.date.toISOString().slice(0,10) + " " + entry.time.slice(0, 5) %></span></div>
             </div>
 
             <div class="entry-content">
