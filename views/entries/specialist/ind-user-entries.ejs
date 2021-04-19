@@ -86,7 +86,7 @@
                             <input type="hidden" class="enid" value="<%= entries[i].id %>" />
                             <input type="hidden" class="uid" value="<%= entries[i].SystemUser.id %>" />
                             <td class="e-no"><strong><%= eval(i+1) %></strong></td>
-                            <td class="e-date"><%= entries[i].date %></td>
+                            <td class="e-date"><%= entries[i].date.toISOString().slice(0,10) %></td>
                             <% if(entries[i].title.length > 18) { %>
                                 <td class="e-title"><%= (entries[i].title).slice(0, 17) %>...</td>
                             <% } else { %>

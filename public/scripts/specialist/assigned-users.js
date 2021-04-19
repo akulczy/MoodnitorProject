@@ -4,7 +4,7 @@ $( document ).ready(function() {
     $("#name-search-btn").click(async () => {
         let browseVal = $("#name-search").val();
         if(browseVal == "") {
-            return alert("Please enter the title.");
+            return alert("Please enter the patient's name.");
         }
 
         const cont = document.getElementById("all-users");

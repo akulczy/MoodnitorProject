@@ -123,7 +123,7 @@ exports.getAccountPage = async (req, res) => {
                 include: [
                     {
                         model: Specialist,
-                        attributes: ["name", "surname", "id", "email"]
+                        attributes: ["name", "surname", "id", "email", "telephone"]
                     },
                     {   
                         model: Centre,

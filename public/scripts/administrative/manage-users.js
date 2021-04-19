@@ -41,50 +41,50 @@ const addUser = () => {
     // Displaying spinner element once the submit button is clicked
     if(!($("#submitBtn").hasClass(".activeBtn"))) {
         $("#submitBtn").append('<span class="spinner-grow text-light spinner-grow-sm" role="status" aria-hidden="true"></span><span class="sr-only">Loading...</span>');
-        $("#submitBtn").addClass(".activeBtn");   
-    } 
+        $("#submitBtn").addClass(".activeBtn");       
 
-    let userToAdd = {
-        name: $("#userName").val(),
-        surname: $("#userSurname").val(),
-        email: $("#userEmail").val(),
-        telephone: $("#userPhone").val(),
-        password: $("#userPassword").val(),
-        privileges: $("input[name=privileges]:checked").val(),
-        SpecialistId: $("#select-specialist").val(),
-        specTitle: $("#specTitle").val()        
-    };
+        let userToAdd = {
+            name: $("#userName").val(),
+            surname: $("#userSurname").val(),
+            email: $("#userEmail").val(),
+            telephone: $("#userPhone").val(),
+            password: $("#userPassword").val(),
+            privileges: $("input[name=privileges]:checked").val(),
+            SpecialistId: $("#select-specialist").val(),
+            specTitle: $("#specTitle").val()        
+        };
 
-    $.ajax({
-        url: "/dashboard/specialist/users/create",
-        method: "POST",
-        data: userToAdd,
-        // Actions depending on the status code in the response
-        statusCode: {
-            200: () => {
-                $("input").val("");
-                $("#inlineRadio1").prop("checked", true);
-                $("#pass-info").text("");
-                $("#pass-info").css("color", "#000");
-                $("#select-specialist").val(0);
+        $.ajax({
+            url: "/dashboard/specialist/users/create",
+            method: "POST",
+            data: userToAdd,
+            // Actions depending on the status code in the response
+            statusCode: {
+                200: () => {
+                    $("input").val("");
+                    $("#inlineRadio1").prop("checked", true);
+                    $("#pass-info").text("");
+                    $("#pass-info").css("color", "#000");
+                    $("#select-specialist").val(0);
 
-                $(".spinner-grow").remove();
-                $("#submitBtn").removeClass(".activeBtn");
+                    $(".spinner-grow").remove();
+                    $("#submitBtn").removeClass(".activeBtn");
 
-                alert("User added successfully.");
-            },
-            400: () => {
-                $(".spinner-grow").remove();
-                $("#submitBtn").removeClass(".activeBtn");
-                alert("An error occurred while processing your request. Please try again.");
-            },
-            403: () => {
-                $(".spinner-grow").remove();
-                $("#submitBtn").removeClass(".activeBtn");
-                alert("User with the given email address exists already.");
+                    alert("User added successfully.");
+                },
+                400: () => {
+                    $(".spinner-grow").remove();
+                    $("#submitBtn").removeClass(".activeBtn");
+                    alert("An error occurred while processing your request. Please try again.");
+                },
+                403: () => {
+                    $(".spinner-grow").remove();
+                    $("#submitBtn").removeClass(".activeBtn");
+                    alert("User with the given email address exists already.");
+                }
             }
-        }
-    });
+        });
+    } 
 }
 
 $("#submitBtn").click((event) => {
