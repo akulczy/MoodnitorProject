@@ -61,7 +61,13 @@ const addUser = () => {
             // Actions depending on the status code in the response
             statusCode: {
                 200: () => {
-                    $("input").val("");
+                    $("#userName").val("");
+                    $("#userSurname").val("");
+                    $("#userEmail").val("");
+                    $("#userPhone").val("");
+                    $("#userPassword").val("");
+                    $("#userPasswordRepeat").val("");
+
                     $("#inlineRadio1").prop("checked", true);
                     $("#pass-info").text("");
                     $("#pass-info").css("color", "#000");
