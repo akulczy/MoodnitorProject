@@ -67,6 +67,7 @@ const addUser = () => {
                     $("#userPhone").val("");
                     $("#userPassword").val("");
                     $("#userPasswordRepeat").val("");
+                    $("#specTitle").val("");
 
                     $("#dropDownRow").css("display", "inline");
                     $("#dropDownRow2").css("display", "none");
