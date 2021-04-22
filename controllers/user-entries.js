@@ -50,10 +50,10 @@ exports.addEntry = async (req, res) => {
     let class_names = ['joy', 'fear', 'anger', 'sadness', 'neutral'];
     let dateToday =  moment(new Date()).format("YYYY-MM-DD");
     let timeNow =  moment(new Date()).format("HH:mm:ss");
-    let entryContent = (req.body.entryContent).replace("'", "\'");
-    let entryHtmlContent = (req.body.entryHtmlContent).replace("'", "\'");
-    entryContent = entryContent.replace('"', '');
-    entryHtmlContent = entryHtmlContent.replace('"', '');
+    let entryContent = (req.body.entryContent).replace(/'/g, "\'");
+    let entryHtmlContent = (req.body.entryHtmlContent).replace(/'/g, "\'");
+    entryContent = entryContent.replace(/"/g, '');
+    entryHtmlContent = entryHtmlContent.replace(/"/g, '');
     let entryTitle = "";
     let entry = null;
     let entryFiles = null;
