@@ -52,7 +52,7 @@ const appendEntries = (entries) => {
                 '<input type="hidden" class="uid" value="' + entry.SystemUser.id + '" />' +
                 '<td class="e-no"><strong>' + eval(i) + '</strong></td>' +
                 '<td class="e-user">' + entry.SystemUser.name + ' ' + entry.SystemUser.surname + '</td>' +
-                '<td class="e-date">' + entry.date + '</td>' +
+                '<td class="e-date">' + (new Date(entry.date)).toISOString().slice(0,10) + '</td>' +
                 '<td class="e-title">' + entryTitle + '</td>' +
                 `<td class="e-summary"><a class="linkNoStyle" href="/dashboard/specialist/users/summary/${entry.id}"><button class="btnGradBlueSm margin-auto">Overview</button></a></td>` +
                 `<td class="e-notes"><a class="linkNoStyle" href="/dashboard/specialist/users/edit/${entry.id}"><button class="btnGradPurpleSm margin-auto">Notes</button></a></td>` +

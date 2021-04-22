@@ -31,7 +31,7 @@ const appendEntries = (entries, individual) => {
             '<tr>' +                            
                 '<input type="hidden" class="enid" value="' + entry.id + '" />' +
                 '<td class="e-no"><strong>' + eval(i) + '</strong></td>' +
-                '<td class="e-date">' + entry.date + '</td>' +
+                '<td class="e-date">' + (new Date(entry.date)).toISOString().slice(0,10) + '</td>' +
                 '<td class="e-title">' + entryTitle + '</td>' +
                 link +
                 `<td>` +
@@ -87,7 +87,7 @@ const appendDisabledEntries = (entries, individual) => {
             '<tr class="disabledTr">' +
                 '<input type="hidden" class="enid" value="' + entry.id + '" />' +
                 '<td class="e-no"><strong>' + eval(i) + '</strong></td>' +
-                '<td class="e-date">' + entry.date + '</td>' +
+                '<td class="e-date">' + (new Date(entry.date)).toISOString().slice(0,10) + '</td>' +
                 '<td class="e-title">' + entryTitle + '</td>' +
                 link +
                 `<td>` +

@@ -907,7 +907,7 @@ exports.getDisabledEntriesPage = async (req, res) => {
 // Method to browse disabled entries by date 
 exports.browseDisabledByDate = async (req, res) => {
     let entries = [];
-    let dateVal = req.body.date;
+    let dateVal = new Date(req.body.date);
 
     if(req.session.isIndUser) {
         try {
