@@ -52,8 +52,8 @@ exports.addEntry = async (req, res) => {
     let timeNow =  moment(new Date()).format("HH:mm:ss");
     let entryContent = (req.body.entryContent).replace("'", "\'");
     let entryHtmlContent = (req.body.entryHtmlContent).replace("'", "\'");
-    entryContent = entryContent.replace('"', '\"');
-    entryHtmlContent = entryHtmlContent.replace('"', '\"');
+    entryContent = entryContent.replace('"', '');
+    entryHtmlContent = entryHtmlContent.replace('"', '');
     let entryTitle = "";
     let entry = null;
     let entryFiles = null;
