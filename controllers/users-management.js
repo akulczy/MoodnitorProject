@@ -14,7 +14,7 @@ exports.getUsersListView = async (req, res) => {
                 CentreId: req.session.centreId 
             }, 
             order: [
-                ["disabled", "ASC"], ["name", "DESC"]
+                ["disabled", "ASC"], ["name", "ASC"]
             ],
             include: [
                 {
@@ -53,7 +53,7 @@ exports.getSpecialistsListView = async (req, res) => {
                 CentreId: req.session.centreId 
             }, 
             order: [
-                ["disabled", "ASC"], ["isAdmin", "DESC"], ["name", "DESC"]
+                ["disabled", "ASC"], ["isAdmin", "DESC"], ["name", "ASC"]
             ],
             include: [
                 {
@@ -300,7 +300,7 @@ exports.getAssignedUsersListView = async (req, res) => {
     let users = [];
 
     try {
-        users = await Patient.findAll({ where: {SpecialistId: req.session.userId, CentreId: req.session.centreId }, order: [["disabled", "ASC"]] });
+        users = await Patient.findAll({ where: {SpecialistId: req.session.userId, CentreId: req.session.centreId }, order: [["disabled", "ASC"], ["name", "ASC"]] });
     } catch (error) {
         console.log(error);
     }
