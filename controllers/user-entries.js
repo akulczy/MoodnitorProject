@@ -1097,8 +1097,8 @@ exports.fetchEntries = async (req, res) => {
             entriesobj.push(
                 {
                     "Title": entry.title,
-                    "Date": entry.date,
-                    "Time": entry.time,
+                    "Date": (new Date(entry.date)).toISOString().slice(0,10),
+                    "Time": entry.time.slice(0,5),
                     "Main Emotion": entry.UserEntryResult.emotion,
                     "Joy [%]": entry.UserEntryResult.predictions[0].percentage, 
                     "Fear [%]": entry.UserEntryResult.predictions[1].percentage, 

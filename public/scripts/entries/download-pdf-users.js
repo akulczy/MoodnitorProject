@@ -29,8 +29,8 @@ const createPDFForInd = (entry, chart) => new Promise((resolve, reject) => {
 
     doc.setFont("times", "normal");
     doc.setFontSize(9);
-    doc.text(`Date: ${entry.date}`, 200, 10, null, null, "right");
-    doc.text(`Time: ${entry.time}`, 200, 15, null, null, "right");
+    doc.text(`Date: ${(new Date(entry.date)).toISOString().slice(0,10)}`, 200, 10, null, null, "right");
+    doc.text(`Time: ${entry.time.slice(0,5)}`, 200, 15, null, null, "right");
     doc.text(`Author: ${entry.IndividualUser.name} ${entry.IndividualUser.surname}`, 200, 20, null, null, "right");
 
     doc.setFont("times", "bold");
@@ -99,8 +99,8 @@ const createPDFForSys = (entry, chart) => new Promise((resolve, reject) => {
 
     doc.setFont("times", "normal");
     doc.setFontSize(9);
-    doc.text(`Date: ${entry.date}`, 200, 10, null, null, "right");
-    doc.text(`Time: ${entry.time}`, 200, 15, null, null, "right");
+    doc.text(`Date: ${(new Date(entry.date)).toISOString().slice(0,10)}`, 200, 10, null, null, "right");
+    doc.text(`Time: ${entry.time.slice(0,5)}`, 200, 15, null, null, "right");
     doc.text(`Author: ${entry.SystemUser.name} ${entry.SystemUser.surname}`, 200, 20, null, null, "right");
 
     doc.setFont("times", "bold");

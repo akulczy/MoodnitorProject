@@ -12,7 +12,7 @@ exports.centreLogin = async (req, res,) => {
 
     // Step 1 - find the user with the given email
     try {
-        retrievedUser = await Specialist.findOne({where: {email: email}, include: [{model: Centre, attributes: ["id", "verified"]}]});
+        retrievedUser = await Specialist.findOne({where: {email: email, disabled: false}, include: [{model: Centre, attributes: ["id", "verified"]}]});
     } catch (error) {
         console.log(error);
         return res.redirect("/auth/error");
@@ -22,7 +22,7 @@ exports.centreLogin = async (req, res,) => {
     if(retrievedUser == null) {
         isSpecialist = false;
         try {
-            retrievedUser = await Patient.findOne({where: {email: email}, include: [{model: Centre, attributes: ["id", "verified"]}]});
+            retrievedUser = await Patient.findOne({where: {email: email, disabled: false}, include: [{model: Centre, attributes: ["id", "verified"]}]});
         } catch (error) {
             console.log(error);
             return res.redirect("/auth/error");

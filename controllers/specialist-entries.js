@@ -34,8 +34,8 @@ exports.getReviewEntriesPageSpecialist = async (req, res) => {
             where: {
                 disabled: false,
                 date: {
-                    [Op.gte]: monthBefore,
-                    [Op.lte]: today
+                    [Op.gte]: new Date(monthBefore),
+                    [Op.lte]: new Date(today)
                 } 
             }, 
             order: [
@@ -98,8 +98,8 @@ exports.getReviewEntriesOfIndUserPage = async (req, res) => {
                 disabled: false,
                 SystemUserId: req.params.userId,
                 date: {
-                    [Op.gte]: monthBefore,
-                    [Op.lte]: today
+                    [Op.gte]: new Date(monthBefore),
+                    [Op.lte]: new Date(today)
                 }  
             }, 
             order: [
@@ -662,8 +662,8 @@ exports.fetchEntries = async (req, res) => {
         entriesobj.push(
             {
                 "Title": entry.title,
-                "Date": entry.date,
-                "Time": entry.time,
+                "Date": (new Date(entry.date)).toISOString().slice(0,10),
+                "Time": entry.time.slice(0,5),
                 "Added by": `${entry.SystemUser.name} ${entry.SystemUser.surname}`,
                 "Main Emotion": entry.UserEntryResult.emotion,
                 "Joy [%]": entry.UserEntryResult.predictions[0].percentage, 
