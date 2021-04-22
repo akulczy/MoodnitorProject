@@ -68,6 +68,9 @@ const addUser = () => {
                     $("#userPassword").val("");
                     $("#userPasswordRepeat").val("");
 
+                    $("#dropDownRow").css("display", "inline");
+                    $("#dropDownRow2").css("display", "none");
+
                     $("#inlineRadio1").prop("checked", true);
                     $("#pass-info").text("");
                     $("#pass-info").css("color", "#000");
