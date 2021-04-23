@@ -138,7 +138,7 @@ exports.getContactPageSpecialist = async (req, res) => {
 exports.sendMailToAssignedUser = async (req, res) => {
     let specialist = null;
     let user = null;
-
+    
     try {
         specialist = await Specialist.findOne({
             where: {
@@ -163,7 +163,7 @@ exports.sendMailToAssignedUser = async (req, res) => {
         return res.sendStatus(400);
     }
 
-    if(user == null || specialist == null) { return res.sendStatus(400); }
+    if(user == null || specialist == null) { console.log("Not found"); return res.sendStatus(400); }
 
     try{
         let message = `Dear ${user.name} ${user.surname},<br /><br /> A new message has been sent to you by <strong>${specialist.name} ${specialist.surname}</strong>. Please see the content of the message below:<br /><br />${req.body.email}<br /><br />To respond to your assigned specialist, please use the contact details listed below:<br/ ><br /><strong>Email:</strong> ${specialist.email}<br /><strong>Telephone number:</strong> ${specialist.telephone}<br /><br />Kind Regards, <br />Moodnitor<br /><br /><br />`;

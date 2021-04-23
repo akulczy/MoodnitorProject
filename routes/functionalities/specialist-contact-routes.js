@@ -7,6 +7,6 @@ const contact = require("../../controllers/contact");
 router.get("/email", contact.getContactPageSpecialist);
 
 // POST - send an email to the user
-router.post("/mail/send", contact.sendMailToSpecialist);
+router.post("/mail/send", contact.sendMailToAssignedUser);
 
 module.exports = router;
