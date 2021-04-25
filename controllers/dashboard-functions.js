@@ -240,7 +240,7 @@ exports.updateUserDetails = async (req, res) => {
     let user = null;
     let emailuser = null;
 
-    if ((req.body.userPassword).length < 8) {
+    if ((req.body.userPassword).length > 0 && (req.body.userPassword).length < 8) {
         return res.redirect("/dashboard/account?pass=false");
     } 
 
