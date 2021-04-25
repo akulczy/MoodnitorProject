@@ -218,7 +218,7 @@ exports.registerClinicAndAdmin = async (req, res) => {
 
     // Step 5
     try{
-        let message = "Dear Administrator, <br /><br />A new enquiry has been submitted by a clinic interested in joining the platform. Please find their details below: <br /><br />Name: " + submittedCentre.name + "<br /><br />Email: " + submittedCentre.email + "<br /><br />The details of the Clinic's Administrator are as follow: <br /><br />Name: " + submittedAdmin.name +"<br /><br />Surame: " + submittedAdmin.surname + "<br /><br />Email: " + submittedAdmin.email +"<br /><br />To confirm the registration and enable the access to the platform for the Administrator, please access the link below:<br /><br /><a href='http://localhost:3000/verify/" + verificationString.token + "' target='_blank'>" + "https://localhost:3000/verify/" + verificationString.token + "</a><br /><i>Accessing the link will unlock the access for the clinic automatically.</i> <br /><br /> Kind Regards, <br />Moodnitor<br /><br /><br />";
+        let message = "Dear Administrator, <br /><br />A new enquiry has been submitted by a clinic interested in joining the platform. Please find their details below: <br /><br />Name: " + submittedCentre.name + "<br /><br />Email: " + submittedCentre.email + "<br /><br />The details of the Clinic's Administrator are as follow: <br /><br />Name: " + submittedAdmin.name +"<br /><br />Surame: " + submittedAdmin.surname + "<br /><br />Email: " + submittedAdmin.email +"<br /><br />To confirm the registration and enable the access to the platform for the Administrator, please access the link below:<br /><br /><a href='http://localhost:3000/verify/" + verificationString.token + "' target='_blank'>" + "https://www.moodnitor.co.uk/verify/" + verificationString.token + "</a><br /><i>Accessing the link will unlock the access for the clinic automatically.</i> <br /><br /> Kind Regards, <br />Moodnitor<br /><br /><br />";
 
         let msg = {
             to: "w1694656@my.westminster.ac.uk",
@@ -275,7 +275,7 @@ exports.verifyRegistratrion = async (req, res) => {
         });
 
         try{
-            let message = "Dear " + verification.Centre.name + ", <br /><br />We are pleased to inform you that your registration in the Moodnitor system has been verified. You can now login by accessing the link below: <br /><br />https://moodnitor.herokuapp.com/login/centre<br /><br /> Kind Regards, <br />Moodnitor<br /><br /><br />";
+            let message = "Dear " + verification.Centre.name + ", <br /><br />We are pleased to inform you that your registration in the Moodnitor system has been verified. You can now login by accessing the link below: <br /><br />https://www.moodnitor.co.uk/login/centre<br /><br /> Kind Regards, <br />Moodnitor<br /><br /><br />";
     
             let msg = {
                 to: "w1694656@my.westminster.ac.uk",

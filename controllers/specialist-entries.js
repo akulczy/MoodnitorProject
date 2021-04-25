@@ -832,7 +832,8 @@ exports.getReportPage = async (req, res) => {
                     [Op.gte]: startDate,
                     [Op.lte]: endDate
                 },
-                SystemUserId: userId
+                SystemUserId: userId,
+                disabled: false
             }, 
             include: [
                 {

@@ -1218,7 +1218,8 @@ exports.getUserJourneyPage = async (req, res) => {
                         [Op.gte]: startDate,
                         [Op.lte]: endDate
                     },
-                    SystemUserId: req.session.userId
+                    SystemUserId: req.session.userId,
+                    disabled: false
                 }, 
                 include: [
                     {
@@ -1244,7 +1245,8 @@ exports.getUserJourneyPage = async (req, res) => {
                         [Op.gte]: startDate,
                         [Op.lte]: endDate
                     },
-                    IndividualUserId: req.session.userId
+                    IndividualUserId: req.session.userId,
+                    disabled: false
                 }, 
                 include: [
                     {

@@ -362,7 +362,7 @@ exports.logoutUser = async (req, res) => {
         return res.redirect("/login");
     } catch(error) {
         console.log(error);
-        return res.redirect("/dashboard?error=true"); 
+        return res.redirect("/dashboard"); 
     }
 };
 
@@ -373,14 +373,14 @@ const getEntriesFromToday = async (isIndividualUser, isSystemUser, userId) => {
 
     if(isIndividualUser) {
         try{
-            noOfEntries = await IndividualEntry.findAndCountAll({where: {IndividualUserId: userId, date: dateToday}});
+            noOfEntries = await IndividualEntry.findAndCountAll({where: {IndividualUserId: userId, date: dateToday, disabled: false}});
         } catch(error) {
             console.log(error);
             noOfEntries = 0;
         }
     } else if(isSystemUser) {
         try{
-            noOfEntries = await UserEntry.findAndCountAll({where: {SystemUserId: userId, date: dateToday}});
+            noOfEntries = await UserEntry.findAndCountAll({where: {SystemUserId: userId, date: dateToday, disabled: false}});
         } catch(error) {
             console.log(error);
             noOfEntries = 0;
@@ -397,14 +397,14 @@ const getHowManyEntriesTillNow = async (isIndividualUser, isSystemUser, userId) 
 
     if(isIndividualUser) {
         try{
-            noOfEntries = await IndividualEntry.findAndCountAll({where: {IndividualUserId: userId, date: {[Op.lte]: dateToday}}});
+            noOfEntries = await IndividualEntry.findAndCountAll({where: {IndividualUserId: userId, disabled: false, date: {[Op.lte]: dateToday}}});
         } catch(error) {
             console.log(error);
             noOfEntries = 0;
         }
     } else if(isSystemUser) {
         try{
-            noOfEntries = await UserEntry.findAndCountAll({where: {SystemUserId: userId, date: {[Op.lte]: dateToday}}});
+            noOfEntries = await UserEntry.findAndCountAll({where: {SystemUserId: userId, date: {[Op.lte]: dateToday}, disabled: false}});
         } catch(error) {
             console.log(error);
             noOfEntries = 0;
@@ -436,7 +436,7 @@ const getUserFrequency = async (isIndividualUser, isSystemUser, userId) => {
     if(isIndividualUser) {
         for(let tp of timeperiod) {
             tpd = new Date(tp);
-            entry = await IndividualEntry.findAndCountAll({where: {IndividualUserId: userId, date: tpd}});
+            entry = await IndividualEntry.findAndCountAll({where: {IndividualUserId: userId, date: tpd, disabled: false}});
             if(entry.count != 0) {
                 daysActive++;
             }
@@ -448,7 +448,7 @@ const getUserFrequency = async (isIndividualUser, isSystemUser, userId) => {
     } else if(isSystemUser) {
         for(let tp of timeperiod) {
             tpd = new Date(tp);
-            entry = await UserEntry.findAndCountAll({where: {SystemUserId: userId, date: tpd}});
+            entry = await UserEntry.findAndCountAll({where: {SystemUserId: userId, date: tpd, disabled: false}});
             if(entry.count != 0) {
                 daysActive++;
             }
@@ -467,7 +467,7 @@ const getNumberOfAssignedUsers = async (userId) => {
     let users;
 
     try{
-        users = await SystemUser.findAndCountAll({where: {SpecialistId: userId}});
+        users = await SystemUser.findAndCountAll({where: {SpecialistId: userId, disabled: false}});
         noOfUsers = users.count;
     } catch(error) {
         console.log(error);
@@ -484,7 +484,7 @@ const getNumberOfEntriesTodaySpec = async (userId) => {
     today = new Date(today);
 
     try {
-        entries = await UserEntry.findAndCountAll({where: {date: today}, include: {model: SystemUser, where: {SpecialistId: userId}, required: true}})
+        entries = await UserEntry.findAndCountAll({where: {date: today, disabled: false}, include: {model: SystemUser, where: {SpecialistId: userId}, required: true}})
         noOfEntries = entries.count;
     } catch(error) {
         console.log(error);
@@ -516,7 +516,7 @@ const getNumberOfEntriesTotalSpec = async (userId) => {
 
     for(let tp of timeperiod) {
         tpd = new Date(tp);
-        entry = await UserEntry.findAndCountAll({where: {date: tpd}, include: {model: SystemUser, where: {SpecialistId: userId}, required: true}});
+        entry = await UserEntry.findAndCountAll({where: {date: tpd, disabled: false}, include: {model: SystemUser, where: {SpecialistId: userId}, required: true}});
         if(entry.count != 0) {
             noOfEntries += entry.count;
         }
