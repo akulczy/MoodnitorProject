@@ -79,6 +79,6 @@ const generateReportPDF = (emotionChartImg) => {
     image2.src = freqChartImg;
     doc.addImage(image2, "PNG", 20, y, 158, 79);
     
-    doc.save("report.pdf");
+    doc.save("Report.pdf");
 }
 

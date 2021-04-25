@@ -1,4 +1,4 @@
-$( document ).ready(function() {
+$(document).ready(function() {
     const browseReset = $(".grid-item");
 
     $("#name-search-btn").click(async () => {
@@ -35,11 +35,18 @@ $( document ).ready(function() {
                 await $(cont).append('</div>');
             }                  
         }
+
+        openPopover();
+
+        $("body").click((event) => {
+            closePopover(event);
+        });
     });
 
     $("#reset-btn").click(async () => {
         const cont = document.getElementById("all-users");
         $("#name-search").val("");
+        $('[data-toggle="popover"]').popover('hide');
         $(cont).empty();
 
         let curr;
@@ -56,6 +63,12 @@ $( document ).ready(function() {
                 await $(cont).append('</div>');
             }                  
         }
+
+        openPopover();
+
+        $("body").click((event) => {
+            closePopover(event);
+        });
     });
 
 });
@@ -68,15 +81,17 @@ const closePopover = (event) => {
     }
 };
 
-$(function () {
+const openPopover = () => {
     $('[data-toggle="popover"]').popover({
         container: "body",
         placement: "top",
         boundary: "viewport",
         html: true,
         sanitize: false
-    })
-});
+    });
+}
+
+openPopover();
 
 $("body").click((event) => {
     closePopover(event);

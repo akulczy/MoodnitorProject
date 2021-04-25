@@ -240,6 +240,10 @@ exports.updateUserDetails = async (req, res) => {
     let user = null;
     let emailuser = null;
 
+    if ((req.body.userPassword).length < 8) {
+        return res.redirect("/dashboard/account?pass=false");
+    } 
+
     if(req.session.isIndUser) {
         try {
             user = await IndUser.findOne({where: {id: req.session.userId}});

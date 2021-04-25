@@ -88,7 +88,7 @@ const createPDFForInd = (entry, chart) => new Promise((resolve, reject) => {
     y = y + 10;
     doc.text(`Neutral: ${entry.IndividualEntryResult.predictions[4].percentage} %`, 20, y);
 
-    doc.save("entry.pdf");
+    doc.save("Entry.pdf");
         
     resolve("Fine");
 });
@@ -158,7 +158,7 @@ const createPDFForSys = (entry, chart) => new Promise((resolve, reject) => {
     y = y + 10;
     doc.text(`Neutral: ${entry.UserEntryResult.predictions[4].percentage} %`, 20, y);
 
-    doc.save("entry.pdf");
+    doc.save("Entry.pdf");
         
     resolve("Fine");
 });

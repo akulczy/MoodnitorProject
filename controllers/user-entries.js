@@ -54,7 +54,6 @@ exports.addEntry = async (req, res) => {
     let entryContent = (req.body.entryContent).replace(/'/g, "");
     let entryHtmlContent = (req.body.entryHtmlContent).replace(/'/g, "");
     entryContent = entryContent.replace(/"/g, '');
-    entryHtmlContent = entryHtmlContent.replace(/"/g, '');
     let entryTitle = "";
     let entry = null;
     let entryFiles = null;
@@ -357,7 +356,8 @@ exports.getSystemUserEntrySummaryPage = async (req, res) => {
                     required: true,
                     include: {
                         model: UserEntrySentence,
-                        required: true
+                        required: true,
+                        attributes: ["id", "sentenceNo", "predictions", "emotion"]
                     }
                 },
                 {
@@ -495,7 +495,8 @@ exports.getIndividualUserEntrySummaryPage = async (req, res) => {
                     required: true,
                     include: {
                         model: IndEntrySentence,
-                        required: true
+                        required: true,
+                        attributes: ["id", "sentenceNo", "predictions", "emotion"]
                     }
                 },
                 {
@@ -522,7 +523,7 @@ exports.getIndividualUserEntrySummaryPage = async (req, res) => {
             titleToDisplay: "Entry Summary",
             entry: entry,
             mainpredictions: JSON.stringify(entry.IndividualEntryResult.predictions),
-            mainpred: entry.UserEntryResult.predictions,
+            mainpred: entry.IndividualEntryResult.predictions,
             sentencespredictions: JSON.stringify(entry.IndividualEntryResult.IndividualEntrySentences),
             files: JSON.stringify(entryFiles),
             filesLength: filesLength

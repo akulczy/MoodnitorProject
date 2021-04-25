@@ -42,7 +42,7 @@ $("#submitMailBtn").click(() => {
                     $(".spinner-grow").remove();
                     $("#submitMailBtn").removeClass(".activeBtn");
 
-                    $("#mail-field").empty();
+                    editor.setText("");
 
                     return alert("Your email has been sent successfully.");                       
                 },
